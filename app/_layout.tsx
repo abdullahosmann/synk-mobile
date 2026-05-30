@@ -62,9 +62,7 @@ export default function RootLayout() {
           <AppProvider>
             <ToastProvider>
               <ThemedStatusBar />
-              <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="(tabs)" />
-              </Stack>
+              <Stack screenOptions={{ headerShown: false }} />
             </ToastProvider>
           </AppProvider>
         </ThemeProvider>

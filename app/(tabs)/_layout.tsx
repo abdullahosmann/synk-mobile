@@ -14,7 +14,7 @@ export default function TabsLayout() {
       tabBar={() => <BottomNav />}
       screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: "transparent" } }}
     >
-      <Tabs.Screen name="index" />
+      <Tabs.Screen name="dashboard" />
       <Tabs.Screen name="fitness" />
       <Tabs.Screen name="community" />
       <Tabs.Screen name="me" />

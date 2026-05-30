@@ -29,12 +29,12 @@ interface TabDef {
 
 const TABS: TabDef[] = [
   {
-    route: "/(tabs)",
+    route: "/dashboard",
     icon: Home,
     en: "Home",
     ar: "الرئيسية",
     isActive: (p) =>
-      ["/", "/dashboard", "/analytics", "/morning-checkin", "/adaptive-insights", "/plan-details"].includes(p),
+      ["/dashboard", "/analytics", "/morning-checkin", "/adaptive-insights", "/plan-details"].includes(p),
   },
   {
     route: "/fitness",
