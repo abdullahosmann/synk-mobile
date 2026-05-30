@@ -1,8 +1,7 @@
 /**
  * Fitness — RN port of src/screens/main/Fitness.tsx.
  * Top WORKOUT/NUTRITION segmented switcher with an animated underline.
- * The Workout and Nutrition sub-screens are large (600+ lines each) and land
- * in Phase 2.3 / 2.4; placeholders below preserve the tab shell + design.
+ * WORKOUT renders WorkoutTab (Phase 2.3); NUTRITION lands in Phase 2.4.
  */
 import React, { useState } from "react";
 import { View, Pressable } from "react-native";
@@ -11,6 +10,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppContext } from "../../src/AppContext";
 import { useColors } from "../../src/theme/ThemeProvider";
 import { AppText, ScreenTitle } from "../../src/components/ui/Typography";
+import WorkoutTab from "../../src/screens/WorkoutTab";
 
 export default function Fitness() {
   const { user } = useAppContext();
@@ -55,16 +55,16 @@ export default function Fitness() {
         <View style={{ height: 1, backgroundColor: colors.hairline, width: "100%" }} />
       </View>
 
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 24 }}>
-        <ScreenTitle style={{ marginBottom: 8 }}>
-          {activeTab === "workout" ? (isArabic ? "التمرين" : "Workout") : isArabic ? "التغذية" : "Nutrition"}
-        </ScreenTitle>
-        <AppText variant="body" className="text-ink-muted-48 dark:text-ink-dark-muted-48" style={{ textAlign: "center" }}>
-          {activeTab === "workout"
-            ? isArabic ? "تُبنى في المرحلة 2.3" : "Workout screen — ported in Phase 2.3"
-            : isArabic ? "تُبنى في المرحلة 2.4" : "Nutrition screen — ported in Phase 2.4"}
-        </AppText>
-      </View>
+      {activeTab === "workout" ? (
+        <WorkoutTab />
+      ) : (
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 24 }}>
+          <ScreenTitle style={{ marginBottom: 8 }}>{isArabic ? "التغذية" : "Nutrition"}</ScreenTitle>
+          <AppText variant="body" className="text-ink-muted-48 dark:text-ink-dark-muted-48" style={{ textAlign: "center" }}>
+            {isArabic ? "تُبنى في المرحلة 2.4" : "Nutrition screen — ported in Phase 2.4"}
+          </AppText>
+        </View>
+      )}
     </View>
   );
 }
