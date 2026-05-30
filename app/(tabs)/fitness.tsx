@@ -7,17 +7,24 @@ import React, { useState } from "react";
 import { View, Pressable } from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useLocalSearchParams } from "expo-router";
 import { useAppContext } from "../../src/AppContext";
 import { useColors } from "../../src/theme/ThemeProvider";
-import { AppText, ScreenTitle } from "../../src/components/ui/Typography";
+import { AppText } from "../../src/components/ui/Typography";
 import WorkoutTab from "../../src/screens/WorkoutTab";
+import Nutrition from "../../src/screens/Nutrition";
 
 export default function Fitness() {
   const { user } = useAppContext();
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const isArabic = user.language === "ar";
-  const [activeTab, setActiveTab] = useState<"workout" | "nutrition">("workout");
+  // `/fitness?tab=nutrition` (and the `/nutrition` alias) open straight to the
+  // NUTRITION segment; default is WORKOUT.
+  const { tab: tabParam } = useLocalSearchParams<{ tab?: string }>();
+  const [activeTab, setActiveTab] = useState<"workout" | "nutrition">(
+    tabParam === "nutrition" ? "nutrition" : "workout",
+  );
 
   const tab = (key: "workout" | "nutrition", label: string) => {
     const active = activeTab === key;
@@ -58,12 +65,7 @@ export default function Fitness() {
       {activeTab === "workout" ? (
         <WorkoutTab />
       ) : (
-        <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 24 }}>
-          <ScreenTitle style={{ marginBottom: 8 }}>{isArabic ? "التغذية" : "Nutrition"}</ScreenTitle>
-          <AppText variant="body" className="text-ink-muted-48 dark:text-ink-dark-muted-48" style={{ textAlign: "center" }}>
-            {isArabic ? "تُبنى في المرحلة 2.4" : "Nutrition screen — ported in Phase 2.4"}
-          </AppText>
-        </View>
+        <Nutrition />
       )}
     </View>
   );
