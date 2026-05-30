@@ -7,21 +7,21 @@ Handoff doc for continuing the web→React Native migration in a fresh session.
 1. Read this file + `../MIGRATION_MAP.md` (the full Phase-0 audit: routes, tokens, state, web-API replacements).
 2. The RN app lives in `mobile/` on branch **`dev`**. Working tree is clean; everything builds.
 3. Web app is the **source of truth** in `../src/` — do not modify it.
-4. Next task: **Phase 2.4 — port `FABRadialMenu`** (`../src/screens/main/FABRadialMenu.tsx` → `mobile/app/fab-menu.tsx`, 104 lines). VoiceLog is done. After FABRadialMenu, the remaining 2.4 work is the Nutrition deferred sheets (custom food/meal, recipe builder, label scanner OCR). Then Phase 2.5 (settings/social/history/tracking).
+4. Next task: **Phase 2.5 — start the settings cluster** with `Settings` (`../src/screens/main/Settings.tsx` → `mobile/app/settings/index.tsx`), then the rest of `/settings/*` (ai-permissions, plan, profile-edit, subscription, blocked, delete-account, legal). Phase 2.4 is functionally done (Nutrition core, VoiceLog, FABRadialMenu); only the deferred Nutrition sheets remain as an optional follow-up. After settings: social cluster, CoachChat, history, tracking. **Note:** `Settings` uses `localStorage.clear()` → `AsyncStorage.clear()` (preserve language + theme) and `window.location.href='/'` → `router.replace('/')` — see MIGRATION_MAP §6.
 
 ## Status (what's done)
 
-Branch `dev`, 20 feature commits. **Phase 2.3 (workout flow) complete; Phase 2.4 Nutrition core + VoiceLog done.** All screens below are typecheck-clean and verified rendering on the iPhone 17 Pro Max simulator.
+Branch `dev`, 21 feature commits. **Phase 2.3 (workout flow) complete; Phase 2.4 done (Nutrition core + VoiceLog + FABRadialMenu).** All screens below are typecheck-clean and verified rendering on the iPhone 17 Pro Max simulator.
 
 - **Phase 1 — Foundation:** expo-router + NativeWind v4 + reanimated/gesture-handler + svg. Design tokens ported 1:1 from `../src/index.css`. AsyncStorage-backed storage with sync cache + boot hydration. ThemeProvider (light/dark), Inter/Cairo fonts.
 - **Shared components (~32):** Btn, Card, Typography, Input, Screen, AppleBackdrop, Toggle, ContinueButton, BottomSheet, BottomNav, ToastProvider, Avatar, CoachAvatar, CoachIcon, OnboardingLayout, GoalPacePicker, TopBar, EmptyState, WeightTrendChart (svg), WeightLogSheet, BodySVG (svg muscle map).
 - **Phase 2.1 — Onboarding:** all 18 screens (`app/index.tsx` Welcome → `app/onboarding/*` → `app/login.tsx`, `app/forgot-password.tsx`).
 - **Phase 2.2 — Core tabs:** all 5 (`app/(tabs)/dashboard.tsx`, `fitness.tsx`, `community.tsx`, `me.tsx`, `analytics.tsx`).
-- **Phase 2.4 — Nutrition core + VoiceLog:** `src/screens/Nutrition.tsx` (rendered in the Fitness NUTRITION segment; `/fitness?tab=nutrition` deep-links to it), `app/voice-log.tsx` (VoiceLog — press-and-hold mock). Re-added `src/data/commonFoods.ts` (`ALL_FOODS`). Deferred Nutrition sheets toast "coming soon" — see Remaining work.
+- **Phase 2.4 — Nutrition core + VoiceLog + FABRadialMenu:** `src/screens/Nutrition.tsx` (rendered in the Fitness NUTRITION segment; `/fitness?tab=nutrition` deep-links to it), `app/voice-log.tsx` (VoiceLog — press-and-hold mock), `app/fab-menu.tsx` (FABRadialMenu — quick-actions overlay). Re-added `src/data/commonFoods.ts` (`ALL_FOODS`). Deferred Nutrition sheets toast "coming soon" — see Remaining work.
 - **Phase 2.3 — Workout flow (complete):** `src/screens/WorkoutTab.tsx` (in Fitness WORKOUT segment), `app/workout/preview.tsx` (PreSession), `app/workout/complete.tsx` (WorkoutComplete), `app/workout/active.tsx` (ActiveWorkout — live set-logging), `app/exercise/[exerciseId].tsx` (ExerciseProgression — per-exercise chart/history), `app/workout/custom-builder.tsx` (CustomSessionBuilder — custom-workout form), `app/workout/exercise/[id].tsx` (PreSessionExerciseDetail). Shared: `src/components/PlateBar.tsx` (svg barbell + `getPlateColor`).
 
 ## Remaining work
-- **Phase 2.4:** ✅ Nutrition core + `src/data/commonFoods.ts` re-added + ✅ VoiceLog. **Still to do:** FABRadialMenu, and the Nutrition follow-up sheets deferred in the first pass (custom food/meal builders, recipe builder + share, camera label scanner OCR, weekly JSON export). The deferred sheet triggers currently toast "coming soon".
+- **Phase 2.4:** ✅ Nutrition core + `src/data/commonFoods.ts` + ✅ VoiceLog + ✅ FABRadialMenu. **Optional follow-up:** the Nutrition sheets deferred in the first pass (custom food/meal builders, recipe builder + share, camera label scanner OCR, weekly JSON export). Their triggers currently toast "coming soon".
 - **Phase 2.5:** settings cluster, social (Inbox/Search/Challenges/Circles/UserProfile), CoachChat, history, tracking (MuscleRecovery/BodyMeasurements/ProgressPhotos/MorningCheckIn), ShareCardRenderer (needs react-native-view-shot — pattern already used in WorkoutComplete).
 - **Phase 3:** polish (safe-area/dark/RTL sweep), Android build, restore the CoachIcon drag + BodySVG pulse animation deferred in this pass.
 
@@ -64,4 +64,4 @@ Gotchas:
 
 ## Paste-this prompt to start the next session
 
-> Continue the SYNK web→React Native migration. Read `mobile/RESUME.md` and `MIGRATION_MAP.md` first. The RN app is in `mobile/` on branch `dev` (clean, building). The web app in `src/` is the source of truth — don't modify it. Port the next screen: `src/screens/main/FABRadialMenu.tsx` → `mobile/app/fab-menu.tsx`, following the established loop (read → port → tsc → screenshot natively → commit). Keep the design 1:1 faithful.
+> Continue the SYNK web→React Native migration. Read `mobile/RESUME.md` and `MIGRATION_MAP.md` first. The RN app is in `mobile/` on branch `dev` (clean, building). The web app in `src/` is the source of truth — don't modify it. Phase 2.4 is done; start Phase 2.5 by porting `src/screens/main/Settings.tsx` → `mobile/app/settings/index.tsx`, following the established loop (read → port → tsc → screenshot natively → commit). Keep the design 1:1 faithful.
