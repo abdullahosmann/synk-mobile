@@ -1,27 +1,39 @@
 /**
- * Dashboard — RN port of src/screens/main/Dashboard.tsx (default experience).
+ * Dashboard — RN port of src/screens/main/Dashboard.tsx (full parity).
  *
- * Covers the default-visible surface: week strip, personalized greeting + coach
- * line + streak chip, welcome card, morning check-in prompt, the workout card
- * (rest-day "Active Recovery" + active-day hero variants), the nutrition card
- * (calorie ring + macro bars + quick-add), and the Customize bottom sheet.
+ * Default-visible surface: week strip, personalized greeting + coach line +
+ * streak chip, the active-workout banner, past/future selected-day message,
+ * welcome / missed-workout / morning-check-in / AI-adaptation cards, the
+ * workout card (rest-day "Active Recovery" + active-day hero + past
+ * "no workout logged" + future "planned workout" variants), the nutrition card
+ * (calorie ring + macro bars + quick-add + past/future states), and the
+ * empty state when every card is hidden.
  *
  * The 6 optional cards (hydration/recovery/analytics/challenges/leaderboard/
  * coachChat) are off by default and surfaced via Customize; each renders its
  * full rich inline body (1:1 with web): hydration quick-add, recovery bars,
  * the analytics mini-chart + metrics, the challenge progress card, the
  * leaderboard rows, and the coach-chat message/voice shortcuts.
+ *
+ * The Customize sheet persists both visibility (synk:dashboardCards) and order
+ * (synk:dashboardCardOrder) — drag-to-reorder via the grip handle (gesture
+ * Pan + reanimated absolute layout) plus a two-step reset-to-default.
  */
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Image, Pressable, ScrollView, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Svg, { Circle } from "react-native-svg";
 import Animated, {
   FadeInDown,
   useAnimatedProps,
+  useAnimatedReaction,
+  useAnimatedStyle,
   useSharedValue,
+  withSpring,
   withTiming,
+  runOnJS,
   Easing,
 } from "react-native-reanimated";
 import {
@@ -40,6 +52,7 @@ import {
   TrendingDown,
   Minus,
   Mic,
+  GripVertical,
 } from "lucide-react-native";
 import { useAppContext } from "../../src/AppContext";
 import { useToast } from "../../src/components/ToastProvider";
@@ -66,6 +79,81 @@ const DEFAULT_CARDS: Record<CardKey, boolean> = {
   workout: true, nutrition: true, hydration: false, recovery: false,
   analytics: false, challenges: false, leaderboard: false, coachChat: false,
 };
+
+const DEFAULT_ORDER: CardKey[] = [...CARD_KEYS];
+
+const ROW_H = 60; // 52px row + 8px gap
+
+// Reorderable customize row — web's Reorder.Item (drag handle) → gesture-handler
+// Pan on the grip + reanimated absolute layout, the same pattern as PreSession.
+function CustomizeRow({
+  cardKey, label, enabled, positions, count, isArabic, colors, onToggle, commitOrder,
+}: {
+  cardKey: CardKey;
+  label: string;
+  enabled: boolean;
+  positions: { value: Record<string, number> };
+  count: number;
+  isArabic: boolean;
+  colors: ReturnType<typeof useColors>;
+  onToggle: () => void;
+  commitOrder: () => void;
+}) {
+  const isActive = useSharedValue(false);
+  const top = useSharedValue(0);
+  const startTop = useSharedValue(0);
+
+  useAnimatedReaction(
+    () => positions.value[cardKey],
+    (slot, prev) => {
+      if (slot == null) return;
+      if (prev == null) top.value = slot * ROW_H;
+      else if (!isActive.value) top.value = withSpring(slot * ROW_H, { damping: 30, stiffness: 350 });
+    },
+  );
+
+  const pan = Gesture.Pan()
+    .onStart(() => { isActive.value = true; startTop.value = top.value; })
+    .onUpdate((e) => {
+      top.value = startTop.value + e.translationY;
+      const newSlot = Math.max(0, Math.min(Math.round(top.value / ROW_H), count - 1));
+      const oldSlot = positions.value[cardKey];
+      if (newSlot !== oldSlot) {
+        const swapId = Object.keys(positions.value).find((k) => positions.value[k] === newSlot);
+        const next = { ...positions.value };
+        next[cardKey] = newSlot;
+        if (swapId) next[swapId] = oldSlot;
+        positions.value = next;
+      }
+    })
+    .onEnd(() => {
+      top.value = withSpring((positions.value[cardKey] ?? 0) * ROW_H, { damping: 30, stiffness: 350 });
+      isActive.value = false;
+      runOnJS(commitOrder)();
+    });
+
+  const style = useAnimatedStyle(() => ({
+    position: "absolute", left: 0, right: 0, top: top.value,
+    zIndex: isActive.value ? 100 : 1,
+    transform: [{ scale: withTiming(isActive.value ? 1.02 : 1, { duration: 120 }) }],
+  }));
+
+  return (
+    <Animated.View style={style}>
+      <View style={{ height: 52, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 12, backgroundColor: colors.canvas, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline }}>
+        <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
+          <GestureDetector gesture={pan}>
+            <View style={{ width: 28, height: 44, alignItems: "center", justifyContent: "center" }}>
+              <GripVertical size={20} color={colors.inkMuted24} />
+            </View>
+          </GestureDetector>
+          <AppText variant="body-strong" style={{ color: colors.ink }}>{label}</AppText>
+        </View>
+        <Toggle value={enabled} onValueChange={onToggle} />
+      </View>
+    </Animated.View>
+  );
+}
 
 export default function Dashboard() {
   const router = useRouter();
@@ -100,6 +188,7 @@ export default function Dashboard() {
   });
   const [showCustomize, setShowCustomize] = useState(false);
   const [showRestLog, setShowRestLog] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
   const [cards, setCards] = useState<Record<CardKey, boolean>>(() => {
     try {
       const saved = getItem("synk:dashboardCards");
@@ -107,11 +196,42 @@ export default function Dashboard() {
     } catch {}
     return DEFAULT_CARDS;
   });
+  const [cardOrder, setCardOrder] = useState<CardKey[]>(() => {
+    try {
+      const saved = getItem("synk:dashboardCardOrder");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length === DEFAULT_ORDER.length) return parsed;
+      }
+    } catch {}
+    return DEFAULT_ORDER;
+  });
+
+  // Reorder shared state (mirrors PreSession): cardKey → slot index.
+  const positions = useSharedValue<Record<string, number>>(
+    Object.fromEntries(cardOrder.map((k, i) => [k, i])),
+  );
+  useEffect(() => {
+    positions.value = Object.fromEntries(cardOrder.map((k, i) => [k, i]));
+  }, [cardOrder]);
+
+  const commitOrder = () => {
+    const next = [...cardOrder].sort((a, b) => positions.value[a] - positions.value[b]);
+    setCardOrder(next);
+    setItem("synk:dashboardCardOrder", JSON.stringify(next));
+  };
 
   const toggleCard = (key: CardKey) => {
     const next = { ...cards, [key]: !cards[key] };
     setCards(next);
     setItem("synk:dashboardCards", JSON.stringify(next));
+  };
+
+  const resetDashboard = () => {
+    setCards(DEFAULT_CARDS);
+    setCardOrder(DEFAULT_ORDER);
+    setItem("synk:dashboardCards", JSON.stringify(DEFAULT_CARDS));
+    setItem("synk:dashboardCardOrder", JSON.stringify(DEFAULT_ORDER));
   };
 
   const allHidden = !Object.values(cards).some(Boolean);
@@ -397,7 +517,7 @@ export default function Dashboard() {
           )}
 
           {/* Cards */}
-          {CARD_KEYS.filter((k) => cards[k]).map((key) => {
+          {cardOrder.filter((k) => cards[k]).map((key) => {
             if (key === "workout") {
               if (!(appMode === "full" || appMode === "workout-only")) return null;
               return (
@@ -793,15 +913,45 @@ export default function Dashboard() {
         </View>
       </ScrollView>
 
-      <BottomSheet isOpen={showCustomize} onClose={() => setShowCustomize(false)} title={isArabic ? "تخصيص" : "Customize"}>
-        <View style={{ gap: 4 }}>
-          {CARD_KEYS.map((key) => (
-            <View key={key} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 12 }}>
-              <AppText variant="body-strong" style={{ color: colors.ink }}>{CARD_LABELS[key]}</AppText>
-              <Toggle value={cards[key]} onValueChange={() => toggleCard(key)} />
-            </View>
+      <BottomSheet isOpen={showCustomize} onClose={() => { setShowCustomize(false); setConfirmReset(false); }} title={isArabic ? "تخصيص اللوحة" : "Customize Dashboard"} doneLabel={isArabic ? "حفظ" : "Save"}>
+        <AppText variant="body" style={{ color: colors.inkMuted48, marginBottom: 24, textAlign: isArabic ? "right" : "left" }}>
+          {isArabic ? "اختر ما يظهر على شاشتك الرئيسية." : "Choose what appears on your home screen."}
+        </AppText>
+        <View style={{ height: cardOrder.length * ROW_H }}>
+          {cardOrder.map((key) => (
+            <CustomizeRow
+              key={key}
+              cardKey={key}
+              label={CARD_LABELS[key]}
+              enabled={cards[key]}
+              positions={positions}
+              count={cardOrder.length}
+              isArabic={isArabic}
+              colors={colors}
+              onToggle={() => toggleCard(key)}
+              commitOrder={commitOrder}
+            />
           ))}
         </View>
+        {confirmReset ? (
+          <View style={{ marginTop: 16, alignItems: "center" }}>
+            <AppText style={{ fontSize: 13, color: colors.inkMuted48, marginBottom: 8, fontWeight: "500", textAlign: "center" }}>
+              {isArabic ? "متأكد؟ ده هيرجّع الافتراضي." : "Are you sure? This restores defaults."}
+            </AppText>
+            <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 12, width: "100%" }}>
+              <View style={{ flex: 1 }}>
+                <Btn variant="pearl" fullWidth onPress={() => setConfirmReset(false)} label={isArabic ? "إلغاء" : "Cancel"} />
+              </View>
+              <Pressable onPress={() => { resetDashboard(); setConfirmReset(false); }} style={{ flex: 1, height: 44, borderRadius: 9999, backgroundColor: colors.semanticRed, alignItems: "center", justifyContent: "center" }}>
+                <AppText variant="body-strong" style={{ color: "#fff" }}>{isArabic ? "إرجاع" : "Reset"}</AppText>
+              </Pressable>
+            </View>
+          </View>
+        ) : (
+          <Pressable onPress={() => setConfirmReset(true)} style={{ marginTop: 16, paddingVertical: 12, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", alignItems: "center" }}>
+            <AppText style={{ fontSize: 14, fontWeight: "500", color: colors.inkMuted48 }}>{isArabic ? "إعادة تعيين إلى الافتراضي" : "Reset to default"}</AppText>
+          </Pressable>
+        )}
       </BottomSheet>
 
       <BottomSheet isOpen={showRestLog} onClose={() => setShowRestLog(false)} title={isArabic ? "كيف كان يومك؟" : "How was your rest day?"}>
