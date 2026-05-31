@@ -70,7 +70,7 @@ const DEFAULT_CARDS: Record<CardKey, boolean> = {
 export default function Dashboard() {
   const router = useRouter();
   const { showToast } = useToast();
-  const { user, todaysLogs, setTodaysLogs, streaks, selectedDate, setSelectedDate, appMode } = useAppContext();
+  const { user, todaysLogs, setTodaysLogs, streaks, selectedDate, setSelectedDate, appMode, pendingAdaptations, setPendingAdaptations, archiveAdaptation } = useAppContext();
   const colors = useColors();
   const isDark = useTheme().theme === "dark";
   const insets = useSafeAreaInsets();
@@ -79,8 +79,25 @@ export default function Dashboard() {
 
   const coachName = (user.coach || "khaled").charAt(0).toUpperCase() + (user.coach || "khaled").slice(1);
 
+  const todayStr = new Date().toISOString().split("T")[0];
+  const hasActiveWorkout = !!getItem("synk:active_workout");
+  const currentAdaptation = pendingAdaptations[0];
+
   const [showWelcome, setShowWelcome] = useState(() => getItem("synk:welcomeShown") !== "true");
-  const [showCheckIn] = useState(() => !todaysLogs.morningCheckIn);
+  const [showCheckIn, setShowCheckIn] = useState(() => {
+    if (todaysLogs.morningCheckIn) return false;
+    return getItem("synk:checkinDismissed") !== todayStr;
+  });
+  const [showMissed, setShowMissed] = useState(() => {
+    const lastWorkoutStr = getItem("synk:lastWorkoutDate");
+    if (!lastWorkoutStr) return false;
+    const lastDate = new Date(lastWorkoutStr);
+    lastDate.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diffDays = Math.floor((today.getTime() - lastDate.getTime()) / 86400000);
+    return diffDays >= 1 && getItem("synk:missedCardDismissedDate") !== todayStr;
+  });
   const [showCustomize, setShowCustomize] = useState(false);
   const [cards, setCards] = useState<Record<CardKey, boolean>>(() => {
     try {
@@ -96,12 +113,20 @@ export default function Dashboard() {
     setItem("synk:dashboardCards", JSON.stringify(next));
   };
 
+  const allHidden = !Object.values(cards).some(Boolean);
+
   const todayZero = useMemo(() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
     return d;
   }, []);
   const isTodaySelected = selectedDate.getTime() === todayZero.getTime();
+  const isPastSelected = selectedDate < todayZero;
+  const isFutureSelected = selectedDate > todayZero;
+
+  const selectedDayEn = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][selectedDate.getDay()];
+  const selectedDayAr = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"][selectedDate.getDay()];
+  const dayNameFull = isArabic ? selectedDayAr : selectedDayEn;
 
   const weekDays = useMemo(
     () => Array.from({ length: 7 }).map((_, i) => {
@@ -211,6 +236,25 @@ export default function Dashboard() {
             })}
           </View>
 
+          {/* Past / future contextual message */}
+          {!isTodaySelected && (
+            <Animated.View entering={FadeInDown} style={{ marginBottom: 24, backgroundColor: "rgba(0,102,204,0.1)", borderWidth: 1, borderColor: "rgba(0,102,204,0.2)", borderRadius: 14, padding: 12, gap: 4 }}>
+              <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
+                <Activity size={16} color={colors.primary} />
+                <AppText style={{ fontSize: 14, fontWeight: "600", color: colors.primary, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                  {isFutureSelected
+                    ? isArabic ? `تخطيط ${dayNameFull}` : `Planning ${dayNameFull}`
+                    : isArabic ? `عرض ${dayNameFull}` : `Viewing ${dayNameFull}`}
+                </AppText>
+              </View>
+              <AppText style={{ fontSize: 13, color: "rgba(0,102,204,0.8)", marginLeft: isArabic ? 0 : 24, marginRight: isArabic ? 24 : 0, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+                {isFutureSelected
+                  ? isArabic ? "خطط لوجباتك وتمارينك مسبقاً." : "Plan your meals and workouts ahead."
+                  : isArabic ? "يمكنك إضافة أي شيء فاتك." : "You can add anything you missed."}
+              </AppText>
+            </Animated.View>
+          )}
+
           <View style={{ flexDirection: isArabic ? "row-reverse" : "row", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
             <View style={{ flex: 1 }}>
               <AppText variant="screen-title" style={{ textAlign: isArabic ? "right" : "left" }}>{greeting}</AppText>
@@ -229,6 +273,22 @@ export default function Dashboard() {
         </View>
 
         <View style={{ paddingHorizontal: 20, gap: 16 }}>
+          {/* Active workout banner */}
+          {hasActiveWorkout && (
+            <Pressable onPress={() => router.push("/workout/active")} style={{ backgroundColor: "rgba(52,199,89,0.1)", borderWidth: 1, borderColor: "rgba(52,199,89,0.3)", borderRadius: 14, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
+              <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.semanticGreen, alignItems: "center", justifyContent: "center" }}>
+                <Activity size={20} color="#fff" />
+              </View>
+              <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start" }}>
+                <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.semanticGreen, marginBottom: 2, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                  {isArabic ? "في تمرين شغّال" : "Workout in progress"}
+                </AppText>
+                <AppText variant="body-strong" style={{ color: colors.ink }}>{isArabic ? "ارجع كمّل" : "Tap to resume"}</AppText>
+              </View>
+              <ChevronRight size={20} color={colors.semanticGreen} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
+            </Pressable>
+          )}
+
           {/* Welcome card */}
           {showWelcome && isTodaySelected && (
             <Animated.View entering={FadeInDown} style={{ backgroundColor: "rgba(0,102,204,0.05)", borderWidth: 1, borderColor: "rgba(0,102,204,0.2)", borderRadius: 14, padding: 20 }}>
@@ -250,8 +310,30 @@ export default function Dashboard() {
             </Animated.View>
           )}
 
+          {/* Missed workout card */}
+          {showMissed && !showWelcome && isTodaySelected && (
+            <Animated.View entering={FadeInDown} style={[cardStyle, { padding: 20 }]}>
+              <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, marginBottom: 12, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                {isArabic ? `${coachName} بيقول` : `${coachName.toUpperCase()} SAYS`}
+              </AppText>
+              <AppText variant="body" style={{ color: colors.ink, lineHeight: 22, marginBottom: 20, textAlign: isArabic ? "right" : "left" }}>
+                {isArabic
+                  ? "مفيش مشكلة — جلسة إمبارح في الماضي. بنبدأ النهاردة."
+                  : "No stress — yesterday's session is behind us. Let's pick up today."}
+              </AppText>
+              <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 12 }}>
+                <View style={{ flex: 1 }}>
+                  <Btn variant="primary" fullWidth onPress={() => router.push("/fitness")} label={isArabic ? "ابدأ تمرين النهاردة" : "START TODAY'S WORKOUT"} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Btn variant="ghost" fullWidth onPress={() => { setShowMissed(false); setItem("synk:missedCardDismissedDate", todayStr); }} label={isArabic ? "مش النهاردة" : "NOT TODAY"} />
+                </View>
+              </View>
+            </Animated.View>
+          )}
+
           {/* Morning check-in */}
-          {showCheckIn && !showWelcome && isTodaySelected && (
+          {showCheckIn && !showWelcome && !showMissed && isTodaySelected && (
             <Animated.View entering={FadeInDown}>
               <Pressable onPress={() => router.push("/morning-checkin")} style={[cardStyle, { padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }]}>
                 <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16 }}>
@@ -263,6 +345,54 @@ export default function Dashboard() {
                 <ArrowRight size={18} color={colors.primary} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
               </Pressable>
             </Animated.View>
+          )}
+
+          {/* AI adaptation card */}
+          {currentAdaptation && isTodaySelected && (
+            <Animated.View entering={FadeInDown} style={{ backgroundColor: colors.surfaceTile2, borderWidth: 1, borderColor: "rgba(255,255,255,0.08)", borderRadius: 14, padding: 20 }}>
+              <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                <CoachAvatar coachId={currentAdaptation.coachId || user.coach || "khaled"} size={36} />
+                <View style={{ backgroundColor: colors.primary, borderRadius: 9999, paddingHorizontal: 10, paddingVertical: 4 }}>
+                  <AppText style={{ color: "#fff", fontWeight: "600", fontSize: 11, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                    {isArabic ? "تعديل الذكاء الاصطناعي" : "AI ADAPTATION"}
+                  </AppText>
+                </View>
+              </View>
+              <AppText style={{ color: "#fff", lineHeight: 22, marginBottom: 20, fontSize: 15, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+                {currentAdaptation.eventText}
+              </AppText>
+              <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 12 }}>
+                <View style={{ flex: 1 }}>
+                  <Btn variant="utility-dark" fullWidth onPress={() => router.push({ pathname: "/adaptive-insights", params: { adaptation: JSON.stringify(currentAdaptation) } })} label={isArabic ? "رؤية التغييرات" : "See changes"} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Btn variant="pearl" fullWidth onPress={() => { archiveAdaptation(pendingAdaptations[0], "dismissed"); setPendingAdaptations(pendingAdaptations.slice(1)); }} label={isArabic ? "الاحتفاظ بالأصل" : "Keep original"} />
+                </View>
+              </View>
+              {pendingAdaptations.length > 1 && (
+                <Pressable onPress={() => { archiveAdaptation(pendingAdaptations[0], "dismissed"); setPendingAdaptations(pendingAdaptations.slice(1)); }} style={{ marginTop: 16 }}>
+                  <AppText style={{ fontSize: 11, fontWeight: "600", color: "rgba(255,255,255,0.4)", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, textAlign: "center", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                    {isArabic ? `+${pendingAdaptations.length - 1} المزيد` : `+${pendingAdaptations.length - 1} MORE`}
+                  </AppText>
+                </Pressable>
+              )}
+            </Animated.View>
+          )}
+
+          {/* Empty state when every card is hidden */}
+          {allHidden && (
+            <View style={{ alignItems: "center", justifyContent: "center", paddingVertical: 80 }}>
+              <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+                <SlidersHorizontal size={28} color={colors.inkMuted48} />
+              </View>
+              <AppText variant="title-2" style={{ color: colors.ink, fontWeight: "600", marginBottom: 8 }}>
+                {isArabic ? "لوحتك فارغة" : "Your dashboard is empty"}
+              </AppText>
+              <AppText variant="body" style={{ color: colors.inkMuted48, marginBottom: 24, textAlign: "center" }}>
+                {isArabic ? "أضف بطاقات لبناء شاشتك" : "Add cards to build your home screen."}
+              </AppText>
+              <Btn variant="primary" onPress={() => setShowCustomize(true)} label={isArabic ? "إضافة بطاقات" : "Add cards"} />
+            </View>
           )}
 
           {/* Cards */}
