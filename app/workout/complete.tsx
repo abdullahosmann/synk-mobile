@@ -20,7 +20,7 @@ import { formatWeight } from "../../src/lib/units";
 import CoachAvatar from "../../src/components/CoachAvatar";
 import BottomSheet from "../../src/components/BottomSheet";
 import { getWorkoutForDate } from "../../src/lib/workoutSelection";
-import { useColors } from "../../src/theme/ThemeProvider";
+import { useColors, useTheme } from "../../src/theme/ThemeProvider";
 import { AppText, ScreenTitle, StatValueSm } from "../../src/components/ui/Typography";
 import { Btn } from "../../src/components/ui/Btn";
 import { Toggle } from "../../src/components/ui/Toggle";
@@ -53,6 +53,7 @@ export default function WorkoutComplete() {
   const { user, streaks, setStreaks } = useAppContext();
   const { showToast } = useToast();
   const colors = useColors();
+  const isDark = useTheme().theme === "dark";
   const insets = useSafeAreaInsets();
   const isArabic = user.language === "ar";
   const selectedCoach = user.coach || "khaled";
@@ -251,7 +252,7 @@ export default function WorkoutComplete() {
           {/* Dots */}
           <View style={{ flexDirection: "row", justifyContent: "center", gap: 8 }}>
             {TEMPLATES.map((_, idx) => (
-              <View key={idx} style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: activeTemplateIdx === idx ? colors.primary : "rgba(0,0,0,0.2)", transform: [{ scale: activeTemplateIdx === idx ? 1.25 : 1 }] }} />
+              <View key={idx} style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: activeTemplateIdx === idx ? colors.primary : isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)", transform: [{ scale: activeTemplateIdx === idx ? 1.25 : 1 }] }} />
             ))}
           </View>
 

@@ -20,7 +20,7 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Bookmark, Calendar, RefreshCw, X } from "lucide-react-native";
 import { useAppContext } from "../AppContext";
-import { useColors } from "../theme/ThemeProvider";
+import { useColors, useTheme } from "../theme/ThemeProvider";
 import { AppText } from "./ui/Typography";
 
 export type ReplacementChoice = "just-today" | "replace-today" | "save-as-default";
@@ -47,6 +47,7 @@ const RoutineReplacementSheet: React.FC<RoutineReplacementSheetProps> = ({
 }) => {
   const { user, selectedDate } = useAppContext();
   const colors = useColors();
+  const isDark = useTheme().theme === "dark";
   const insets = useSafeAreaInsets();
   const { height: screenH } = useWindowDimensions();
   const isArabic = user.language === "ar";
@@ -141,7 +142,7 @@ const RoutineReplacementSheet: React.FC<RoutineReplacementSheetProps> = ({
       >
         {/* Handle */}
         <View style={{ alignItems: "center", paddingTop: 12, paddingBottom: 4 }}>
-          <View style={{ width: 40, height: 4, borderRadius: 9999, backgroundColor: "rgba(0,0,0,0.15)" }} />
+          <View style={{ width: 40, height: 4, borderRadius: 9999, backgroundColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)" }} />
         </View>
 
         {/* Header */}
@@ -212,7 +213,7 @@ const RoutineReplacementSheet: React.FC<RoutineReplacementSheetProps> = ({
                     borderRadius: 20,
                     alignItems: "center",
                     justifyContent: "center",
-                    backgroundColor: opt.accent ? "rgba(0,102,204,0.15)" : "rgba(0,0,0,0.05)",
+                    backgroundColor: opt.accent ? "rgba(0,102,204,0.15)" : isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.05)",
                   }}
                 >
                   {opt.icon}

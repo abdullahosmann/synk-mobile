@@ -16,7 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Check, Sparkles, Star, X } from "lucide-react-native";
 import { useAppContext } from "../src/AppContext";
 import { useToast } from "../src/components/ToastProvider";
-import { useColors } from "../src/theme/ThemeProvider";
+import { useColors, useTheme } from "../src/theme/ThemeProvider";
 import { AppText } from "../src/components/ui/Typography";
 
 function fontFamily(isArabic: boolean, weight: 400 | 600 = 400) {
@@ -31,6 +31,8 @@ export default function Paywall() {
   const { user, setIsPremium } = useAppContext();
   const { showToast } = useToast();
   const colors = useColors();
+  const isDark = useTheme().theme === "dark";
+  const softFill = isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)";
   const insets = useSafeAreaInsets();
   const isArabic = user.language === "ar";
 
@@ -161,7 +163,7 @@ export default function Paywall() {
         </View>
 
         {/* Billing toggle */}
-        <View style={{ width: "100%", maxWidth: 280, backgroundColor: "rgba(0,0,0,0.05)", padding: 4, borderRadius: 9999, flexDirection: isArabic ? "row-reverse" : "row", marginBottom: 40, borderWidth: 1, borderColor: colors.hairline }}>
+        <View style={{ width: "100%", maxWidth: 280, backgroundColor: softFill, padding: 4, borderRadius: 9999, flexDirection: isArabic ? "row-reverse" : "row", marginBottom: 40, borderWidth: 1, borderColor: colors.hairline }}>
           {billingToggleBtn("monthly", isArabic ? "شهري" : "Monthly")}
           {billingToggleBtn("annual", isArabic ? "سنوي" : "Annual")}
         </View>
@@ -211,7 +213,7 @@ export default function Paywall() {
             <View style={{ gap: 16, alignItems: isArabic ? "flex-end" : "flex-start" }}>
               {proFeatures.map((feat, i) => (
                 <View key={i} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-start", gap: 12 }}>
-                  <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,0,0,0.05)", alignItems: "center", justifyContent: "center", marginTop: 1 }}>
+                  <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: softFill, alignItems: "center", justifyContent: "center", marginTop: 1 }}>
                     <Check size={12} strokeWidth={3} color={colors.ink} />
                   </View>
                   <AppText style={{ flex: 1, fontSize: 13, color: colors.ink, opacity: 0.8, lineHeight: 17, textAlign: isArabic ? "right" : "left", fontFamily: fontFamily(isArabic) }}>

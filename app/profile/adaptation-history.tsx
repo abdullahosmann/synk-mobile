@@ -15,7 +15,7 @@ import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ArrowLeft, Inbox, Sparkles } from "lucide-react-native";
 import { useAppContext } from "../../src/AppContext";
-import { useColors } from "../../src/theme/ThemeProvider";
+import { useColors, useTheme } from "../../src/theme/ThemeProvider";
 import { AppText } from "../../src/components/ui/Typography";
 import EmptyState from "../../src/components/EmptyState";
 import { Adaptation } from "../../src/types";
@@ -31,6 +31,7 @@ export default function AdaptationHistory() {
   const router = useRouter();
   const { user, adaptationHistory, pendingAdaptations } = useAppContext();
   const colors = useColors();
+  const isDark = useTheme().theme === "dark";
   const insets = useSafeAreaInsets();
   const isArabic = user.language === "ar";
   const [filter, setFilter] = useState<FilterMode>("all");
@@ -54,8 +55,8 @@ export default function AdaptationHistory() {
 
   const getStatusTag = (status?: Adaptation["status"]): { label: string; bg: string; color: string } | null => {
     if (status === "pending") return { label: isArabic ? "جديدة" : "New", bg: "rgba(0,102,204,0.15)", color: colors.primary };
-    if (status === "viewed") return { label: isArabic ? "مشوفة" : "Viewed", bg: "rgba(0,0,0,0.08)", color: colors.inkMuted48 };
-    if (status === "dismissed") return { label: isArabic ? "متجاهلة" : "Dismissed", bg: "rgba(0,0,0,0.05)", color: colors.inkMuted48 };
+    if (status === "viewed") return { label: isArabic ? "مشوفة" : "Viewed", bg: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.08)", color: colors.inkMuted48 };
+    if (status === "dismissed") return { label: isArabic ? "متجاهلة" : "Dismissed", bg: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", color: colors.inkMuted48 };
     return null;
   };
 

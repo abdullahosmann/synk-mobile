@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Check, ChevronLeft, ChevronRight, Mic, Sparkles } from "lucide-react-native";
 import { useAppContext } from "../../../src/AppContext";
 import { useToast } from "../../../src/components/ToastProvider";
-import { useColors } from "../../../src/theme/ThemeProvider";
+import { useColors, useTheme } from "../../../src/theme/ThemeProvider";
 import { AppText } from "../../../src/components/ui/Typography";
 import CoachAvatar from "../../../src/components/CoachAvatar";
 import { interpretWeekMessage } from "../../../src/lib/weekInterpreter";
@@ -39,6 +39,8 @@ export default function WeekEditor() {
   const { user, setUser } = useAppContext();
   const { showToast } = useToast();
   const colors = useColors();
+  const isDark = useTheme().theme === "dark";
+  const softFill = isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)";
   const insets = useSafeAreaInsets();
   const isArabic = user.language === "ar";
 
@@ -163,7 +165,7 @@ export default function WeekEditor() {
           <View style={{ width: 44 }} />
         </View>
         {isPast && (
-          <View style={{ width: "100%", backgroundColor: "rgba(0,0,0,0.05)", paddingVertical: 6, paddingHorizontal: 16, alignItems: "center" }}>
+          <View style={{ width: "100%", backgroundColor: softFill, paddingVertical: 6, paddingHorizontal: 16, alignItems: "center" }}>
             <AppText style={{ fontSize: 11, color: colors.inkMuted48, fontFamily: fontFamily(isArabic) }}>
               {isArabic ? "هذا الأسبوع منتهي ولا يمكن تعديله" : "This week is complete and read-only"}
             </AppText>
@@ -270,10 +272,10 @@ export default function WeekEditor() {
                   .fill(0)
                   .map((_, i) => (
                     <View key={i} style={[cardBase, { padding: 16, height: 76, flexDirection: "row", gap: 16, alignItems: "center" }]}>
-                      <View style={{ width: 40, height: 44, backgroundColor: "rgba(0,0,0,0.05)", borderRadius: 6 }} />
+                      <View style={{ width: 40, height: 44, backgroundColor: softFill, borderRadius: 6 }} />
                       <View style={{ flex: 1, gap: 8 }}>
-                        <View style={{ width: "66%", height: 16, backgroundColor: "rgba(0,0,0,0.05)", borderRadius: 4 }} />
-                        <View style={{ width: "33%", height: 12, backgroundColor: "rgba(0,0,0,0.05)", borderRadius: 4 }} />
+                        <View style={{ width: "66%", height: 16, backgroundColor: softFill, borderRadius: 4 }} />
+                        <View style={{ width: "33%", height: 12, backgroundColor: softFill, borderRadius: 4 }} />
                       </View>
                     </View>
                   ))
@@ -328,7 +330,7 @@ export default function WeekEditor() {
                         ) : ds.isToday ? (
                           <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.primary }} />
                         ) : isRest ? (
-                          <View style={{ paddingHorizontal: 8, paddingVertical: 4, backgroundColor: "rgba(0,0,0,0.05)", borderRadius: 6 }}>
+                          <View style={{ paddingHorizontal: 8, paddingVertical: 4, backgroundColor: softFill, borderRadius: 6 }}>
                             <AppText style={{ fontSize: 10, fontWeight: "700", color: colors.inkMuted48, textTransform: "uppercase", letterSpacing: 1.5, fontFamily: "Inter_600SemiBold" }}>
                               REST
                             </AppText>
