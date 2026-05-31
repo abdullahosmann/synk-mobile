@@ -22,6 +22,18 @@ import { useAppContext } from "../../../src/AppContext";
 import { getAllWorkouts } from "../../../src/lib/historyQueries";
 import { useToast } from "../../../src/components/ToastProvider";
 import BottomSheet from "../../../src/components/BottomSheet";
+import {
+  Template1Bold,
+  Template2Minimal,
+  Template3Stats,
+  Template4Map,
+  Template5Quote,
+  ShareTemplateProps,
+} from "../../../src/components/share-templates/WorkoutShareTemplates";
+
+const TEMPLATES: React.FC<ShareTemplateProps>[] = [Template1Bold, Template2Minimal, Template3Stats, Template4Map, Template5Quote];
+const THUMB_W = 200;
+const THUMB_SCALE = THUMB_W / 1080;
 import { useTheme } from "../../../src/theme/ThemeProvider";
 import { AppText } from "../../../src/components/ui/Typography";
 import type { CustomRoutine } from "../../../src/types";
@@ -46,6 +58,7 @@ export default function HistoryWorkoutDetail() {
 
   const [showShareSheet, setShowShareSheet] = useState(false);
   const [hideNumbers, setHideNumbers] = useState(false);
+  const [activeTemplateIdx, setActiveTemplateIdx] = useState(0);
   const shareRef = useRef<View>(null);
 
   const workout = useMemo(() => getAllWorkouts(user).find((w) => w.id === id), [user, id]);
@@ -69,6 +82,18 @@ export default function HistoryWorkoutDetail() {
   workout.exercises.forEach((ex) => ex.sets.forEach((s) => { if (s.weight > bestW) { bestW = s.weight; bestE = ex.name; bestR = s.reps; } }));
 
   const notes = user.exerciseNotes?.[workout.id];
+
+  const workoutData = {
+    name: workout.name,
+    muscleGroups: workout.muscleGroups || ["chest", "shoulders", "triceps"],
+    durationMin: workout.durationMin,
+    totalVolumeKg: workout.totalVolumeKg,
+    setsCompleted: workout.setsCompleted,
+    bestLift: bestW > 0 ? { exercise: bestE, weight: bestW, reps: bestR, unit: user.weightUnit } : undefined,
+    isPR: bestW > 0,
+    date: new Date(workout.date),
+  };
+  const ActiveTemplate = TEMPLATES[activeTemplateIdx];
 
   const handleRepeat = () => {
     if (!workout.exercises || workout.exercises.length === 0) {
@@ -94,7 +119,7 @@ export default function HistoryWorkoutDetail() {
   const handleShare = async () => {
     if (!shareRef.current) return;
     try {
-      const uri = await captureRef(shareRef, { format: "png", quality: 1 });
+      const uri = await captureRef(shareRef, { format: "png", quality: 1, width: 1080, height: 1920 });
       if (await Sharing.isAvailableAsync()) await Sharing.shareAsync(uri);
       else showToast(isArabic ? "تم حفظ الصورة" : "Image saved", "success");
     } catch {
@@ -198,28 +223,37 @@ export default function HistoryWorkoutDetail() {
         </Pressable>
       </View>
 
+      {/* Off-screen full-res capture target (active template at 1080×1920) */}
+      <View style={{ position: "absolute", left: -99999, top: -99999 }} pointerEvents="none">
+        <View ref={shareRef} collapsable={false}>
+          <ActiveTemplate workout={workoutData} user={{ name: user.name || "Athlete", coachName: user.coach || "khaled" }} isArabic={isArabic} hideNumbers={hideNumbers} />
+        </View>
+      </View>
+
       {/* Share sheet */}
       <BottomSheet isOpen={showShareSheet} onClose={() => setShowShareSheet(false)} title={isArabic ? "شارك فوزك" : "Share your win"}>
-        <View style={{ paddingTop: 4, paddingBottom: 24, alignItems: "center", gap: 24 }}>
-          {/* Capture target — summary share card */}
-          <View ref={shareRef} collapsable={false} style={{ width: 280, height: 380, borderRadius: 24, backgroundColor: colors.primary, padding: 28, justifyContent: "space-between" }}>
-            <View>
-              <AppText style={{ fontSize: 12, fontWeight: "700", color: "rgba(255,255,255,0.7)", letterSpacing: 2, textTransform: "uppercase" }}>SYNK</AppText>
-              <AppText style={{ fontSize: 26, fontWeight: "700", color: "#fff", marginTop: 12, fontFamily: ff(isArabic, 700) }}>{workout.name}</AppText>
-              <AppText style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", marginTop: 4, fontFamily: ff(isArabic) }}>{dateStr}</AppText>
-            </View>
-            <View style={{ gap: 12 }}>
-              {[
-                { l: isArabic ? "المدة" : "Duration", v: hideNumbers ? "•••" : `${workout.durationMin} ${isArabic ? "د" : "min"}` },
-                { l: isArabic ? "الحجم" : "Volume", v: hideNumbers ? "•••" : `${workout.totalVolumeKg.toLocaleString()} ${isArabic ? "كجم" : "kg"}` },
-                { l: isArabic ? "مجموعات" : "Sets", v: hideNumbers ? "•••" : `${workout.setsCompleted}` },
-              ].map((row) => (
-                <View key={row.l} style={{ flexDirection: isArabic ? "row-reverse" : "row", justifyContent: "space-between", alignItems: "center" }}>
-                  <AppText style={{ fontSize: 14, color: "rgba(255,255,255,0.8)", fontFamily: ff(isArabic) }}>{row.l}</AppText>
-                  <AppText style={{ fontSize: 18, fontWeight: "700", color: "#fff", fontVariant: ["tabular-nums"], fontFamily: ff(isArabic, 700) }}>{row.v}</AppText>
+        <View style={{ paddingTop: 4, paddingBottom: 24, gap: 20 }}>
+          {/* Template carousel */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 16, paddingVertical: 4, flexDirection: isArabic ? "row-reverse" : "row" }}>
+            {TEMPLATES.map((Temp, idx) => (
+              <Pressable
+                key={idx}
+                onPress={() => setActiveTemplateIdx(idx)}
+                style={{ width: THUMB_W, height: THUMB_W * (1920 / 1080), borderRadius: 16, overflow: "hidden", borderWidth: 2, borderColor: activeTemplateIdx === idx ? colors.primary : "transparent" }}
+              >
+                <View style={{ width: 1080, height: 1920, transform: [{ scale: THUMB_SCALE }], transformOrigin: "top left" }} pointerEvents="none">
+                  <Temp workout={workoutData} user={{ name: user.name || "Athlete", coachName: user.coach || "khaled" }} isArabic={isArabic} hideNumbers={hideNumbers} />
                 </View>
-              ))}
-            </View>
+                {activeTemplateIdx !== idx && <View style={{ position: "absolute", inset: 0, backgroundColor: "rgba(0,0,0,0.1)" }} />}
+              </Pressable>
+            ))}
+          </ScrollView>
+
+          {/* Dots */}
+          <View style={{ flexDirection: "row", justifyContent: "center", gap: 8 }}>
+            {TEMPLATES.map((_, idx) => (
+              <View key={idx} style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: activeTemplateIdx === idx ? colors.primary : "rgba(0,0,0,0.2)", transform: [{ scale: activeTemplateIdx === idx ? 1.25 : 1 }] }} />
+            ))}
           </View>
 
           {/* Hide-numbers toggle */}
