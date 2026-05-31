@@ -170,6 +170,7 @@ function ExerciseRow({
 
 export default function PreSession() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ initialAdapt?: string }>();
   const { user, setUser, selectedDate } = useAppContext();
   const { showToast } = useToast();
   const colors = useColors();
@@ -187,6 +188,35 @@ export default function PreSession() {
   const [exerciseMenuOpen, setExerciseMenuOpen] = useState<string | null>(null);
   const [confirmRemoveExercise, setConfirmRemoveExercise] = useState<any | null>(null);
   const [confirmDontRecommend, setConfirmDontRecommend] = useState<any | null>(null);
+
+  // Adapt-workout flow
+  const [adaptStep, setAdaptStep] = useState<"root" | "tweak" | "savedRoutines" | null>(null);
+  const [tweakReason, setTweakReason] = useState<string | null>(null);
+  const [appliedTweakReason, setAppliedTweakReason] = useState<string | null>(null);
+  const [adaptHint, setAdaptHint] = useState<string | null>(null);
+  const [replacementSheetRoutine, setReplacementSheetRoutine] = useState<CustomRoutine | null>(null);
+
+  // Arriving from an adaptation (initialAdapt route param) → jump straight to Tweak.
+  useEffect(() => {
+    const initialAdapt = params.initialAdapt;
+    if (!initialAdapt) return;
+    setAdaptStep("tweak");
+    const hints: Record<string, { en: string; ar: string }> = {
+      tired: { en: "Got it — let's make today lighter.", ar: "تمام، نخلي النهارده أخف." },
+      sore: { en: "Sore? Let's avoid loading those muscles.", ar: "العضلات مشدودة؟ نتجنب التحميل عليها." },
+      "short-on-time": { en: "Short on time — try a 15 or 30 min version.", ar: "مفيش وقت؟ جرب نسخة ١٥ أو ٣٠ دقيقة." },
+      "no-equipment": { en: "No equipment? We'll switch to bodyweight.", ar: "مفيش معدات؟ هنحول للوزن الجسم." },
+      injured: { en: "Let me know what hurts and I'll adjust.", ar: "قولي إيه اللي بيوجعك وأنا أعدّل." },
+    };
+    const hint = hints[initialAdapt];
+    if (hint) {
+      setAdaptHint(isArabic ? hint.ar : hint.en);
+      if (initialAdapt === "injured") showToast(isArabic ? "بفتح فحص الإصابة" : "Opening injury check-in...", "info");
+      else setTweakReason(initialAdapt);
+    }
+    router.setParams({ initialAdapt: undefined });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.initialAdapt]);
   const workoutName = (isArabic ? (workout as any).arabicName : workout.name) || (workout as any).name || "Workout";
   const [showSaveSheet, setShowSaveSheet] = useState(false);
   const [showShareSheet, setShowShareSheet] = useState(false);
@@ -219,6 +249,69 @@ export default function PreSession() {
     setShowSaveSheet(false);
     setRoutineName("");
     showToast(isArabic ? `تم حفظ "${newRoutine.name}" في روتيناتك` : `Saved "${newRoutine.name}" to your routines`, "success");
+  };
+
+  const tweakCoachMessages: Record<string, { en: string[]; ar: string[] }> = {
+    tired: {
+      en: ["I dropped 1 set per exercise.", "I swapped heavy compounds for machines.", "Keep rest times slightly longer if needed."],
+      ar: ["شلت مجموعة واحدة من كل تمرين.", "قللت التمارين المركبة التقيلة.", "خد وقت راحة أطول شوية لو محتاج."],
+    },
+    sore: {
+      en: ["I reduced the total volume.", "I swapped some exercises to avoid stretching sore muscles.", "Focus on blood flow and form today."],
+      ar: ["قللت حجم التمرين الكلي.", "غيرت بعض التمارين عشان أقلل الشد على العضلات المتألمة.", "ركز على ضخ الدم والأداء الصح النهاردة."],
+    },
+    short: {
+      en: ["I dropped 2 sets per exercise.", "I swapped barbell rows for dumbbell rows.", "Rest stays 90s."],
+      ar: ["قللت التمارين لمجموعتين لكل تمرين.", "استبدلت الباربل رو بدمبل رو.", "الراحة هتفضل ٩٠ ثانية."],
+    },
+    "no-equipment": {
+      en: ["Switched entire routine to bodyweight.", "Replaced heavy lifts with high-rep calisthenics.", "Shortened rest to 60s for higher intensity."],
+      ar: ["حولت التمرين بالكامل لوزن الجسم.", "استبدلت الأوزان التقيلة بتمارين سويدي بتكرار عالي.", "الراحة بقت ٦٠ ثانية عشان أحافظ على الشدة."],
+    },
+    injured: {
+      en: ["Removed exercises stressing the injured area.", "Substituted with safe, isolated machine work.", "Stop immediately if you feel sharp pain."],
+      ar: ["شلت التمارين اللي بتضغط على مكان الإصابة.", "استبدلتهم بأجهزة آمنة ومعزولة.", "وقف فوراً لو حسيت بألم حاد."],
+    },
+  };
+
+  const handleReplacementChoice = (choice: ReplacementChoice) => {
+    const routine = replacementSheetRoutine;
+    if (!routine) return;
+    const todayISO = new Date().toISOString().split("T")[0];
+    if (choice === "just-today") {
+      setUser({ ...user, planOverride: { routineId: routine.id, appliesTo: "just-today", date: todayISO } });
+      showToast(isArabic ? `النهارده هتعمل ${routine.name}` : `Today you'll do ${routine.name}`, "success");
+    } else if (choice === "replace-today") {
+      setUser({ ...user, planOverride: { routineId: routine.id, appliesTo: "replace-today", date: todayISO } });
+      showToast(isArabic ? "الكوتش هيوازن باقي الأسبوع" : "Your coach will rebalance the week", "success");
+    } else if (choice === "save-as-default") {
+      setUser({ ...user, defaultRoutineId: routine.id, planOverride: { routineId: routine.id, appliesTo: "just-today", date: todayISO } });
+      showToast(isArabic ? `${routine.name} بقى الأساس عندك` : `${routine.name} is now your default`, "success");
+    }
+    setReplacementSheetRoutine(null);
+    setExercises(routine.exercises || []);
+  };
+
+  const applyTweak = () => {
+    if (!tweakReason) {
+      showToast(isArabic ? "اختار سبب التعديل" : "Pick a reason to tweak");
+      return;
+    }
+    let updated = [...exercises];
+    if (tweakReason === "short") {
+      updated = updated.map((ex) => ({ ...ex, sets: Math.max(1, (ex.sets || 3) - 2) }));
+    } else if (tweakReason === "no-equipment") {
+      updated = updated.filter((ex) => ex.equipment && ex.equipment.toLowerCase().includes("bodyweight"));
+      if (updated.length === 0 && exercises.length > 0) updated = [exercises[0]];
+    } else if (tweakReason === "tired" || tweakReason === "sore") {
+      updated = updated.map((ex) => ({ ...ex, sets: Math.max(1, (ex.sets || 3) - 1) }));
+    } else if (tweakReason === "injured") {
+      updated = updated.slice(0, 3);
+    }
+    setExercises(updated);
+    setAppliedTweakReason(tweakReason);
+    setAdaptStep(null);
+    showToast(isArabic ? "تم تعديل التمرين بنجاح" : "Workout adapted successfully", "success");
   };
 
   const [warmupOn, setWarmupOn] = useState(true);
@@ -352,9 +445,20 @@ export default function PreSession() {
             <Image source={{ uri: coach.image }} style={{ width: 48, height: 48, borderRadius: 24 }} contentFit="cover" />
             <View style={{ flex: 1 }}>
               <AppText variant="body-strong" style={{ color: colors.ink, marginBottom: 4, textAlign: isArabic ? "right" : "left" }}>{isArabic ? coach.arabicName : coach.name}</AppText>
-              <AppText variant="caption" className="text-ink-muted-48 dark:text-ink-dark-muted-48" style={{ lineHeight: 19, textAlign: isArabic ? "right" : "left" }}>
-                {isArabic ? coach.arabicSpeech : coach.speech}
-              </AppText>
+              {appliedTweakReason && tweakCoachMessages[appliedTweakReason] ? (
+                <View style={{ gap: 4, marginTop: 4 }}>
+                  {tweakCoachMessages[appliedTweakReason][isArabic ? "ar" : "en"].map((msg, i) => (
+                    <View key={i} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-start", gap: 8 }}>
+                      <View style={{ width: 5, height: 5, borderRadius: 2.5, backgroundColor: "rgba(0,102,204,0.6)", marginTop: 7 }} />
+                      <AppText variant="caption" className="text-ink-muted-48 dark:text-ink-dark-muted-48" style={{ flex: 1, lineHeight: 19, textAlign: isArabic ? "right" : "left" }}>{msg}</AppText>
+                    </View>
+                  ))}
+                </View>
+              ) : (
+                <AppText variant="caption" className="text-ink-muted-48 dark:text-ink-dark-muted-48" style={{ lineHeight: 19, textAlign: isArabic ? "right" : "left" }}>
+                  {isArabic ? "راجع تمرين اليوم، عدّله إذا احتجت، ثم ابدأ لما تكون جاهز." : "Review today's session, adapt it if needed, then start when ready."}
+                </AppText>
+              )}
             </View>
           </View>
 
@@ -441,10 +545,15 @@ export default function PreSession() {
       </ScrollView>
 
       {/* Sticky footer */}
-      <AppleBackdrop style={{ position: "absolute", bottom: 0, left: 0, right: 0, borderTopWidth: 1, borderTopColor: colors.hairline, paddingHorizontal: 16, paddingTop: 16, paddingBottom: insets.bottom + 16 }}>
+      <AppleBackdrop style={{ position: "absolute", bottom: 0, left: 0, right: 0, borderTopWidth: 1, borderTopColor: colors.hairline, paddingHorizontal: 16, paddingTop: 16, paddingBottom: insets.bottom + 16, gap: 8 }}>
         <Pressable onPress={startWorkout} style={{ height: 52, backgroundColor: colors.ink, borderRadius: 14, alignItems: "center", justifyContent: "center" }}>
           <AppText style={{ color: colors.canvas, fontSize: 15, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
             {isArabic ? "ابدأ التمرين" : "START WORKOUT"}
+          </AppText>
+        </Pressable>
+        <Pressable onPress={() => setAdaptStep("root")} style={{ height: 44, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, alignItems: "center", justifyContent: "center" }}>
+          <AppText style={{ color: colors.ink, fontSize: 14, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+            {isArabic ? "عدّل التمرين" : "ADAPT WORKOUT"}
           </AppText>
         </Pressable>
       </AppleBackdrop>
@@ -578,6 +687,118 @@ export default function PreSession() {
           </Pressable>
         </View>
       </BottomSheet>
+
+      {/* Adapt-workout sheet (root → tweak / savedRoutines) */}
+      <BottomSheet isOpen={adaptStep !== null} onClose={() => { setAdaptStep(null); setAdaptHint(null); }} title={adaptStep === "root" ? (isArabic ? "عدّل التمرين" : "Adapt Workout") : ""}>
+        {adaptStep === "root" && (
+          <View style={{ gap: 12 }}>
+            {([
+              { icon: Sliders, title: isArabic ? "عدّل جلسة النهاردة" : "Tweak today's session", sub: isArabic ? "وقت أقل، معدات مختلفة، أو إصابة" : "Less time, different equipment, or injury", onPress: () => setAdaptStep("tweak") },
+              { icon: Sparkles, title: isArabic ? "صمّم جلسة جديدة" : "Build a custom session", sub: isArabic ? "بدّل تمرين النهاردة بواحد جديد" : "Replace today's workout with a new one", onPress: () => { setAdaptStep(null); router.push("/workout/custom-builder"); } },
+              { icon: Bookmark, title: isArabic ? "استخدم روتين محفوظ" : "Use a saved routine", sub: isArabic ? "شغّل واحد من روتيناتك بدلًا" : "Run one of your saved routines instead", onPress: () => setAdaptStep("savedRoutines") },
+            ] as const).map((opt) => (
+              <Pressable key={opt.title} onPress={opt.onPress} style={{ borderWidth: 1, borderColor: colors.hairline, backgroundColor: colors.canvas, borderRadius: 14, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16 }}>
+                <View style={{ width: 48, height: 48, borderRadius: 14, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
+                  <opt.icon size={22} color={colors.primary} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: fontFamily(isArabic, 600) }}>{opt.title}</AppText>
+                  <AppText style={{ fontSize: 13, color: colors.inkMuted48, marginTop: 2, textAlign: isArabic ? "right" : "left", fontFamily: fontFamily(isArabic) }}>{opt.sub}</AppText>
+                </View>
+                <ChevronRight size={20} color={colors.inkMuted48} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
+              </Pressable>
+            ))}
+          </View>
+        )}
+
+        {adaptStep === "tweak" && (
+          <View style={{ gap: 24 }}>
+            <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
+              <Pressable onPress={() => setAdaptStep("root")} hitSlop={8} style={{ width: 32, height: 32, alignItems: "center", justifyContent: "center" }}>
+                <ChevronLeft size={24} color={colors.ink} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
+              </Pressable>
+              <AppText style={{ flex: 1, fontSize: 20, fontWeight: "600", color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: fontFamily(isArabic, 600) }}>{isArabic ? "عدّل النهاردة" : "Tweak Today"}</AppText>
+            </View>
+
+            {adaptHint && (
+              <View style={{ padding: 16, backgroundColor: "rgba(0,102,204,0.1)", borderWidth: 1, borderColor: "rgba(0,102,204,0.2)", borderRadius: 12 }}>
+                <AppText style={{ fontSize: 14, color: colors.primary, lineHeight: 20, textAlign: isArabic ? "right" : "left", fontFamily: fontFamily(isArabic, 600) }}>{adaptHint}</AppText>
+              </View>
+            )}
+
+            <View style={{ gap: 12 }}>
+              {([
+                { id: "tired", en: "I'm tired", ar: "أنا تعبان" },
+                { id: "sore", en: "I'm too sore", ar: "عضلاتي بتوجعني" },
+                { id: "short", en: "Short on time", ar: "وقتي ضيق" },
+                { id: "no-equipment", en: "No equipment", ar: "مفيش أجهزة" },
+                { id: "injured", en: "I'm injured", ar: "أنا مصاب" },
+              ] as const).map((reason) => {
+                const active = tweakReason === reason.id;
+                return (
+                  <Pressable key={reason.id} onPress={() => setTweakReason(reason.id)} style={{ height: 48, borderRadius: 14, borderWidth: 1, justifyContent: "center", backgroundColor: active ? colors.ink : colors.canvas, borderColor: active ? colors.ink : colors.hairline, paddingHorizontal: 16 }}>
+                    <AppText style={{ fontSize: 15, fontWeight: "600", color: active ? colors.canvas : colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: fontFamily(isArabic, 600) }}>{isArabic ? reason.ar : reason.en}</AppText>
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            <View style={{ alignItems: "center", gap: 12 }}>
+              <Pressable onPress={() => { showToast(isArabic ? "اتخطّى — نشوفك بكره" : "Skipped — see you tomorrow"); setAdaptStep(null); }} style={{ width: "100%", height: 48, borderRadius: 14, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+                <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.semanticRed, fontFamily: fontFamily(isArabic, 600) }}>{isArabic ? "تخطّى النهاردة" : "SKIP TODAY"}</AppText>
+              </Pressable>
+              <Pressable onPress={() => showToast(isArabic ? "افتح النقل هنا" : "Reschedule opens here")} hitSlop={8}>
+                <AppText style={{ fontSize: 13, fontWeight: "500", color: colors.inkMuted48, fontFamily: fontFamily(isArabic) }}>{isArabic ? "انقل لـ..." : "Move to..."}</AppText>
+              </Pressable>
+            </View>
+
+            <Pressable onPress={applyTweak} style={{ height: 48, borderRadius: 14, backgroundColor: colors.ink, alignItems: "center", justifyContent: "center" }}>
+              <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.canvas, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: fontFamily(isArabic, 600) }}>{isArabic ? "طبّق" : "APPLY"}</AppText>
+            </Pressable>
+          </View>
+        )}
+
+        {adaptStep === "savedRoutines" && (
+          <View style={{ gap: 16 }}>
+            <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
+              <Pressable onPress={() => setAdaptStep("root")} hitSlop={8} style={{ width: 32, height: 32, alignItems: "center", justifyContent: "center" }}>
+                <ChevronLeft size={24} color={colors.ink} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
+              </Pressable>
+              <AppText style={{ flex: 1, fontSize: 20, fontWeight: "600", color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: fontFamily(isArabic, 600) }}>{isArabic ? "استخدم روتين محفوظ" : "Use a saved routine"}</AppText>
+            </View>
+
+            {!user.customWorkouts || user.customWorkouts.length === 0 ? (
+              <View style={{ alignItems: "center", justifyContent: "center", paddingVertical: 40, opacity: 0.7, gap: 8 }}>
+                <Dumbbell size={32} color={colors.inkMuted48} />
+                <AppText style={{ fontSize: 15, fontWeight: "500", color: colors.inkMuted48, fontFamily: fontFamily(isArabic) }}>{isArabic ? "مفيش روتينات محفوظة" : "No saved routines yet"}</AppText>
+                <Pressable onPress={() => { setAdaptStep(null); router.push("/workout/builder"); }} hitSlop={8}>
+                  <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.primary, fontFamily: fontFamily(isArabic, 600) }}>{isArabic ? "اعمل واحد" : "Create one"}</AppText>
+                </Pressable>
+              </View>
+            ) : (
+              user.customWorkouts.map((routine) => (
+                <Pressable key={routine.id} onPress={() => { setAdaptStep(null); setTimeout(() => setReplacementSheetRoutine(routine), 280); }} style={{ backgroundColor: colors.canvas, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16 }}>
+                  <View style={{ width: 48, height: 48, borderRadius: 12, backgroundColor: "rgba(0,102,204,0.05)", alignItems: "center", justifyContent: "center" }}>
+                    <Dumbbell size={22} color={colors.primary} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: fontFamily(isArabic, 600) }}>{isArabic ? routine.arabicName || routine.name : routine.name}</AppText>
+                    <AppText style={{ fontSize: 13, color: colors.inkMuted48, marginTop: 2, textAlign: isArabic ? "right" : "left", fontFamily: fontFamily(isArabic) }}>{routine.exercises?.length ?? 0} {isArabic ? "تمارين" : "exercises"} · {(routine as any).duration ?? 45} min</AppText>
+                  </View>
+                  <ChevronRight size={20} color={colors.inkMuted48} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
+                </Pressable>
+              ))
+            )}
+          </View>
+        )}
+      </BottomSheet>
+
+      <RoutineReplacementSheet
+        isOpen={!!replacementSheetRoutine}
+        onClose={() => setReplacementSheetRoutine(null)}
+        onChoose={handleReplacementChoice}
+        routineName={replacementSheetRoutine?.name}
+      />
     </View>
   );
 }
