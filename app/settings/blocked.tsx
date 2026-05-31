@@ -63,7 +63,7 @@ export default function BlockedAccounts() {
 
       {blocked.length === 0 ? (
         <View style={{ flex: 1, paddingTop: 64 }}>
-          <EmptyState icon={<Ban size={32} color={colors.inkMuted48} />} title={isArabic ? "مفيش حسابات محظورة" : "No blocked accounts"} description={isArabic ? "اليوزرز اللي تحظرهم هيظهروا هنا" : "Users you block will appear here"} />
+          <EmptyState icon={<Ban size={32} color={colors.inkMuted48} />} title={isArabic ? "مفيش حسابات محظورة" : "No blocked accounts"} body={isArabic ? "اليوزرز اللي تحظرهم هيظهروا هنا" : "Users you block will appear here"} />
         </View>
       ) : (
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: insets.bottom + 48, gap: 8, maxWidth: 448, width: "100%", alignSelf: "center" }}>
