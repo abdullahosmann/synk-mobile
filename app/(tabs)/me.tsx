@@ -225,10 +225,8 @@ export default function Profile() {
         </View>
       </ScrollView>
 
-      {/* Floating coach icon */}
-      <View style={{ position: "absolute", bottom: 100 + insets.bottom, right: isArabic ? undefined : 16, left: isArabic ? 16 : undefined }}>
-        <CoachIcon coachId={user?.coach || "khaled"} onPress={() => router.push("/coach")} />
-      </View>
+      {/* Floating coach icon (self-positioning + draggable) */}
+      <CoachIcon coachId={user?.coach || "khaled"} onPress={() => router.push("/coach")} />
 
       {/* Photo sheet */}
       <BottomSheet isOpen={photoSheetOpen} onClose={() => setPhotoSheetOpen(false)} title={isArabic ? "صورة الملف" : "Profile photo"}>
