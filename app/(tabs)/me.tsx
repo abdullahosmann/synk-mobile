@@ -25,6 +25,7 @@ import WeightTrendChart from "../../src/components/WeightTrendChart";
 import { useColors } from "../../src/theme/ThemeProvider";
 import { AppText, SectionTitle } from "../../src/components/ui/Typography";
 import { Btn } from "../../src/components/ui/Btn";
+import { getItem } from "../../src/lib/storage";
 
 function PressableScale({ children, onPress, style }: any) {
   const s = useSharedValue(1);
@@ -52,11 +53,52 @@ export default function Profile() {
   const initials =
     (user?.name || (isArabic ? "المستخدم" : "User")).split(" ").map((n) => n[0]).filter(Boolean).join("").toUpperCase().slice(0, 2) || "?";
 
+  // Derive workouts + minutes from logged sets, mirroring web's useMemo.
+  const { derivedWorkouts, derivedMinutes } = useMemo(() => {
+    try {
+      const historyRaw = getItem("synk:historicalSets");
+      if (!historyRaw || historyRaw === "{}") return { derivedWorkouts: 0, derivedMinutes: 0 };
+      const history = JSON.parse(historyRaw);
+      const allSets = Object.values(history).flat() as { completedAt: string }[];
+      if (!allSets.length) return { derivedWorkouts: 0, derivedMinutes: 0 };
+
+      const setsByDate = new Map<string, Date[]>();
+      allSets.forEach((set) => {
+        if (!set.completedAt) return;
+        const d = new Date(set.completedAt);
+        if (isNaN(d.getTime())) return;
+        const dateStr = d.toISOString().split("T")[0];
+        if (!setsByDate.has(dateStr)) setsByDate.set(dateStr, []);
+        setsByDate.get(dateStr)!.push(d);
+      });
+
+      let totalMinutes = 0;
+      setsByDate.forEach((dates) => {
+        if (dates.length < 2) {
+          totalMinutes += 45;
+          return;
+        }
+        dates.sort((a, b) => a.getTime() - b.getTime());
+        const durationMs = dates[dates.length - 1].getTime() - dates[0].getTime();
+        let mins = Math.floor(durationMs / 60000);
+        if (mins < 15) mins = 45;
+        totalMinutes += mins;
+      });
+
+      return { derivedWorkouts: setsByDate.size, derivedMinutes: totalMinutes };
+    } catch {
+      return { derivedWorkouts: 0, derivedMinutes: 0 };
+    }
+  }, []);
+
   const planName = useMemo(() => {
     const splitMap: Record<string, { en: string; ar: string }> = {
       auto: { en: "Auto (Recommended)", ar: "تلقائي (الموصى به)" },
       ppl: { en: "Push-Pull-Legs", ar: "Push-Pull-Legs" },
       "upper-lower": { en: "Upper-Lower", ar: "Upper-Lower" },
+      arnold: { en: "Arnold", ar: "Arnold" },
+      phul: { en: "PHUL", ar: "PHUL" },
+      phat: { en: "PHAT", ar: "PHAT" },
       "bro-split": { en: "Bro Split", ar: "Bro Split" },
       "full-body": { en: "Full Body", ar: "Full Body" },
       custom: { en: "Custom", ar: "Custom" },
@@ -74,8 +116,8 @@ export default function Profile() {
 
   const stats = [
     { icon: Flame, label: isArabic ? "سلسلة" : "Streak", value: String(trainingStreak) },
-    { icon: Clock, label: isArabic ? "دقائق" : "Minutes", value: "0" },
-    { icon: Dumbbell, label: isArabic ? "تمارين" : "Workouts", value: "0" },
+    { icon: Clock, label: isArabic ? "دقائق" : "Minutes", value: String(derivedMinutes) },
+    { icon: Dumbbell, label: isArabic ? "تمارين" : "Workouts", value: String(derivedWorkouts) },
   ];
 
   const chartData = [60, 80, 40, 90, 70, 100, 85];
