@@ -104,7 +104,7 @@ export default function CoachChat() {
             <AppText style={{ fontSize: 11, color: colors.inkMuted48, fontFamily: ff(isArabic) }}>{isArabic ? "مدربك" : "Your coach"}</AppText>
           </View>
         </View>
-        <Pressable onPress={() => router.push("/coach-swap")} style={({ pressed }) => ({ width: 44, height: 44, borderRadius: 9999, alignItems: "center", justifyContent: "center", backgroundColor: pressed ? swapActive : "transparent" })}>
+        <Pressable onPress={() => router.push("/coach-swap")} style={{ width: 44, height: 44, borderRadius: 9999, alignItems: "center", justifyContent: "center", backgroundColor: "transparent" }}>
           <RefreshCw size={18} color={colors.inkMuted48} />
         </Pressable>
       </View>

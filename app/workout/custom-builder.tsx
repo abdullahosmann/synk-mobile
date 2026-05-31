@@ -145,7 +145,7 @@ export default function CustomSessionBuilder() {
       <Pressable
         key={key}
         onPress={onPress}
-        style={({ pressed }) => ({
+        style={{
           height: height ?? (size === "md" ? 56 : 44),
           paddingHorizontal: size === "md" ? 20 : 16,
           borderRadius: 14,
@@ -157,8 +157,7 @@ export default function CustomSessionBuilder() {
           backgroundColor: selected ? colors.ink : colors.canvasParchment,
           borderWidth: 1,
           borderColor: selected ? "transparent" : colors.hairline,
-          transform: [{ scale: pressed ? 0.97 : 1 }],
-        })}
+        }}
       >
         {typeof label === "string" ? (
           <AppText
@@ -443,7 +442,7 @@ export default function CustomSessionBuilder() {
           <Pressable
             disabled={!isValid}
             onPress={handleCreate}
-            style={({ pressed }) => ({
+            style={{
               width: "100%",
               height: 52,
               backgroundColor: colors.ink,
@@ -451,8 +450,7 @@ export default function CustomSessionBuilder() {
               alignItems: "center",
               justifyContent: "center",
               opacity: !isValid ? 0.4 : 1,
-              transform: [{ scale: pressed && isValid ? 0.98 : 1 }],
-            })}
+            }}
           >
             <AppText
               style={{

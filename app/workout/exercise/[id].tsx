@@ -364,7 +364,7 @@ export default function PreSessionExerciseDetail() {
 
           <Pressable
             onPress={addRound}
-            style={({ pressed }) => ({
+            style={{
               maxWidth: 200,
               width: "100%",
               height: 48,
@@ -378,8 +378,7 @@ export default function PreSessionExerciseDetail() {
               gap: 8,
               marginTop: 8,
               alignSelf: isArabic ? "flex-end" : "flex-start",
-              transform: [{ scale: pressed ? 0.95 : 1 }],
-            })}
+            }}
           >
             <Plus size={18} color={colors.primary} />
             <AppText
@@ -468,15 +467,14 @@ export default function PreSessionExerciseDetail() {
         <View style={{ marginHorizontal: 20, marginTop: 32, marginBottom: 12 }}>
           <Pressable
             onPress={() => router.push(`/exercise/${id}`)}
-            style={({ pressed }) => ({
+            style={{
               backgroundColor: colors.canvas,
               borderRadius: 14,
               padding: 16,
               flexDirection: isArabic ? "row-reverse" : "row",
               alignItems: "center",
               justifyContent: "space-between",
-              transform: [{ scale: pressed ? 0.98 : 1 }],
-            })}
+            }}
           >
             <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
               <TrendingUp size={16} color={colors.primary} />
