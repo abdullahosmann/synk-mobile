@@ -30,6 +30,15 @@ Branch `dev`. **Phases 2.3, 2.4, 2.5 (settings), 2.6 (social), 2.7 (CoachChat), 
   - `app/profile/adaptation-history.tsx` (AdaptationHistory — pending + archived list, filter tabs, relative dates; uses `eventText` since the type has no `subtitle`).
 
 ## Remaining work
+
+### Fidelity audit (mobile-vs-web LOC + feature pass) — documented simplifications still open
+Ran a mobile-vs-web line-count + feature audit. Real functional gaps found & **fixed**: the Nutrition builders (above) and PreSession Save/Share (now real sheets via `buildSharePackage`). Remaining items are **intentional, documented simplifications** from the original port (content is reachable; fidelity is reduced) — flesh out per priority:
+- **PreSession** (`app/workout/preview.tsx`): still missing the per-exercise context menu (swap / replace / remove an exercise) and the coach **adapt sheet** (web's `initialAdapt` flow). Save + Share are done.
+- **Dashboard** (`app/(tabs)/dashboard.tsx`): the 6 optional cards (hydration/recovery/analytics/challenges/leaderboard/coachChat, all **off by default**) render as nav-tiles → their full screens, not the web's rich inline preview cards. Also check welcome/missed-workout contextual cards vs web.
+- **PlanSettings** (`app/settings/plan.tsx`, ~46% of web LOC) and **Profile** (`app/(tabs)/me.tsx`, ~49%): spot-check for any per-row sheets/sections that were trimmed.
+- **WorkoutDebrief** (web `src/screens/main/WorkoutDebrief.tsx`): **unreferenced in web** (no route/nav) — correctly NOT ported; ignore.
+- Everything else flagged by LOC is explained by RN verbosity differences or the parity stubs below.
+
 - **Phase 2.4:** ✅ Nutrition **fully complete** (core + VoiceLog + FABRadialMenu + the custom food/meal builders, recipe builder + share, label scanner, and weekly JSON export — all ported and wired; nothing left deferred here). **Audit note:** every remaining "coming soon" string in the app is a 1:1 parity stub that the **web source also stubs** (social login, search-posts tab, circle members, profile post-detail, in-workout chat, plan-adjustment sheet, Apple Health sync) — not migration gaps.
 - **Phase 2.5:** settings cluster ✅ complete (Settings hub, ai-permissions, plan, profile-edit, subscription, blocked, delete-account, legal, excluded-exercises).
 - **Phase 2.6 — social cluster (complete):** `app/inbox.tsx` (Inbox), `app/search.tsx` (Search), `app/challenges/{index,create,[id]}.tsx` (Challenges/Create/Detail), `app/circles/{index,create,[id]}.tsx` (Circles/Create/Detail), `app/profile/[username].tsx` (UserProfile). New shared sheets: `src/components/ReportSheet.tsx`, `BlockConfirmSheet.tsx`. Each cluster has a slide-stack `_layout.tsx`.
