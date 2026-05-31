@@ -5,14 +5,14 @@
  * (BodySVG), and the sticky START WORKOUT footer.
  * Past/future logging + the adapt sheet are simplified in this pass.
  */
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Clipboard, Pressable, ScrollView, Share, TextInput, View } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import Animated, { FadeInDown } from "react-native-reanimated";
-import { X, Sparkles, BookmarkPlus, Share2, Dumbbell, ChevronDown, Plus, ChevronRight, Hash, Copy, Link as LinkIcon } from "lucide-react-native";
+import { X, Sparkles, BookmarkPlus, Share2, Dumbbell, ChevronDown, Plus, ChevronRight, Hash, Copy, Link as LinkIcon, MoreHorizontal, Info, RefreshCw, Trash2 } from "lucide-react-native";
 import { useAppContext } from "../../src/AppContext";
 import { useToast } from "../../src/components/ToastProvider";
 import { COACHES } from "../../src/constants";
@@ -50,7 +50,15 @@ export default function PreSession() {
   const coach = COACHES.find((c) => c.id === user.coach) ?? COACHES[0];
 
   const workout = useMemo(() => getWorkoutForDate(user, selectedDate), [user, selectedDate]);
-  const exercises = (workout as any).exercises || [];
+  const [exercises, setExercises] = useState<any[]>(() => (workout as any).exercises || []);
+  // Resync the editable list when the underlying workout (day) changes.
+  useEffect(() => {
+    setExercises((workout as any).exercises || []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [(workout as any).id, (workout as any).name]);
+  const [exerciseMenuOpen, setExerciseMenuOpen] = useState<string | null>(null);
+  const [confirmRemoveExercise, setConfirmRemoveExercise] = useState<any | null>(null);
+  const [confirmDontRecommend, setConfirmDontRecommend] = useState<any | null>(null);
   const workoutName = (isArabic ? (workout as any).arabicName : workout.name) || (workout as any).name || "Workout";
   const [showSaveSheet, setShowSaveSheet] = useState(false);
   const [showShareSheet, setShowShareSheet] = useState(false);
@@ -247,7 +255,9 @@ export default function PreSession() {
                         {ex.sets} × {ex.reps}{ex.weight ? ` × ${ex.weight} ${user.weightUnit}` : ""}
                       </AppText>
                     </View>
-                    <ChevronRight size={18} color={colors.inkMuted24} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
+                    <Pressable onPress={() => setExerciseMenuOpen(ex.id)} hitSlop={8} style={{ width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" }}>
+                      <MoreHorizontal size={18} color={colors.inkMuted48} />
+                    </Pressable>
                   </Pressable>
                 ))}
               </View>
@@ -339,6 +349,77 @@ export default function PreSession() {
           >
             <Share2 size={16} color="#fff" />
             <AppText style={{ fontSize: 15, fontWeight: "600", color: "#fff", textTransform: isArabic ? "none" : "uppercase", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "مشاركة" : "Share"}</AppText>
+          </Pressable>
+        </View>
+      </BottomSheet>
+
+      {/* Exercise context menu */}
+      <BottomSheet isOpen={!!exerciseMenuOpen} onClose={() => setExerciseMenuOpen(null)} title="">
+        {(() => {
+          const sel = exercises.find((e: any) => e.id === exerciseMenuOpen);
+          if (!sel) return <View />;
+          const row = (Icon: any, label: string, onPress: () => void, danger?: boolean) => (
+            <Pressable onPress={onPress} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, height: 56, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
+              <Icon size={20} color={danger ? colors.semanticRed : colors.inkMuted48} />
+              <AppText style={{ flex: 1, fontSize: 15, fontWeight: "500", color: danger ? colors.semanticRed : colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>{label}</AppText>
+            </Pressable>
+          );
+          return (
+            <View>
+              <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16, paddingBottom: 12 }}>
+                <View style={{ width: 56, height: 56, borderRadius: 12, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
+                  <Dumbbell size={24} color={colors.inkMuted48} />
+                </View>
+                <AppText style={{ flex: 1, fontSize: 17, fontWeight: "600", color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? sel.arabicName || sel.name : sel.name}</AppText>
+              </View>
+              {row(Info, isArabic ? "تفاصيل التمرين" : "Exercise Details", () => { setExerciseMenuOpen(null); router.push(`/workout/exercise/${sel.id}`); })}
+              {row(RefreshCw, isArabic ? "بدّل التمرين" : "Replace Exercise", () => { setExerciseMenuOpen(null); showToast(isArabic ? "بدور على بدائل..." : "Finding alternatives...", "success"); })}
+              {row(X, isArabic ? "متقترحش تاني" : "Don't Recommend Again", () => { setExerciseMenuOpen(null); setConfirmDontRecommend(sel); })}
+              {row(Trash2, isArabic ? "احذف من التمرين" : "Remove from Workout", () => { setExerciseMenuOpen(null); setConfirmRemoveExercise(sel); }, true)}
+              <Pressable onPress={() => setExerciseMenuOpen(null)} style={{ marginTop: 16, height: 48, borderRadius: 14, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
+                <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "إغلاق" : "Close"}</AppText>
+              </Pressable>
+            </View>
+          );
+        })()}
+      </BottomSheet>
+
+      {/* Confirm remove */}
+      <BottomSheet isOpen={!!confirmRemoveExercise} onClose={() => setConfirmRemoveExercise(null)} title={isArabic ? "إزالة هذا التمرين؟" : "Remove this exercise?"}>
+        <View style={{ gap: 16, paddingBottom: 8 }}>
+          <AppText style={{ fontSize: 15, color: colors.ink, lineHeight: 22, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+            {isArabic ? "سيؤدي هذا إلى إزالة التمرين من تدريب اليوم فقط. لن يتم تغيير خطتك المستقبلية." : "This will remove the exercise from today's workout only. Your future plan will not be changed."}
+          </AppText>
+          <Pressable onPress={() => { if (confirmRemoveExercise) setExercises((p) => p.filter((e) => e.id !== confirmRemoveExercise.id)); showToast(isArabic ? "اتشال" : "Removed", "success"); setConfirmRemoveExercise(null); }} style={{ height: 52, borderRadius: 14, backgroundColor: colors.semanticRed, alignItems: "center", justifyContent: "center" }}>
+            <AppText style={{ fontSize: 15, fontWeight: "600", color: "#fff", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "إزالة التمرين" : "Remove Exercise"}</AppText>
+          </Pressable>
+          <Pressable onPress={() => setConfirmRemoveExercise(null)} style={{ height: 52, borderRadius: 14, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
+            <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "إلغاء" : "Cancel"}</AppText>
+          </Pressable>
+        </View>
+      </BottomSheet>
+
+      {/* Confirm don't-recommend */}
+      <BottomSheet isOpen={!!confirmDontRecommend} onClose={() => setConfirmDontRecommend(null)} title={isArabic ? "عدم اقتراح هذا التمرين مرة أخرى؟" : "Don't recommend this again?"}>
+        <View style={{ gap: 16, paddingBottom: 8 }}>
+          <AppText style={{ fontSize: 15, color: colors.ink, lineHeight: 22, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+            {isArabic ? `سيتجنب ${coach.arabicName} اقتراح هذا التمرين في الخطط المستقبلية كلما أمكن. تقدر تضيفه يدويًا لاحقًا.` : `${coach.name} will avoid suggesting this exercise in future plans when possible. You can still add it manually later.`}
+          </AppText>
+          <Pressable
+            onPress={() => {
+              if (confirmDontRecommend) {
+                setExercises((p) => p.filter((e) => e.id !== confirmDontRecommend.id));
+                setUser({ ...user, excludedExercises: [...(user.excludedExercises || []), { exerciseId: confirmDontRecommend.id, exerciseName: confirmDontRecommend.name, arabicName: confirmDontRecommend.arabicName, excludedAt: new Date().toISOString() }] });
+              }
+              showToast(isArabic ? "مش هقترحه تاني" : "Won't recommend this again", "success");
+              setConfirmDontRecommend(null);
+            }}
+            style={{ height: 52, borderRadius: 14, backgroundColor: colors.semanticRed, alignItems: "center", justifyContent: "center" }}
+          >
+            <AppText style={{ fontSize: 15, fontWeight: "600", color: "#fff", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "عدم الاقتراح" : "Don't Recommend"}</AppText>
+          </Pressable>
+          <Pressable onPress={() => setConfirmDontRecommend(null)} style={{ height: 52, borderRadius: 14, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
+            <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "إلغاء" : "Cancel"}</AppText>
           </Pressable>
         </View>
       </BottomSheet>
