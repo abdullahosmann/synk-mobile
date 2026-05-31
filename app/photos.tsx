@@ -23,6 +23,7 @@ import * as Sharing from "expo-sharing";
 import { ChevronLeft, Camera, Plus, ArrowLeftRight, Share2, Upload, Heart } from "lucide-react-native";
 import { useAppContext } from "../src/AppContext";
 import BottomSheet from "../src/components/BottomSheet";
+import { TemplateProgressComparison } from "../src/components/share-templates/WorkoutShareTemplates";
 import { useToast } from "../src/components/ToastProvider";
 import { savePhotoUri, getPhotoUrl, deletePhotoBlob } from "../src/lib/photoStorage";
 import { useTheme } from "../src/theme/ThemeProvider";
@@ -149,7 +150,7 @@ export default function ProgressPhotos() {
   const handleShareCapture = async () => {
     if (!shareRef.current) return;
     try {
-      const uri = await captureRef(shareRef, { format: "png", quality: 1 });
+      const uri = await captureRef(shareRef, { format: "png", quality: 1, width: 1080, height: 1920 });
       if (await Sharing.isAvailableAsync()) await Sharing.shareAsync(uri);
       showToast(isArabic ? "تم حفظ الصورة" : "Image saved", "success");
     } catch {
@@ -274,7 +275,7 @@ export default function ProgressPhotos() {
             ))}
           </View>
 
-          <View ref={shareRef} collapsable={false} style={{ paddingHorizontal: 16, gap: 16, backgroundColor: colors.canvasParchment }}>
+          <View style={{ paddingHorizontal: 16, gap: 16, backgroundColor: colors.canvasParchment }}>
             {ANGLES.map((ang) => {
               const pA = setA.photos.find((p) => p.angle === ang);
               const pB = setB.photos.find((p) => p.angle === ang);
@@ -348,6 +349,21 @@ export default function ProgressPhotos() {
           </Pressable>
         </View>
       </BottomSheet>
+
+      {/* Off-screen full-res capture target (1080×1920 comparison card) */}
+      {setA && setB && (
+        <View style={{ position: "absolute", left: -99999, top: -99999 }} pointerEvents="none">
+          <View ref={shareRef} collapsable={false}>
+            <TemplateProgressComparison
+              user={{ name: user.name || "Athlete", weightUnit: user.weightUnit }}
+              isArabic={isArabic}
+              setA={setA}
+              setB={setB}
+              urls={urls}
+            />
+          </View>
+        </View>
+      )}
 
       {/* Share sheet */}
       <BottomSheet isOpen={showShareSheet} onClose={() => setShowShareSheet(false)} title={isArabic ? "مشاركة المقارنة" : "Share Comparison"}>
