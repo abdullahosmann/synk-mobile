@@ -7,12 +7,20 @@
  */
 import React, { useEffect, useMemo, useState } from "react";
 import { Clipboard, Pressable, ScrollView, Share, TextInput, View } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Image } from "expo-image";
-import Animated, { FadeInDown } from "react-native-reanimated";
-import { X, Sparkles, BookmarkPlus, Share2, Dumbbell, ChevronDown, Plus, ChevronRight, Hash, Copy, Link as LinkIcon, MoreHorizontal, Info, RefreshCw, Trash2 } from "lucide-react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Animated, {
+  runOnJS,
+  useAnimatedReaction,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
+import { X, Sparkles, BookmarkPlus, Share2, Dumbbell, ChevronDown, Plus, ChevronRight, ChevronLeft, Hash, Copy, Link as LinkIcon, MoreHorizontal, GripVertical, Info, RefreshCw, Trash2, Sliders, Bookmark } from "lucide-react-native";
 import { useAppContext } from "../../src/AppContext";
 import { useToast } from "../../src/components/ToastProvider";
 import { COACHES } from "../../src/constants";
@@ -21,10 +29,19 @@ import { buildSharePackage } from "../../src/lib/routineSharing";
 import { CustomRoutine } from "../../src/types";
 import { BodySVG } from "../../src/components/BodySVG";
 import BottomSheet from "../../src/components/BottomSheet";
+import RoutineReplacementSheet, { ReplacementChoice } from "../../src/components/RoutineReplacementSheet";
 import { useColors } from "../../src/theme/ThemeProvider";
 import { AppText } from "../../src/components/ui/Typography";
 import { Toggle } from "../../src/components/ui/Toggle";
 import { AppleBackdrop } from "../../src/components/ui/AppleBackdrop";
+
+const GAP = 12;
+const ROW_FALLBACK = 104; // 80px image + 12px padding × 2
+
+function fontFamily(isArabic: boolean, weight: 400 | 600 = 400) {
+  if (weight === 600) return isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold";
+  return isArabic ? "Cairo_400Regular" : "Inter_400Regular";
+}
 
 const WARMUPS = [
   { name: "High Knees", duration: "20 sec" },
@@ -39,6 +56,117 @@ const COOLDOWNS = [
 
 const FRONT = new Set(["chest", "shoulders", "biceps", "abs", "quadriceps", "triceps"]);
 const BACK = new Set(["back", "lower_back", "glutes", "hamstrings", "triceps", "calves"]);
+
+// ---------------------------------------------------------------------------
+// Reorderable exercise row — web's Reorder.Item + useDragControls (grip handle)
+// → gesture-handler Pan on the grip + reanimated absolute layout, mirroring
+// RoutineBuilder's SelectedExerciseRow. The card itself stays tappable (→ detail).
+// ---------------------------------------------------------------------------
+function ExerciseRow({
+  ex,
+  positions,
+  rowH,
+  count,
+  isArabic,
+  colors,
+  weightUnit,
+  onMeasure,
+  onShowMenu,
+  onCardClick,
+  commitOrder,
+}: {
+  ex: any;
+  positions: { value: Record<string, number> };
+  rowH: { value: number };
+  count: number;
+  isArabic: boolean;
+  colors: ReturnType<typeof useColors>;
+  weightUnit: string;
+  onMeasure: (h: number) => void;
+  onShowMenu: (id: string) => void;
+  onCardClick: (id: string) => void;
+  commitOrder: () => void;
+}) {
+  const isActive = useSharedValue(false);
+  const top = useSharedValue(0);
+  const startTop = useSharedValue(0);
+
+  useAnimatedReaction(
+    () => positions.value[ex.id],
+    (slot, prev) => {
+      if (slot == null) return;
+      if (prev == null) {
+        top.value = slot * rowH.value;
+      } else if (!isActive.value) {
+        top.value = withSpring(slot * rowH.value, { damping: 30, stiffness: 350 });
+      }
+    },
+  );
+
+  const pan = Gesture.Pan()
+    .onStart(() => {
+      isActive.value = true;
+      startTop.value = top.value;
+    })
+    .onUpdate((e) => {
+      top.value = startTop.value + e.translationY;
+      const newSlot = Math.max(0, Math.min(Math.round(top.value / rowH.value), count - 1));
+      const oldSlot = positions.value[ex.id];
+      if (newSlot !== oldSlot) {
+        const swapId = Object.keys(positions.value).find((k) => positions.value[k] === newSlot);
+        const next = { ...positions.value };
+        next[ex.id] = newSlot;
+        if (swapId) next[swapId] = oldSlot;
+        positions.value = next;
+      }
+    })
+    .onEnd(() => {
+      top.value = withSpring((positions.value[ex.id] ?? 0) * rowH.value, { damping: 30, stiffness: 350 });
+      isActive.value = false;
+      runOnJS(commitOrder)();
+    });
+
+  const containerStyle = useAnimatedStyle(() => ({
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: top.value,
+    zIndex: isActive.value ? 100 : 1,
+    transform: [{ scale: withTiming(isActive.value ? 1.02 : 1, { duration: 120 }) }],
+    shadowColor: "#000",
+    shadowOpacity: withTiming(isActive.value ? 0.12 : 0, { duration: 120 }),
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 12 },
+  }));
+
+  return (
+    <Animated.View style={containerStyle}>
+      <Pressable
+        onPress={() => onCardClick(ex.id)}
+        onLayout={(e) => onMeasure(e.nativeEvent.layout.height)}
+        style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 12, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}
+      >
+        <View style={{ width: 80, height: 80, borderRadius: 14, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
+          <Dumbbell size={32} color={colors.inkMuted48} />
+        </View>
+        <View style={{ flex: 1 }}>
+          <AppText variant="body-strong" style={{ color: colors.ink, marginBottom: 4, textAlign: isArabic ? "right" : "left" }}>{isArabic ? ex.arabicName || ex.name : ex.name}</AppText>
+          <AppText variant="caption" className="text-ink-muted-48 dark:text-ink-dark-muted-48" style={{ textAlign: isArabic ? "right" : "left" }}>
+            {ex.sets} × {ex.reps}{ex.weight ? ` × ${ex.weight} ${weightUnit}` : ""}
+          </AppText>
+        </View>
+        <Pressable onPress={() => onShowMenu(ex.id)} hitSlop={8} style={{ width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" }}>
+          <MoreHorizontal size={18} color={colors.inkMuted48} />
+        </Pressable>
+        <GestureDetector gesture={pan}>
+          <View style={{ width: 28, height: 44, alignItems: "center", justifyContent: "center" }}>
+            <GripVertical size={18} color={colors.inkMuted48} />
+          </View>
+        </GestureDetector>
+      </Pressable>
+    </Animated.View>
+  );
+}
 
 export default function PreSession() {
   const router = useRouter();
@@ -97,6 +225,29 @@ export default function PreSession() {
   const [warmupExpanded, setWarmupExpanded] = useState(false);
   const [cooldownOn, setCooldownOn] = useState(true);
   const [cooldownExpanded, setCooldownExpanded] = useState(false);
+
+  // Reorder shared state (mirrors RoutineBuilder)
+  const positions = useSharedValue<Record<string, number>>({});
+  const rowH = useSharedValue(ROW_FALLBACK + GAP);
+  const [measuredRowH, setMeasuredRowH] = useState(ROW_FALLBACK);
+  useEffect(() => {
+    const map: Record<string, number> = {};
+    exercises.forEach((ex, i) => {
+      map[ex.id] = i;
+    });
+    positions.value = map;
+  }, [exercises]);
+  useEffect(() => {
+    rowH.value = measuredRowH + GAP;
+  }, [measuredRowH]);
+  const commitOrder = () => {
+    const map = positions.value;
+    setExercises((prev) => {
+      const next = [...prev];
+      next.sort((a, b) => (map[a.id] ?? 0) - (map[b.id] ?? 0));
+      return next;
+    });
+  };
 
   const equipment = useMemo(
     () => Array.from(new Set(exercises.map((e: any) => e.equipment).filter(Boolean))) as string[],
@@ -243,24 +394,28 @@ export default function PreSession() {
                   <AppText variant="body-strong" style={{ color: colors.primary }}>{isArabic ? "أضف" : "Add"}</AppText>
                 </Pressable>
               </View>
-              <View style={{ gap: 12 }}>
-                {exercises.map((ex: any) => (
-                  <Pressable key={ex.id} onPress={() => router.push(`/workout/exercise/${ex.id}`)} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 12, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
-                    <View style={{ width: 80, height: 80, borderRadius: 14, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
-                      <Dumbbell size={32} color={colors.inkMuted48} />
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <AppText variant="body-strong" style={{ color: colors.ink, marginBottom: 4, textAlign: isArabic ? "right" : "left" }}>{isArabic ? ex.arabicName : ex.name}</AppText>
-                      <AppText variant="caption" className="text-ink-muted-48 dark:text-ink-dark-muted-48" style={{ textAlign: isArabic ? "right" : "left" }}>
-                        {ex.sets} × {ex.reps}{ex.weight ? ` × ${ex.weight} ${user.weightUnit}` : ""}
-                      </AppText>
-                    </View>
-                    <Pressable onPress={() => setExerciseMenuOpen(ex.id)} hitSlop={8} style={{ width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" }}>
-                      <MoreHorizontal size={18} color={colors.inkMuted48} />
-                    </Pressable>
-                  </Pressable>
-                ))}
-              </View>
+              {exercises.length > 0 && (
+                <View style={{ height: exercises.length * (measuredRowH + GAP) - GAP }}>
+                  {exercises.map((ex: any) => (
+                    <ExerciseRow
+                      key={ex.id}
+                      ex={ex}
+                      positions={positions}
+                      rowH={rowH}
+                      count={exercises.length}
+                      isArabic={isArabic}
+                      colors={colors}
+                      weightUnit={user.weightUnit}
+                      onMeasure={(h) => {
+                        if (Math.abs(h - measuredRowH) > 1) setMeasuredRowH(h);
+                      }}
+                      onShowMenu={(id) => setExerciseMenuOpen(id)}
+                      onCardClick={(id) => router.push(`/workout/exercise/${id}`)}
+                      commitOrder={commitOrder}
+                    />
+                  ))}
+                </View>
+              )}
             </View>
 
             <View style={{ borderTopWidth: 1, borderTopColor: colors.hairline, paddingTop: 8 }}>
