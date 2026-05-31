@@ -9,7 +9,7 @@ import { useRouter } from "expo-router";
 import { Coffee, Play, Dumbbell, ChevronRight, Plus, Download } from "lucide-react-native";
 import { useAppContext } from "../AppContext";
 import { getWorkoutForDate } from "../lib/workoutSelection";
-import { useColors } from "../theme/ThemeProvider";
+import { useColors, useTheme } from "../theme/ThemeProvider";
 import { AppText, SectionTitle } from "../components/ui/Typography";
 import { Btn } from "../components/ui/Btn";
 
@@ -17,6 +17,7 @@ export default function WorkoutTab() {
   const router = useRouter();
   const { user, selectedDate, setSelectedDate } = useAppContext();
   const colors = useColors();
+  const softFill = useTheme().theme === "dark" ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)";
   const isArabic = user.language === "ar";
 
   const todayZero = React.useMemo(() => {
@@ -87,7 +88,7 @@ export default function WorkoutTab() {
           </AppText>
           <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 12, width: "100%", marginTop: 8 }}>
             {[isArabic ? "تسجيل نشاط" : "Log Activity", isArabic ? "إطالة" : "Stretch Routine"].map((label, i) => (
-              <Pressable key={i} onPress={() => router.push("/voice-log")} style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.05)", borderRadius: 8, paddingVertical: 12, alignItems: "center" }}>
+              <Pressable key={i} onPress={() => router.push("/voice-log")} style={{ flex: 1, backgroundColor: softFill, borderRadius: 8, paddingVertical: 12, alignItems: "center" }}>
                 <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.ink, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{label}</AppText>
               </Pressable>
             ))}
@@ -137,7 +138,7 @@ export default function WorkoutTab() {
             {user.customWorkouts.map((w) => (
               <Pressable key={w.id} onPress={() => router.push("/workout/preview")} style={[cardStyle, { padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }]}>
                 <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16 }}>
-                  <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(0,0,0,0.05)", alignItems: "center", justifyContent: "center" }}>
+                  <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: softFill, alignItems: "center", justifyContent: "center" }}>
                     <Dumbbell size={18} color={colors.ink} />
                   </View>
                   <View>

@@ -21,7 +21,7 @@ import { useAppContext } from "../../src/AppContext";
 import { useToast } from "../../src/components/ToastProvider";
 import Avatar from "../../src/components/Avatar";
 import { ShareCardRenderer, ShareCardPayload } from "../../src/components/ShareCardRenderer";
-import { useColors } from "../../src/theme/ThemeProvider";
+import { useColors, useTheme } from "../../src/theme/ThemeProvider";
 import { AppText, ScreenTitle } from "../../src/components/ui/Typography";
 import { Btn } from "../../src/components/ui/Btn";
 
@@ -48,6 +48,7 @@ export default function Community() {
   const { user } = useAppContext();
   const { showToast } = useToast();
   const colors = useColors();
+  const isDark = useTheme().theme === "dark";
   const insets = useSafeAreaInsets();
   const isArabic = user?.language === "ar";
 
@@ -138,7 +139,7 @@ export default function Community() {
       ? { Icon: Trophy, label: isArabic ? "رقم قياسي" : "New PR", ring: "rgba(0,102,204,0.4)" }
       : t === "streak"
         ? { Icon: Flame, label: isArabic ? "سلسلة" : "Streak", ring: "rgba(251,191,36,0.4)" }
-        : { Icon: Dumbbell, label: isArabic ? "تمرين" : "Workout", ring: "rgba(0,0,0,0.05)" };
+        : { Icon: Dumbbell, label: isArabic ? "تمرين" : "Workout", ring: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.05)" };
 
   const segTab = (key: typeof segment, label: string) => {
     const active = segment === key;

@@ -11,7 +11,7 @@ import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ArrowLeft } from "lucide-react-native";
 import { useAppContext } from "../AppContext";
-import { useColors } from "../theme/ThemeProvider";
+import { useColors, useTheme } from "../theme/ThemeProvider";
 import { AppleBackdrop } from "./ui/AppleBackdrop";
 import { AppText } from "./ui/Typography";
 
@@ -41,6 +41,7 @@ const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
   const router = useRouter();
   const { user } = useAppContext();
   const colors = useColors();
+  const isDark = useTheme().theme === "dark";
   const insets = useSafeAreaInsets();
   const isArabic = user.language === "ar";
 
@@ -60,7 +61,7 @@ const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({
             left: 0,
             right: 0,
             height: 4,
-            backgroundColor: "rgba(0,0,0,0.10)",
+            backgroundColor: isDark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.10)",
             zIndex: 60,
             flexDirection: isArabic ? "row-reverse" : "row",
           }}
