@@ -6,18 +6,21 @@
  * Past/future logging + the adapt sheet are simplified in this pass.
  */
 import React, { useMemo, useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Clipboard, Pressable, ScrollView, Share, TextInput, View } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import Animated, { FadeInDown } from "react-native-reanimated";
-import { X, Sparkles, BookmarkPlus, Share2, Dumbbell, ChevronDown, Plus, ChevronRight } from "lucide-react-native";
+import { X, Sparkles, BookmarkPlus, Share2, Dumbbell, ChevronDown, Plus, ChevronRight, Hash, Copy, Link as LinkIcon } from "lucide-react-native";
 import { useAppContext } from "../../src/AppContext";
 import { useToast } from "../../src/components/ToastProvider";
 import { COACHES } from "../../src/constants";
 import { getWorkoutForDate } from "../../src/lib/workoutSelection";
+import { buildSharePackage } from "../../src/lib/routineSharing";
+import { CustomRoutine } from "../../src/types";
 import { BodySVG } from "../../src/components/BodySVG";
+import BottomSheet from "../../src/components/BottomSheet";
 import { useColors } from "../../src/theme/ThemeProvider";
 import { AppText } from "../../src/components/ui/Typography";
 import { Toggle } from "../../src/components/ui/Toggle";
@@ -39,7 +42,7 @@ const BACK = new Set(["back", "lower_back", "glutes", "hamstrings", "triceps", "
 
 export default function PreSession() {
   const router = useRouter();
-  const { user, selectedDate } = useAppContext();
+  const { user, setUser, selectedDate } = useAppContext();
   const { showToast } = useToast();
   const colors = useColors();
   const insets = useSafeAreaInsets();
@@ -48,6 +51,40 @@ export default function PreSession() {
 
   const workout = useMemo(() => getWorkoutForDate(user, selectedDate), [user, selectedDate]);
   const exercises = (workout as any).exercises || [];
+  const workoutName = (isArabic ? (workout as any).arabicName : workout.name) || (workout as any).name || "Workout";
+  const [showSaveSheet, setShowSaveSheet] = useState(false);
+  const [showShareSheet, setShowShareSheet] = useState(false);
+  const [routineName, setRoutineName] = useState("");
+  const sharePackage = useMemo(() => buildSharePackage(workoutName, exercises), [workoutName, exercises]);
+
+  const handleSaveRoutine = () => {
+    if (!routineName.trim()) {
+      showToast(isArabic ? "لازم تكتب اسم" : "Please enter a name", "info");
+      return;
+    }
+    const newRoutine: CustomRoutine = {
+      id: `routine-${Date.now()}`,
+      name: routineName.trim(),
+      arabicName: routineName.trim(),
+      exercises: exercises.map((ex: any) => ({
+        id: ex.id,
+        name: ex.name,
+        arabicName: ex.arabicName,
+        sets: ex.sets || 3,
+        reps: ex.reps || 10,
+        weight: ex.weight || 0,
+        muscleGroup: ex.muscleGroup,
+        equipment: ex.equipment,
+      })),
+      createdAt: new Date().toISOString(),
+      sourceWorkoutId: (workout as any).id,
+    };
+    setUser({ ...user, customWorkouts: [...(user.customWorkouts || []), newRoutine] });
+    setShowSaveSheet(false);
+    setRoutineName("");
+    showToast(isArabic ? `تم حفظ "${newRoutine.name}" في روتيناتك` : `Saved "${newRoutine.name}" to your routines`, "success");
+  };
+
   const [warmupOn, setWarmupOn] = useState(true);
   const [warmupExpanded, setWarmupExpanded] = useState(false);
   const [cooldownOn, setCooldownOn] = useState(true);
@@ -138,12 +175,12 @@ export default function PreSession() {
           </View>
 
           <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 24 }}>
-            <Pressable onPress={() => showToast(isArabic ? "تم الحفظ" : "Saved", "success")} style={{ alignItems: "center", gap: 6 }}>
+            <Pressable onPress={() => setShowSaveSheet(true)} style={{ alignItems: "center", gap: 6 }}>
               <BookmarkPlus size={24} color="#fff" />
               <AppText style={{ fontSize: 11, color: "rgba(255,255,255,0.9)", fontWeight: "500", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5 }}>{isArabic ? "احفظ" : "Save"}</AppText>
             </Pressable>
             <View style={{ width: 1, height: 32, backgroundColor: "rgba(255,255,255,0.2)" }} />
-            <Pressable onPress={() => showToast(isArabic ? "مشاركة" : "Share", "info")} style={{ alignItems: "center", gap: 6 }}>
+            <Pressable onPress={() => setShowShareSheet(true)} style={{ alignItems: "center", gap: 6 }}>
               <Share2 size={24} color="#fff" />
               <AppText style={{ fontSize: 11, color: "rgba(255,255,255,0.9)", fontWeight: "500", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5 }}>{isArabic ? "مشاركة" : "Share"}</AppText>
             </Pressable>
@@ -246,6 +283,65 @@ export default function PreSession() {
           </AppText>
         </Pressable>
       </AppleBackdrop>
+
+      {/* Save-as-routine sheet */}
+      <BottomSheet isOpen={showSaveSheet} onClose={() => setShowSaveSheet(false)} title={isArabic ? "احفظ كروتين" : "Save as routine"}>
+        <View style={{ gap: 16, paddingBottom: 8 }}>
+          <AppText style={{ fontSize: 14, color: colors.inkMuted48, lineHeight: 20, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+            {isArabic ? "هنحفظ التمارين والجولات والتكرارات والأوزان كروتين تقدر تستخدمه بعدين." : "We'll save the exercises, sets, reps, and weights as a routine you can reuse."}
+          </AppText>
+          <View style={{ gap: 8 }}>
+            <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+              {isArabic ? "اسم الروتين" : "Routine name"}
+            </AppText>
+            <TextInput
+              value={routineName}
+              onChangeText={setRoutineName}
+              placeholder={isArabic ? "مثال: تمارين الصدر" : "e.g. Chest Day"}
+              placeholderTextColor={colors.inkMuted48}
+              maxLength={40}
+              style={{ height: 48, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, paddingHorizontal: 16, fontSize: 15, color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}
+            />
+          </View>
+          <Pressable onPress={handleSaveRoutine} style={{ height: 48, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
+            <AppText style={{ fontSize: 15, fontWeight: "600", color: "#fff", textTransform: isArabic ? "none" : "uppercase", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "احفظ الروتين" : "Save routine"}</AppText>
+          </Pressable>
+        </View>
+      </BottomSheet>
+
+      {/* Share-workout sheet */}
+      <BottomSheet isOpen={showShareSheet} onClose={() => setShowShareSheet(false)} title={isArabic ? "شارك التمرين" : "Share workout"}>
+        <View style={{ gap: 12, paddingBottom: 8 }}>
+          <AppText style={{ fontSize: 14, color: colors.inkMuted48, lineHeight: 20, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+            {isArabic ? "شارك تمرينك مع أصحابك. اللي عندهم سينك يقدروا يفتحوه ويضيفوه لخطتهم." : "Share your workout with friends. Other SYNK users can open it and add it to their plan."}
+          </AppText>
+          {([
+            { icon: Hash, title: isArabic ? "نسخ كود" : "Copy code", sub: sharePackage.code, onPress: () => { Clipboard.setString(`SYNK Routine ${sharePackage.code}\n\nPaste this in SYNK → Workouts → Import:\n${sharePackage.payload}`); showToast(isArabic ? `الكود ${sharePackage.code} اتنسخ` : `Code ${sharePackage.code} copied`, "success"); } },
+            { icon: LinkIcon, title: isArabic ? "نسخ الرابط" : "Copy link", sub: sharePackage.url, onPress: () => { Clipboard.setString(sharePackage.url); showToast(isArabic ? "الرابط اتنسخ" : "Link copied", "success"); } },
+          ] as const).map((opt) => (
+            <Pressable key={opt.title} onPress={opt.onPress} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
+                <opt.icon size={20} color={colors.primary} />
+              </View>
+              <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start" }}>
+                <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{opt.title}</AppText>
+                <AppText numberOfLines={1} style={{ fontSize: 13, color: colors.inkMuted48, marginTop: 2 }}>{opt.sub}</AppText>
+              </View>
+              <Copy size={18} color={colors.inkMuted48} />
+            </Pressable>
+          ))}
+          <Pressable
+            onPress={() => {
+              const text = isArabic ? `جربت تمرين رهيب على سينك! كود: ${sharePackage.code}\n${sharePackage.url}` : `Just crushed this SYNK workout! Code: ${sharePackage.code}\n${sharePackage.url}`;
+              Share.share({ message: text }).catch(() => {});
+            }}
+            style={{ height: 52, borderRadius: 9999, backgroundColor: colors.primary, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 4 }}
+          >
+            <Share2 size={16} color="#fff" />
+            <AppText style={{ fontSize: 15, fontWeight: "600", color: "#fff", textTransform: isArabic ? "none" : "uppercase", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "مشاركة" : "Share"}</AppText>
+          </Pressable>
+        </View>
+      </BottomSheet>
     </View>
   );
 }
