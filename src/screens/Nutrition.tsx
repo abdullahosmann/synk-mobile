@@ -32,6 +32,8 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
+import * as ImagePicker from "expo-image-picker";
+import { scanNutritionLabel } from "../services/nutritionScanner";
 import Animated, { FadeIn } from "react-native-reanimated";
 import {
   Plus,
@@ -446,6 +448,47 @@ export default function Nutrition() {
     setMealItemSearchMode(false);
     setMealSearchQuery("");
     showGlobalToast(isArabic ? "تم حفظ الوجبة وإضافتها" : "Meal saved & added", "success");
+  };
+
+  const handleScanLabel = async () => {
+    try {
+      const perm = await ImagePicker.requestCameraPermissionsAsync();
+      const result = perm.granted
+        ? await ImagePicker.launchCameraAsync({ quality: 0.6, base64: true })
+        : await ImagePicker.launchImageLibraryAsync({ quality: 0.6, base64: true });
+      if (result.canceled || !result.assets?.[0]) return;
+      showGlobalToast(isArabic ? "جاري قراءة الملصق..." : "Reading nutrition label...", "default");
+      const data = await scanNutritionLabel(result.assets[0].base64 || "");
+      if (!data.success) {
+        showGlobalToast(isArabic ? "تعذّرت قراءة الملصق" : "Could not read label", "error");
+        return;
+      }
+      setCustomFood({
+        ...emptyCustomFood,
+        name: data.productName || "",
+        portionValue: data.servingSize?.amount?.toString() || "1",
+        portionUnit: data.servingSize?.unit || "serving",
+        calories: data.calories?.toString() || "",
+        protein: data.macros?.protein?.toString() || "",
+        carbs: data.macros?.carbs?.toString() || "",
+        fat: data.macros?.fat?.toString() || "",
+        sugar: data.nutrients?.sugar?.toString() || "",
+        fiber: data.nutrients?.fiber?.toString() || "",
+        sodium: data.nutrients?.sodium?.toString() || "",
+        calcium: data.nutrients?.calcium?.toString() || "",
+        saturatedFat: data.nutrients?.saturatedFat?.toString() || "",
+        potassium: data.nutrients?.potassium?.toString() || "",
+        iron: data.nutrients?.iron?.toString() || "",
+        cholesterol: data.nutrients?.cholesterol?.toString() || "",
+      });
+      setIsCustomFoodOpen(true);
+      showGlobalToast(
+        isArabic ? "راجع القيم قبل الحفظ (وضع المعاينة)" : "Review values before saving (preview mode)",
+        "default",
+      );
+    } catch {
+      showGlobalToast(isArabic ? "تعذّر المسح" : "Scan failed", "error");
+    }
   };
 
   const exportWeeklyData = async () => {
@@ -1363,7 +1406,7 @@ export default function Nutrition() {
               <Pressable onPress={() => router.push("/voice-log")} style={circleBtn}>
                 <Mic size={20} color={colors.ink} />
               </Pressable>
-              <Pressable onPress={() => showGlobalToast(isArabic ? "ماسح الملصقات قريباً" : "Label scanner coming soon", "default")} style={circleBtn}>
+              <Pressable onPress={handleScanLabel} style={circleBtn}>
                 <Camera size={20} color={colors.ink} />
               </Pressable>
             </View>
