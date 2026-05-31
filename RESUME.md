@@ -33,7 +33,7 @@ Branch `dev`. **Phases 2.3, 2.4, 2.5 (settings), 2.6 (social), 2.7 (CoachChat), 
 
 ### Fidelity audit (mobile-vs-web LOC + feature pass) — documented simplifications still open
 Ran a mobile-vs-web line-count + feature audit. Real functional gaps found & **fixed**: the Nutrition builders (above) and PreSession Save/Share (now real sheets via `buildSharePackage`). Remaining items are **intentional, documented simplifications** from the original port (content is reachable; fidelity is reduced) — flesh out per priority:
-- **PreSession** (`app/workout/preview.tsx`): still missing the per-exercise context menu (swap / replace / remove an exercise) and the coach **adapt sheet** (web's `initialAdapt` flow). Save + Share are done.
+- **PreSession** (`app/workout/preview.tsx`): Save, Share, and the per-exercise **context menu** (Exercise Details / Replace [toast stub, as in web] / Don't Recommend → persists to `excludedExercises` / Remove) are all done. Still deferred: **drag-to-reorder** the exercise list (reanimated, like RoutineBuilder) and the coach **adapt sheet** (web's `initialAdapt` flow — coach-adaptation banner when arriving from an adaptation).
 - **Dashboard** (`app/(tabs)/dashboard.tsx`): the 6 optional cards (hydration/recovery/analytics/challenges/leaderboard/coachChat, all **off by default**) render as nav-tiles → their full screens, not the web's rich inline preview cards. Also check welcome/missed-workout contextual cards vs web.
 - **PlanSettings** (`app/settings/plan.tsx`, ~46% of web LOC) and **Profile** (`app/(tabs)/me.tsx`, ~49%): spot-check for any per-row sheets/sections that were trimmed.
 - **WorkoutDebrief** (web `src/screens/main/WorkoutDebrief.tsx`): **unreferenced in web** (no route/nav) — correctly NOT ported; ignore.
