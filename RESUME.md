@@ -7,7 +7,7 @@ Handoff doc for continuing the web→React Native migration in a fresh session.
 1. Read this file + `../MIGRATION_MAP.md` (the full Phase-0 audit: routes, tokens, state, web-API replacements).
 2. The RN app lives in `mobile/` on branch **`dev`**. Working tree is clean; everything builds.
 3. Web app is the **source of truth** in `../src/` — do not modify it.
-4. Next task: **Phase 2.6 — the social cluster.** Settings cluster is now complete. Port the social screens in route order: `Inbox` (`app/inbox.tsx`), `Search` (`app/search.tsx`), `Challenges` (`app/challenges/index.tsx`, `create.tsx`, `[id].tsx`), `Circles` (`app/circles/index.tsx`, `create.tsx`, `[id].tsx`), `UserProfile` (`app/profile/[username].tsx`). After social: CoachChat (`app/coach.tsx`), history, tracking (MuscleRecovery/BodyMeasurements/ProgressPhotos/MorningCheckIn).
+4. Next task: **Phase 2.6 — the social cluster (in progress).** Settings cluster complete; `Inbox` done. Port the rest in route order: `Search` (`app/search.tsx`), `Challenges` (`app/challenges/index.tsx`, `create.tsx`, `[id].tsx`), `Circles` (`app/circles/index.tsx`, `create.tsx`, `[id].tsx`), `UserProfile` (`app/profile/[username].tsx`). After social: CoachChat (`app/coach.tsx`), history, tracking (MuscleRecovery/BodyMeasurements/ProgressPhotos/MorningCheckIn).
 
 ## Status (what's done)
 
@@ -24,7 +24,7 @@ Branch `dev`. **Phase 2.3 + 2.4 complete; Phase 2.5 settings cluster complete.**
 ## Remaining work
 - **Phase 2.4:** ✅ Nutrition core + `src/data/commonFoods.ts` + ✅ VoiceLog + ✅ FABRadialMenu. **Optional follow-up:** the Nutrition sheets deferred in the first pass (custom food/meal builders, recipe builder + share, camera label scanner OCR, weekly JSON export). Their triggers currently toast "coming soon".
 - **Phase 2.5:** settings cluster ✅ complete (Settings hub, ai-permissions, plan, profile-edit, subscription, blocked, delete-account, legal, excluded-exercises).
-- **Phase 2.6 (next):** social (Inbox/Search/Challenges/Circles/UserProfile), CoachChat, history, tracking (MuscleRecovery/BodyMeasurements/ProgressPhotos/MorningCheckIn), ShareCardRenderer (needs react-native-view-shot — pattern already used in WorkoutComplete).
+- **Phase 2.6 (in progress):** social — ✅ Inbox (`app/inbox.tsx`); **still to do:** Search/Challenges/Circles/UserProfile. Then CoachChat, history, tracking (MuscleRecovery/BodyMeasurements/ProgressPhotos/MorningCheckIn), ShareCardRenderer (needs react-native-view-shot — pattern already used in WorkoutComplete).
 - **Phase 3:** polish (safe-area/dark/RTL sweep), Android build, restore the CoachIcon drag + BodySVG pulse animation deferred in this pass.
 
 ## The porting loop (proven workflow)
@@ -66,4 +66,4 @@ Gotchas:
 
 ## Paste-this prompt to start the next session
 
-> Continue the SYNK web→React Native migration. Read `mobile/RESUME.md` and `MIGRATION_MAP.md` first. The RN app is in `mobile/` on branch `dev` (clean, building). The web app in `src/` is the source of truth — don't modify it. The settings cluster is complete; begin the social cluster by porting `src/screens/main/Inbox.tsx` → `mobile/app/inbox.tsx`, following the established loop (read → port → tsc → screenshot natively → commit). Keep the design 1:1 faithful.
+> Continue the SYNK web→React Native migration. Read `mobile/RESUME.md` and `MIGRATION_MAP.md` first. The RN app is in `mobile/` on branch `dev` (clean, building). The web app in `src/` is the source of truth — don't modify it. The settings cluster is complete and Inbox is done; continue the social cluster by porting `src/screens/main/Search.tsx` → `mobile/app/search.tsx`, following the established loop (read → port → tsc → screenshot natively → commit). Keep the design 1:1 faithful.
