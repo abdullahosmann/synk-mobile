@@ -263,7 +263,7 @@ const ImportRoutine: React.FC<{ encoded?: string }> = ({ encoded }) => {
 
             <Pressable
               onPress={handlePasteFromClipboard}
-              style={({ pressed }) => ({
+              style={{
                 marginTop: 16,
                 backgroundColor: colors.canvas,
                 borderWidth: 1,
@@ -274,8 +274,7 @@ const ImportRoutine: React.FC<{ encoded?: string }> = ({ encoded }) => {
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 8,
-                transform: [{ scale: pressed ? 0.98 : 1 }],
-              })}
+              }}
             >
               <ClipboardIcon size={16} color={colors.ink} />
               <AppText

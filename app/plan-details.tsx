@@ -188,7 +188,7 @@ export default function PlanDetails() {
         <View style={{ paddingHorizontal: 24, marginBottom: 48 }}>
           <Pressable
             onPress={() => router.push("/settings/plan")}
-            style={({ pressed }) => ({
+            style={{
               height: 44,
               backgroundColor: colors.surfacePearl,
               borderWidth: 1,
@@ -198,8 +198,7 @@ export default function PlanDetails() {
               alignItems: "center",
               justifyContent: "center",
               gap: 8,
-              transform: [{ scale: pressed ? 0.98 : 1 }],
-            })}
+            }}
           >
             <Settings size={18} color={colors.primary} />
             <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: fontFamily(isArabic, 600) }}>
@@ -228,15 +227,14 @@ export default function PlanDetails() {
               <Pressable
                 key={idx}
                 onPress={() => router.push(`/plan/week/${week.number}`)}
-                style={({ pressed }) => ({
+                style={{
                   width: 300,
                   backgroundColor: colors.canvas,
                   borderWidth: 1,
                   borderColor: colors.hairline,
                   borderRadius: 14,
                   padding: 24,
-                  transform: [{ scale: pressed ? 0.98 : 1 }],
-                })}
+                }}
               >
                 <View style={{ flexDirection: isArabic ? "row-reverse" : "row", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
                   <View style={{ alignItems: isArabic ? "flex-end" : "flex-start" }}>
@@ -305,7 +303,7 @@ export default function PlanDetails() {
                 <Pressable
                   key={entry.id}
                   onPress={() => router.push({ pathname: "/adaptive-insights", params: { adaptation: JSON.stringify(entry) } })}
-                  style={({ pressed }) => ({
+                  style={{
                     backgroundColor: colors.canvas,
                     borderWidth: 1,
                     borderColor: colors.hairline,
@@ -314,8 +312,7 @@ export default function PlanDetails() {
                     flexDirection: isArabic ? "row-reverse" : "row",
                     alignItems: "center",
                     gap: 16,
-                    transform: [{ scale: pressed ? 0.98 : 1 }],
-                  })}
+                  }}
                 >
                   <View style={{ minWidth: 50, paddingVertical: 4, backgroundColor: colors.canvasParchment, borderRadius: 12, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
                     <AppText style={{ fontSize: 10, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: fontFamily(isArabic, 600) }}>

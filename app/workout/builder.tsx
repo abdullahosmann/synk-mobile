@@ -645,7 +645,7 @@ export default function RoutineBuilder() {
             {/* Add exercise */}
             <Pressable
               onPress={openLibrary}
-              style={({ pressed }) => ({
+              style={{
                 paddingVertical: 40,
                 borderWidth: 1,
                 borderStyle: "dashed",
@@ -655,8 +655,7 @@ export default function RoutineBuilder() {
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 12,
-                transform: [{ scale: pressed ? 0.99 : 1 }],
-              })}
+              }}
             >
               <View
                 style={{
