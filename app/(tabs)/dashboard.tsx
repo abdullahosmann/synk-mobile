@@ -99,6 +99,7 @@ export default function Dashboard() {
     return diffDays >= 1 && getItem("synk:missedCardDismissedDate") !== todayStr;
   });
   const [showCustomize, setShowCustomize] = useState(false);
+  const [showRestLog, setShowRestLog] = useState(false);
   const [cards, setCards] = useState<Record<CardKey, boolean>>(() => {
     try {
       const saved = getItem("synk:dashboardCards");
@@ -422,12 +423,36 @@ export default function Dashboard() {
                           ? '"جسمك بيتبني وقت الراحة مش وقت التمرين. ركز النهاردة على الاستشفاء والترطيب."'
                           : '"Your body is built during rest, not training. Focus on recovery and hydration today."'}
                       </AppText>
-                      <Btn variant="pearl" fullWidth onPress={() => router.push("/voice-log")}>
+                      <Btn variant="pearl" fullWidth onPress={() => setShowRestLog(true)}>
                         <Plus size={16} color={colors.inkMuted80} />
                         <AppText variant="caption-strong" style={{ color: colors.inkMuted80, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5 }}>
                           {isArabic ? "تسجيل نشاط خفيف" : "LOG LIGHT ACTIVITY"}
                         </AppText>
                       </Btn>
+                    </View>
+                  ) : isPastSelected ? (
+                    <View style={[cardStyle, { padding: 24, alignItems: "center" }]}>
+                      <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.surfacePearl, alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
+                        <AppText style={{ fontSize: 20 }}>💪</AppText>
+                      </View>
+                      <AppText variant="body-strong" style={{ color: colors.ink, marginBottom: 4 }}>{isArabic ? "لم يتم تسجيل تمرين" : "No workout logged"}</AppText>
+                      <View style={{ width: "100%", marginTop: 16 }}>
+                        <Btn variant="utility-dark" fullWidth onPress={() => router.push("/fitness")} label={isArabic ? "إضافة تمرين فائت" : "Add missed workout"} />
+                      </View>
+                    </View>
+                  ) : isFutureSelected ? (
+                    <View style={[cardStyle, { padding: 20 }]}>
+                      <View style={{ alignSelf: isArabic ? "flex-end" : "flex-start", backgroundColor: "rgba(0,102,204,0.1)", paddingHorizontal: 12, paddingVertical: 4, borderRadius: 9999, marginBottom: 12 }}>
+                        <AppText style={{ color: colors.primary, fontSize: 11, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                          {isArabic ? "تمرين مخطط" : "PLANNED WORKOUT"}
+                        </AppText>
+                      </View>
+                      <AppText variant="title-2" style={{ color: colors.ink, textTransform: isArabic ? "none" : "uppercase", textAlign: isArabic ? "right" : "left" }}>
+                        {isArabic ? todaysWorkout.arabicCategory : todaysWorkout.category}
+                      </AppText>
+                      <View style={{ marginTop: 20 }}>
+                        <Btn variant="pearl" fullWidth onPress={() => router.push("/fitness")} label={isArabic ? "تعديل التمرين المخطط" : "Edit planned workout"} />
+                      </View>
                     </View>
                   ) : (
                     <Pressable onPress={() => router.push("/workout/preview")} style={{ height: 220, borderRadius: 14, overflow: "hidden", borderWidth: 1, borderColor: colors.hairline }}>
@@ -463,6 +488,20 @@ export default function Dashboard() {
               ];
               return (
                 <Pressable key={key} onPress={() => router.push("/nutrition")} style={[cardStyle, { padding: 24, alignItems: "center" }]}>
+                  {isFutureSelected && (
+                    <View style={{ width: "100%", alignItems: "center", marginBottom: 16 }}>
+                      <View style={{ backgroundColor: "rgba(0,102,204,0.1)", paddingHorizontal: 12, paddingVertical: 4, borderRadius: 9999 }}>
+                        <AppText style={{ color: colors.primary, fontSize: 12, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                          {isArabic ? "وجبات مخططة" : "PLANNED MEALS"}
+                        </AppText>
+                      </View>
+                    </View>
+                  )}
+                  {isPastSelected && consumed.cal === 0 && (
+                    <AppText style={{ width: "100%", textAlign: "center", color: colors.inkMuted48, fontSize: 14, fontWeight: "500", marginBottom: 8, fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+                      {isArabic ? "لم يتم تسجيل وجبات لهذا اليوم" : "No meals logged for this day"}
+                    </AppText>
+                  )}
                   <View style={{ width: 160, height: 160, alignItems: "center", justifyContent: "center" }}>
                     <Svg width={160} height={160} style={{ position: "absolute", transform: [{ rotate: "-90deg" }] }}>
                       <Circle cx={80} cy={80} r={74} fill="transparent" stroke={colors.hairline} strokeWidth={2} />
@@ -479,7 +518,11 @@ export default function Dashboard() {
                   <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 6, marginTop: 16 }}>
                     <Plus size={16} strokeWidth={2.5} color={colors.primary} />
                     <AppText style={{ color: colors.primary, fontSize: 13, textTransform: isArabic ? "none" : "uppercase", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
-                      {isArabic ? "تسجيل وجبة" : "LOG MEAL"}
+                      {isPastSelected
+                        ? isArabic ? "إضافة وجبة فائتة" : "Add missed meal"
+                        : isFutureSelected
+                          ? isArabic ? "تخطيط وجبة" : "Add planned meal"
+                          : isArabic ? "تسجيل وجبة" : "LOG MEAL"}
                     </AppText>
                   </View>
 
@@ -759,6 +802,26 @@ export default function Dashboard() {
             </View>
           ))}
         </View>
+      </BottomSheet>
+
+      <BottomSheet isOpen={showRestLog} onClose={() => setShowRestLog(false)} title={isArabic ? "كيف كان يومك؟" : "How was your rest day?"}>
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 16, marginBottom: 24 }}>
+          {[
+            { id: "stretch", label: isArabic ? "إطالة" : "STRETCHING" },
+            { id: "walk", label: isArabic ? "مشي" : "WALKING" },
+            { id: "yoga", label: isArabic ? "يوجا" : "YOGA" },
+            { id: "other", label: isArabic ? "أخرى" : "OTHER" },
+          ].map((item) => (
+            <Pressable
+              key={item.id}
+              onPress={() => setShowRestLog(false)}
+              style={{ width: "47%", padding: 16, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, alignItems: "center" }}
+            >
+              <AppText variant="caption-strong" style={{ color: colors.ink, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5 }}>{item.label}</AppText>
+            </Pressable>
+          ))}
+        </View>
+        <Btn variant="primary" fullWidth onPress={() => setShowRestLog(false)} label={isArabic ? "تم" : "DONE"} />
       </BottomSheet>
     </View>
   );
