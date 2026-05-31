@@ -30,6 +30,8 @@ import {
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import * as FileSystem from "expo-file-system/legacy";
+import * as Sharing from "expo-sharing";
 import Animated, { FadeIn } from "react-native-reanimated";
 import {
   Plus,
@@ -50,6 +52,7 @@ import {
   SlidersHorizontal,
   ThumbsUp,
   ThumbsDown,
+  Download,
 } from "lucide-react-native";
 import CoachIcon from "../components/CoachIcon";
 import CoachAvatar from "../components/CoachAvatar";
@@ -445,6 +448,19 @@ export default function Nutrition() {
     showGlobalToast(isArabic ? "تم حفظ الوجبة وإضافتها" : "Meal saved & added", "success");
   };
 
+  const exportWeeklyData = async () => {
+    try {
+      const weekStart = weeklyTotals.weekStart.toISOString().split("T")[0];
+      const data = { weekStart, weekEnd: weeklyTotals.weekEnd.toISOString().split("T")[0], days: weeklyTotals.daysData };
+      const uri = `${FileSystem.cacheDirectory}synk-week-${weekStart}.json`;
+      await FileSystem.writeAsStringAsync(uri, JSON.stringify(data, null, 2));
+      if (await Sharing.isAvailableAsync()) await Sharing.shareAsync(uri, { mimeType: "application/json", UTI: "public.json" });
+      else showGlobalToast(isArabic ? "تم حفظ الملف" : "File saved", "success");
+    } catch {
+      showGlobalToast(isArabic ? "تعذّر التصدير" : "Export failed", "error");
+    }
+  };
+
   // ---- Recipe builder ----
   const [isRecipeBuilderOpen, setIsRecipeBuilderOpen] = useState(false);
   const emptyRecipe = { name: "", description: "", servings: 1, ingredients: [] as any[], steps: [""] };
@@ -645,6 +661,7 @@ export default function Nutrition() {
     let totalCals = 0, totalPro = 0, totalCarbs = 0, totalFat = 0;
     let totalSugar = 0, totalFiber = 0, totalSodium = 0, totalCalcium = 0;
     let daysLogged = 0;
+    const daysData: { date: string; calories: number; protein: number; carbs: number; fat: number }[] = [];
 
     for (let i = 0; i < 7; i++) {
       const checkDate = new Date(weekStart);
@@ -663,13 +680,14 @@ export default function Nutrition() {
       }
       if (!dayLog) dayLog = { date: checkDateString, foods: [], workouts: [], water: 0 };
       const dayFoods = dayLog.foods || [];
+      let dCals = 0, dPro = 0, dCarbs = 0, dFat = 0;
       if (dayFoods.length > 0) {
         daysLogged++;
         dayFoods.forEach((food: any) => {
-          totalCals += food.calories || 0;
-          totalPro += food.protein || 0;
-          totalCarbs += food.carbs || 0;
-          totalFat += food.fat || 0;
+          dCals += food.calories || 0;
+          dPro += food.protein || 0;
+          dCarbs += food.carbs || 0;
+          dFat += food.fat || 0;
           const n = food.nutrients || {};
           totalSugar += food.sugar ?? n.sugar ?? 0;
           totalFiber += food.fiber ?? n.fiber ?? 0;
@@ -677,12 +695,14 @@ export default function Nutrition() {
           totalCalcium += food.calcium ?? n.calcium ?? 0;
         });
       }
+      totalCals += dCals; totalPro += dPro; totalCarbs += dCarbs; totalFat += dFat;
+      daysData.push({ date: checkDateString, calories: Math.round(dCals), protein: Math.round(dPro), carbs: Math.round(dCarbs), fat: Math.round(dFat) });
     }
 
     return {
       calories: totalCals, protein: totalPro, carbs: totalCarbs, fat: totalFat,
       sugar: totalSugar, fiber: totalFiber, sodium: totalSodium, calcium: totalCalcium,
-      daysLogged,
+      daysLogged, daysData,
       avgCalories: daysLogged > 0 ? Math.round(totalCals / daysLogged) : 0,
       avgProtein: daysLogged > 0 ? Math.round(totalPro / daysLogged) : 0,
       avgCarbs: daysLogged > 0 ? Math.round(totalCarbs / daysLogged) : 0,
@@ -1018,6 +1038,10 @@ export default function Nutrition() {
               {macroCol(isArabic ? "كارب" : "AVG CARBS", weeklyTotals.avgCarbs, targets.carbs)}
               {macroCol(isArabic ? "دهون" : "AVG FATS", weeklyTotals.avgFat, targets.fat)}
             </View>
+            <Pressable onPress={exportWeeklyData} style={{ marginTop: 20, height: 44, borderRadius: 9999, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              <Download size={16} color={colors.ink} />
+              <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.ink, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: ff(isArabic, 600) }}>{isArabic ? "تصدير الأسبوع (JSON)" : "Export week (JSON)"}</AppText>
+            </Pressable>
           </>
         )}
       </View>
