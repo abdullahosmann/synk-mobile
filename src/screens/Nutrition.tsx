@@ -24,6 +24,7 @@ import {
   Modal,
   Pressable,
   ScrollView,
+  Share,
   TextInput,
   View,
 } from "react-native";
@@ -325,6 +326,14 @@ export default function Nutrition() {
       return [];
     }
   });
+  const [localRecipes, setLocalRecipes] = useState<Recipe[]>(() => {
+    try {
+      const stored = getItem("synk:recipes");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
   const [isCustomFoodOpen, setIsCustomFoodOpen] = useState(false);
   const emptyCustomFood = {
     name: "", calories: "", protein: "", carbs: "", fat: "",
@@ -364,10 +373,19 @@ export default function Nutrition() {
   };
 
   // ---- Foods ----
-  const allAvailableFoods = useMemo(
-    () => [...localCustomMeals, ...localCustomFoods, ...(ALL_FOODS as UIDisplayFood[])],
-    [localCustomMeals, localCustomFoods],
-  );
+  const allAvailableFoods = useMemo(() => {
+    const formattedRecipes: UIDisplayFood[] = localRecipes.map((r) => ({
+      name: r.name,
+      calories: r.totals.calories / r.servings,
+      protein: r.totals.protein / r.servings,
+      carbs: r.totals.carbs / r.servings,
+      fat: r.totals.fat / r.servings,
+      portion: "1 serving",
+      isCustom: true,
+      recipeId: r.id,
+    }));
+    return [...formattedRecipes, ...localCustomMeals, ...localCustomFoods, ...(ALL_FOODS as UIDisplayFood[])];
+  }, [localRecipes, localCustomMeals, localCustomFoods]);
 
   // ---- Custom meal builder ----
   const [isCustomMealOpen, setIsCustomMealOpen] = useState(false);
@@ -425,6 +443,80 @@ export default function Nutrition() {
     setMealItemSearchMode(false);
     setMealSearchQuery("");
     showGlobalToast(isArabic ? "تم حفظ الوجبة وإضافتها" : "Meal saved & added", "success");
+  };
+
+  // ---- Recipe builder ----
+  const [isRecipeBuilderOpen, setIsRecipeBuilderOpen] = useState(false);
+  const emptyRecipe = { name: "", description: "", servings: 1, ingredients: [] as any[], steps: [""] };
+  const [recipeBuilder, setRecipeBuilder] = useState(emptyRecipe);
+  const [recipeIngredientSearchMode, setRecipeIngredientSearchMode] = useState(false);
+  const [recipeIngredientQuery, setRecipeIngredientQuery] = useState("");
+
+  const recipeTotals = useMemo(
+    () =>
+      recipeBuilder.ingredients.reduce(
+        (acc, c) => ({
+          calories: acc.calories + (Number(c.calories) || 0),
+          protein: acc.protein + (Number(c.protein) || 0),
+          carbs: acc.carbs + (Number(c.carbs) || 0),
+          fat: acc.fat + (Number(c.fat) || 0),
+        }),
+        { calories: 0, protein: 0, carbs: 0, fat: 0 },
+      ),
+    [recipeBuilder.ingredients],
+  );
+
+  const recipeValid =
+    recipeBuilder.name.trim() !== "" &&
+    recipeBuilder.ingredients.length > 0 &&
+    recipeBuilder.steps.filter((s) => s.trim() !== "").length > 0;
+
+  const saveRecipe = (shareAfter: boolean) => {
+    if (!recipeValid) return;
+    const newRecipe: Recipe = {
+      id: Date.now().toString(),
+      name: recipeBuilder.name.trim(),
+      description: recipeBuilder.description.trim(),
+      ingredients: recipeBuilder.ingredients.map((i) => ({
+        name: i.food.name,
+        portion: i.portionStr,
+        calories: Number(i.calories) || 0,
+        protein: Number(i.protein) || 0,
+        carbs: Number(i.carbs) || 0,
+        fat: Number(i.fat) || 0,
+      })),
+      steps: recipeBuilder.steps.filter((s) => s.trim() !== ""),
+      servings: recipeBuilder.servings,
+      totals: recipeTotals,
+      createdAt: new Date().toISOString(),
+    };
+    setLocalRecipes((prev) => {
+      const next = [...prev, newRecipe];
+      setItem("synk:recipes", JSON.stringify(next));
+      return next;
+    });
+    setIsRecipeBuilderOpen(false);
+    setRecipeBuilder(emptyRecipe);
+    setRecipeIngredientSearchMode(false);
+    setRecipeIngredientQuery("");
+    showGlobalToast(isArabic ? "تم حفظ الوصفة" : "Recipe saved", "success");
+    if (shareAfter) {
+      const perServ = (n: number) => Math.round(n / Math.max(1, newRecipe.servings));
+      const lines = [
+        `🍳 ${newRecipe.name}`,
+        newRecipe.description,
+        "",
+        isArabic ? "المكونات:" : "Ingredients:",
+        ...newRecipe.ingredients.map((i) => `• ${i.name} — ${i.portion}`),
+        "",
+        isArabic ? "الخطوات:" : "Steps:",
+        ...newRecipe.steps.map((s, i) => `${i + 1}. ${s}`),
+        "",
+        `${isArabic ? "لكل حصة" : "Per serving"}: ${perServ(newRecipe.totals.calories)} kcal · ${perServ(newRecipe.totals.protein)}P / ${perServ(newRecipe.totals.carbs)}C / ${perServ(newRecipe.totals.fat)}F`,
+        "synk.app",
+      ].filter(Boolean);
+      Share.share({ message: lines.join("\n") }).catch(() => {});
+    }
   };
 
   const handleEditMeal = (meal: LoggedFood) => {
@@ -1268,7 +1360,7 @@ export default function Nutrition() {
                 {[
                   { lbl: isArabic ? "إنشاء طعام" : "FOOD", onPress: () => { setShowMoreActions(false); setIsCustomFoodOpen(true); } },
                   { lbl: isArabic ? "إنشاء وجبة" : "MEAL", onPress: () => { setShowMoreActions(false); setIsCustomMealOpen(true); } },
-                  { lbl: isArabic ? "وصفة" : "RECIPE", onPress: () => showGlobalToast(isArabic ? "قريباً" : "Coming soon", "default") },
+                  { lbl: isArabic ? "وصفة" : "RECIPE", onPress: () => { setShowMoreActions(false); setIsRecipeBuilderOpen(true); } },
                 ].map(({ lbl, onPress }) => (
                   <Pressable key={lbl} onPress={onPress} style={{ flex: 1, height: 36, borderRadius: 10, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 }}>
                     <Plus size={12} color={colors.inkMuted80} />
@@ -1751,6 +1843,130 @@ export default function Nutrition() {
               </Pressable>
             </>
           )}
+        </View>
+      </BottomSheet>
+
+      {/* ===== Recipe builder ===== */}
+      <BottomSheet isOpen={isRecipeBuilderOpen} onClose={() => { setIsRecipeBuilderOpen(false); setRecipeIngredientSearchMode(false); }} title={isArabic ? "وصفة جديدة" : "New Recipe"}>
+        <View style={{ gap: 16, paddingBottom: 8 }}>
+          <TextInput value={recipeBuilder.name} onChangeText={(t) => setRecipeBuilder((p) => ({ ...p, name: t }))} placeholder={isArabic ? "اسم الوصفة" : "Recipe name"} placeholderTextColor={colors.inkMuted48} style={cfPill} />
+          <TextInput
+            value={recipeBuilder.description}
+            onChangeText={(t) => setRecipeBuilder((p) => ({ ...p, description: t }))}
+            placeholder={isArabic ? "إيه اللي يميز الوصفة دي؟" : "What's special about this recipe?"}
+            placeholderTextColor={colors.inkMuted48}
+            multiline
+            textAlignVertical="top"
+            style={{ minHeight: 70, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 12, fontSize: 15, color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}
+          />
+
+          {/* Servings */}
+          <View style={{ backgroundColor: colors.canvas, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
+            <AppText style={{ fontSize: 13, fontWeight: "700", color: colors.ink, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: ff(isArabic, 700) }}>{isArabic ? "حصص" : "Servings"}</AppText>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+              <Pressable onPress={() => setRecipeBuilder((p) => ({ ...p, servings: Math.max(1, p.servings - 1) }))} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
+                <AppText style={{ fontSize: 20, color: colors.ink }}>−</AppText>
+              </Pressable>
+              <AppText style={{ fontSize: 17, fontWeight: "600", color: colors.ink, minWidth: 24, textAlign: "center" }}>{recipeBuilder.servings}</AppText>
+              <Pressable onPress={() => setRecipeBuilder((p) => ({ ...p, servings: Math.min(20, p.servings + 1) }))} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
+                <AppText style={{ fontSize: 20, color: colors.ink }}>+</AppText>
+              </Pressable>
+            </View>
+          </View>
+
+          {/* Ingredients */}
+          <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic, 600) }}>{isArabic ? "المكونات" : "Ingredients"}</AppText>
+          {recipeBuilder.ingredients.map((item, idx) => (
+            <View key={idx} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", backgroundColor: colors.canvas, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, padding: 12 }}>
+              <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start" }}>
+                <AppText style={{ fontSize: 14, fontWeight: "600", color: colors.ink, fontFamily: ff(isArabic, 600) }} numberOfLines={1}>{item.food.name}</AppText>
+                <AppText style={{ fontSize: 12, color: colors.inkMuted48, fontFamily: ff(isArabic) }}>{item.portionStr} • {Math.round(item.calories)} kcal</AppText>
+              </View>
+              <Pressable onPress={() => setRecipeBuilder((p) => ({ ...p, ingredients: p.ingredients.filter((_, i) => i !== idx) }))} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(255,59,48,0.1)", alignItems: "center", justifyContent: "center" }}>
+                <X size={14} color={colors.semanticRed} />
+              </Pressable>
+            </View>
+          ))}
+          {recipeIngredientSearchMode ? (
+            <View style={{ backgroundColor: colors.canvas, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, padding: 12, gap: 8 }}>
+              <View style={{ justifyContent: "center" }}>
+                <Search size={16} color={colors.inkMuted48} style={{ position: "absolute", left: isArabic ? undefined : 10, right: isArabic ? 10 : undefined, zIndex: 1 }} />
+                <TextInput value={recipeIngredientQuery} onChangeText={setRecipeIngredientQuery} placeholder={isArabic ? "بحث..." : "Search..."} placeholderTextColor={colors.inkMuted48} autoFocus style={[cfPill, { height: 40, backgroundColor: colors.canvasParchment, paddingLeft: isArabic ? 16 : 34, paddingRight: isArabic ? 34 : 16 }]} />
+              </View>
+              <View style={{ maxHeight: 200 }}>
+                <ScrollView keyboardShouldPersistTaps="handled">
+                  {allAvailableFoods.filter((f) => !(f as any).recipeId && (f.name.toLowerCase().includes(recipeIngredientQuery.toLowerCase().trim()) || ((f as any).nameAr || "").includes(recipeIngredientQuery.trim()))).slice(0, 30).map((food, i) => (
+                    <Pressable
+                      key={i}
+                      onPress={() => { setRecipeBuilder((p) => ({ ...p, ingredients: [...p.ingredients, { food, multiplier: 1, portionStr: food.portion, calories: food.calories, protein: food.protein, carbs: food.carbs, fat: food.fat }] })); setRecipeIngredientSearchMode(false); setRecipeIngredientQuery(""); }}
+                      style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 8, paddingHorizontal: 4 }}
+                    >
+                      <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start" }}>
+                        <AppText style={{ fontSize: 13, fontWeight: "500", color: colors.ink, fontFamily: ff(isArabic) }} numberOfLines={1}>{food.name}</AppText>
+                        <AppText style={{ fontSize: 11, color: colors.inkMuted48 }}>{food.portion}</AppText>
+                      </View>
+                      <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.primary }}>{Math.round(food.calories)} kcal</AppText>
+                    </Pressable>
+                  ))}
+                </ScrollView>
+              </View>
+              <Pressable onPress={() => { setRecipeIngredientSearchMode(false); setRecipeIngredientQuery(""); }} style={{ height: 34, borderRadius: 9999, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+                <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.ink, textTransform: isArabic ? "none" : "uppercase", fontFamily: ff(isArabic, 600) }}>{isArabic ? "إلغاء" : "Cancel"}</AppText>
+              </Pressable>
+            </View>
+          ) : (
+            <Pressable onPress={() => setRecipeIngredientSearchMode(true)} style={{ height: 44, borderRadius: 14, borderWidth: 1, borderStyle: "dashed", borderColor: colors.hairline, backgroundColor: colors.surfacePearl, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              <Plus size={16} color={colors.ink} />
+              <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.ink, textTransform: isArabic ? "none" : "uppercase", fontFamily: ff(isArabic, 600) }}>{isArabic ? "إضافة مكون" : "Add Ingredient"}</AppText>
+            </Pressable>
+          )}
+
+          {/* Steps */}
+          <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic, 600) }}>{isArabic ? "الخطوات" : "Steps"}</AppText>
+          {recipeBuilder.steps.map((step, idx) => (
+            <View key={idx} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-start", gap: 8 }}>
+              <AppText style={{ fontSize: 13, fontWeight: "700", color: colors.inkMuted48, marginTop: 10, width: 18, textAlign: "center" }}>{idx + 1}.</AppText>
+              <TextInput
+                value={step}
+                onChangeText={(t) => setRecipeBuilder((p) => { const n = [...p.steps]; n[idx] = t; return { ...p, steps: n }; })}
+                multiline
+                textAlignVertical="top"
+                placeholder={isArabic ? "..." : "..."}
+                placeholderTextColor={colors.inkMuted48}
+                style={{ flex: 1, minHeight: 44, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, padding: 10, fontSize: 14, color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}
+              />
+              {recipeBuilder.steps.length > 1 && (
+                <Pressable onPress={() => setRecipeBuilder((p) => ({ ...p, steps: p.steps.filter((_, i) => i !== idx) }))} style={{ width: 32, height: 32, marginTop: 6, alignItems: "center", justifyContent: "center" }}>
+                  <X size={14} color={colors.semanticRed} />
+                </Pressable>
+              )}
+            </View>
+          ))}
+          <Pressable onPress={() => setRecipeBuilder((p) => ({ ...p, steps: [...p.steps, ""] }))} style={{ height: 40, borderRadius: 9999, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 6 }}>
+            <Plus size={14} color={colors.ink} />
+            <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.ink, textTransform: isArabic ? "none" : "uppercase", fontFamily: ff(isArabic, 600) }}>{isArabic ? "إضافة خطوة" : "Add Step"}</AppText>
+          </Pressable>
+
+          {/* Per-serving preview */}
+          <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, textAlign: "center", fontFamily: ff(isArabic, 600) }}>{isArabic ? "لكل حصة" : "Per serving"}</AppText>
+          <View style={{ flexDirection: "row", gap: 8 }}>
+            {([["kcal", recipeTotals.calories, colors.ink], ["prot", recipeTotals.protein, colors.semanticRed], ["carb", recipeTotals.carbs, colors.primary], ["fat", recipeTotals.fat, "#FFB340"]] as const).map(([lbl, val, col]) => (
+              <View key={lbl} style={{ flex: 1, backgroundColor: colors.canvasParchment, borderRadius: 10, paddingVertical: 8, alignItems: "center" }}>
+                <AppText style={{ fontSize: 12, fontWeight: "700", color: col }}>{Math.round(val / Math.max(1, recipeBuilder.servings))}</AppText>
+                <AppText style={{ fontSize: 10, color: colors.inkMuted48, textTransform: "uppercase" }}>{lbl}</AppText>
+              </View>
+            ))}
+          </View>
+
+          {/* Save / Save & Share */}
+          <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 12, marginTop: 4 }}>
+            <Pressable onPress={() => saveRecipe(false)} disabled={!recipeValid} style={{ flex: 1, height: 48, borderRadius: 9999, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center", opacity: recipeValid ? 1 : 0.3 }}>
+              <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, textTransform: isArabic ? "none" : "uppercase", fontFamily: ff(isArabic, 600) }}>{isArabic ? "حفظ" : "Save"}</AppText>
+            </Pressable>
+            <Pressable onPress={() => saveRecipe(true)} disabled={!recipeValid} style={{ flex: 1, height: 48, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", opacity: recipeValid ? 1 : 0.3 }}>
+              <AppText style={{ fontSize: 15, fontWeight: "600", color: "#fff", textTransform: isArabic ? "none" : "uppercase", fontFamily: ff(isArabic, 600) }}>{isArabic ? "حفظ ومشاركة" : "Save & Share"}</AppText>
+            </Pressable>
+          </View>
         </View>
       </BottomSheet>
 
