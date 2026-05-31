@@ -10,9 +10,10 @@
  *  - core sheets: search overlay, portion modal (+ slot picker, edit/delete),
  *    quick-add modal, customize sheet, success toast, adjust-plan sheet
  *
- * Deferred to a follow-up pass (their triggers toast "coming soon"): the custom
- * food / custom meal builders, recipe builder + share, and the camera label
- * scanner (OCR). Weekly JSON export (web Blob download) is also deferred.
+ * Full builders ported: custom food, custom meal, recipe (+ native share),
+ * weekly JSON export (expo-file-system/legacy + expo-sharing), and the label
+ * scanner (expo-image-picker → mock scanNutritionLabel → prefills the Custom
+ * Food builder; the OCR itself is a backend-deferred mock, as in web).
  *
  * Web→RN: useNavigate → useRouter; useSearchParams → useLocalSearchParams;
  * localStorage → sync storage helpers; motion/AnimatePresence → reanimated
