@@ -7,8 +7,10 @@
  * (calorie ring + macro bars + quick-add), and the Customize bottom sheet.
  *
  * The 6 optional cards (hydration/recovery/analytics/challenges/leaderboard/
- * coachChat) are off by default and surfaced via Customize; they render as
- * lightweight shortcut tiles here and gain full bodies in a later pass.
+ * coachChat) are off by default and surfaced via Customize; each renders its
+ * full rich inline body (1:1 with web): hydration quick-add, recovery bars,
+ * the analytics mini-chart + metrics, the challenge progress card, the
+ * leaderboard rows, and the coach-chat message/voice shortcuts.
  */
 import React, { useMemo, useState } from "react";
 import { Image, Pressable, ScrollView, View } from "react-native";
@@ -33,10 +35,15 @@ import {
   ArrowRight,
   Play,
   ChevronRight,
+  Trophy,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+  Mic,
 } from "lucide-react-native";
 import { useAppContext } from "../../src/AppContext";
 import { useToast } from "../../src/components/ToastProvider";
-import { useColors } from "../../src/theme/ThemeProvider";
+import { useColors, useTheme } from "../../src/theme/ThemeProvider";
 import CoachAvatar from "../../src/components/CoachAvatar";
 import BottomSheet from "../../src/components/BottomSheet";
 import { Toggle } from "../../src/components/ui/Toggle";
@@ -65,6 +72,7 @@ export default function Dashboard() {
   const { showToast } = useToast();
   const { user, todaysLogs, setTodaysLogs, streaks, selectedDate, setSelectedDate, appMode } = useAppContext();
   const colors = useColors();
+  const isDark = useTheme().theme === "dark";
   const insets = useSafeAreaInsets();
   const isArabic = user.language === "ar";
   const trainingStreak = streaks.find((s) => s.type === "training")?.count ?? 0;
@@ -370,20 +378,244 @@ export default function Dashboard() {
               );
             }
 
-            const tile: Record<string, { route: string }> = {
-              hydration: { route: "/nutrition" },
-              recovery: { route: "/muscle-recovery" },
-              analytics: { route: "/analytics" },
-              challenges: { route: "/challenges" },
-              leaderboard: { route: "/community" },
-              coachChat: { route: "/coach" },
-            };
-            return (
-              <Pressable key={key} onPress={() => router.push(tile[key].route as any)} style={[cardStyle, { padding: 20, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }]}>
-                <AppText variant="title" style={{ color: colors.ink }}>{CARD_LABELS[key]}</AppText>
-                <ChevronRight size={20} color={colors.inkMuted48} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
-              </Pressable>
-            );
+            if (key === "hydration") {
+              const waterValue = todaysLogs?.water || 0;
+              return (
+                <Pressable key={key} onPress={() => router.push("/nutrition")} style={[cardStyle, { padding: 20 }]}>
+                  <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                    <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
+                      <AppText style={{ fontSize: 18 }}>💧</AppText>
+                    </View>
+                    <View style={{ alignItems: isArabic ? "flex-end" : "flex-start" }}>
+                      <AppText variant="body-strong" style={{ color: colors.ink }}>{isArabic ? "الترطيب" : "Hydration"}</AppText>
+                      <AppText style={{ fontSize: 13, color: colors.inkMuted48, fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+                        {waterValue === 0
+                          ? isArabic ? "اضغط لتسجيل الماء" : "Tap to log water"
+                          : isArabic ? `${(waterValue / 1000).toFixed(1)} من ٢٫٥ لتر` : `${(waterValue / 1000).toFixed(1)} of 2.5 L`}
+                      </AppText>
+                      {waterValue > 0 && (
+                        <AppText style={{ fontSize: 11, color: colors.inkMuted48 }}>{waterValue}/2500ml</AppText>
+                      )}
+                    </View>
+                  </View>
+                  <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
+                    {[250, 500, 1000].map((amount) => (
+                      <Pressable
+                        key={amount}
+                        onPress={() => {
+                          setTodaysLogs((prev) => ({ ...prev, water: (prev.water || 0) + amount }));
+                          showToast(isArabic ? `تم إضافة ${amount} مل` : `Added ${amount}ml`);
+                        }}
+                        style={{ flex: 1, height: 36, borderRadius: 8, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.dividerSoft, alignItems: "center", justifyContent: "center" }}
+                      >
+                        <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.inkMuted80 }}>+{amount}ml</AppText>
+                      </Pressable>
+                    ))}
+                  </View>
+                </Pressable>
+              );
+            }
+
+            if (key === "recovery") {
+              const recoveryData = [
+                { nameEn: "Chest", nameAr: "الصدر", value: 85 },
+                { nameEn: "Back", nameAr: "الظهر", value: 60 },
+                { nameEn: "Legs", nameAr: "استشفاء الأرجل", value: 30 },
+                { nameEn: "Shoulders", nameAr: "الأكتاف", value: 95 },
+              ];
+              return (
+                <Pressable key={key} onPress={() => router.push("/muscle-recovery")} style={[cardStyle, { padding: 20 }]}>
+                  <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+                    <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                      {isArabic ? "الاستشفاء" : "RECOVERY"}
+                    </AppText>
+                    <ChevronRight size={16} strokeWidth={2.5} color={colors.hairline} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
+                  </View>
+                  <View style={{ gap: 12 }}>
+                    {recoveryData.map((muscle) => {
+                      let barColor = colors.semanticGreen;
+                      if (muscle.value < 40) barColor = colors.semanticRed;
+                      else if (muscle.value < 70) barColor = colors.semanticOrange;
+                      return (
+                        <View key={muscle.nameEn} style={{ gap: 4 }}>
+                          <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
+                            <AppText style={{ fontSize: 13, fontWeight: "500", color: colors.ink, fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+                              {isArabic ? muscle.nameAr : muscle.nameEn}
+                            </AppText>
+                            <AppText style={{ fontSize: 12, fontWeight: "500", color: colors.inkMuted48 }}>{muscle.value}%</AppText>
+                          </View>
+                          <View style={{ width: "100%", height: 3, backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", borderRadius: 9999, overflow: "hidden" }}>
+                            <View style={{ height: "100%", borderRadius: 9999, backgroundColor: barColor, width: `${muscle.value}%` }} />
+                          </View>
+                        </View>
+                      );
+                    })}
+                  </View>
+                  <AppText style={{ marginTop: 16, fontSize: 12, color: colors.inkMuted48, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+                    {isArabic ? "اضغط هنا لرؤية جميع العضلات" : "Tap to see all muscles"}
+                  </AppText>
+                </Pressable>
+              );
+            }
+
+            if (key === "analytics") {
+              const chartBars = [60, 80, 40, 90, 70, 100, 85];
+              return (
+                <Pressable key={key} onPress={() => router.push("/analytics")} style={[cardStyle, { padding: 16 }]}>
+                  <View style={{ alignItems: isArabic ? "flex-end" : "flex-start" }}>
+                    <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, marginBottom: 2, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                      {isArabic ? "تقدمك" : "YOUR PROGRESS"}
+                    </AppText>
+                    <AppText style={{ fontSize: 13, color: colors.inkMuted48, marginBottom: 12, fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+                      {isArabic ? "هذا الأسبوع" : "This week"}
+                    </AppText>
+                    <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-end", gap: 6, height: 48, marginBottom: 16 }}>
+                      {chartBars.map((h, i) => (
+                        <View key={i} style={{ width: 8, borderRadius: 2, backgroundColor: colors.primary, height: `${h}%` }} />
+                      ))}
+                    </View>
+                    <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                      <View style={{ alignItems: isArabic ? "flex-end" : "flex-start" }}>
+                        <AppText style={{ fontSize: 11, color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, marginBottom: 4, fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+                          {isArabic ? "السلسلة الأسبوعية" : "Weekly streak"}
+                        </AppText>
+                        <AppText variant="caption-strong" style={{ color: colors.ink }}>{isArabic ? "5 أيام" : "5 days"}</AppText>
+                      </View>
+                      <View style={{ width: 1, height: 32, backgroundColor: colors.hairline, marginHorizontal: 4 }} />
+                      <View style={{ alignItems: isArabic ? "flex-end" : "flex-start" }}>
+                        <AppText style={{ fontSize: 11, color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, marginBottom: 4, fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+                          {isArabic ? "الحجم" : "Volume"}
+                        </AppText>
+                        <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 2 }}>
+                          <TrendingUp size={14} color={colors.semanticGreen} />
+                          <AppText variant="caption-strong" style={{ color: colors.semanticGreen }}>+12%</AppText>
+                        </View>
+                      </View>
+                      <View style={{ width: 1, height: 32, backgroundColor: colors.hairline, marginHorizontal: 4 }} />
+                      <View style={{ alignItems: isArabic ? "flex-end" : "flex-start" }}>
+                        <AppText style={{ fontSize: 11, color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, marginBottom: 4, fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+                          {isArabic ? "أرقام قياسية" : "PRs"}
+                        </AppText>
+                        <AppText variant="caption-strong" style={{ color: colors.ink }}>{isArabic ? "3 الأسبوع ده" : "3 this week"}</AppText>
+                      </View>
+                    </View>
+                  </View>
+                  <ChevronRight size={16} color={colors.inkMuted48} style={{ position: "absolute", top: 16, right: isArabic ? undefined : 16, left: isArabic ? 16 : undefined, transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
+                </Pressable>
+              );
+            }
+
+            if (key === "challenges") {
+              const activeChallenge = {
+                titleEn: "7-Day Consistency", titleAr: "استمرارية ٧ أيام",
+                descEn: "Log a workout every day for a week", descAr: "سجل تمرينك كل يوم لمدة أسبوع",
+                progress: 4, total: 7, daysLeftEn: "3 days left", daysLeftAr: "متبقي ٣ أيام",
+              };
+              return (
+                <Pressable key={key} onPress={() => router.push("/community")} style={[cardStyle, { padding: 20 }]}>
+                  <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 6, marginBottom: 12 }}>
+                    <Trophy size={16} color={colors.primary} />
+                    <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                      {isArabic ? "تحدي نشط" : "ACTIVE CHALLENGE"}
+                    </AppText>
+                  </View>
+                  <AppText variant="caption-strong" style={{ color: colors.ink, marginBottom: 4, textAlign: isArabic ? "right" : "left" }}>
+                    {isArabic ? activeChallenge.titleAr : activeChallenge.titleEn}
+                  </AppText>
+                  <AppText style={{ fontSize: 13, color: colors.inkMuted48, lineHeight: 18, marginBottom: 16, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+                    {isArabic ? activeChallenge.descAr : activeChallenge.descEn}
+                  </AppText>
+                  <View style={{ gap: 6 }}>
+                    <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
+                      <AppText style={{ fontSize: 12, color: colors.inkMuted48, fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+                        {isArabic ? "التقدم" : "Progress"}
+                      </AppText>
+                      <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.ink }}>
+                        {activeChallenge.progress} / {activeChallenge.total} {isArabic ? "أيام" : "days"}
+                      </AppText>
+                    </View>
+                    <View style={{ width: "100%", height: 4, backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", borderRadius: 9999, overflow: "hidden" }}>
+                      <View style={{ height: "100%", borderRadius: 9999, backgroundColor: colors.primary, width: `${(activeChallenge.progress / activeChallenge.total) * 100}%` }} />
+                    </View>
+                    <AppText style={{ marginTop: 4, fontSize: 11, color: colors.inkMuted48, textAlign: isArabic ? "left" : "right", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+                      {isArabic ? activeChallenge.daysLeftAr : activeChallenge.daysLeftEn}
+                    </AppText>
+                  </View>
+                </Pressable>
+              );
+            }
+
+            if (key === "leaderboard") {
+              const topUsers: { rank: number; nameEn: string; nameAr: string; score: string; initial: string; trend: "up" | "down" | "flat"; change?: number; isMe?: boolean }[] = [
+                { rank: 1, nameEn: "Yousef", nameAr: "يوسف", score: "12,400", initial: "Y", trend: "up" },
+                { rank: 2, nameEn: "Mariam", nameAr: "مريم", score: "11,250", initial: "M", trend: "flat" },
+                { rank: 3, nameEn: "YOU", nameAr: "أنت", score: "10,800", initial: "A", trend: "up", change: 2, isMe: true },
+              ];
+              return (
+                <Pressable key={key} onPress={() => router.push("/community")} style={[cardStyle, { padding: 20 }]}>
+                  <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+                    <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                      {isArabic ? "المُتصدّرين" : "LEADERBOARD"}
+                    </AppText>
+                    <AppText style={{ fontSize: 12, color: colors.inkMuted48, fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+                      {isArabic ? "هذا الأسبوع" : "This week"}
+                    </AppText>
+                  </View>
+                  <View style={{ gap: 4 }}>
+                    {topUsers.map((lbUser) => (
+                      <View key={lbUser.rank} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, padding: 8, borderRadius: 10, backgroundColor: lbUser.isMe ? "rgba(0,102,204,0.05)" : "transparent" }}>
+                        <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.inkMuted48, width: 16, textAlign: "center" }}>{lbUser.rank}</AppText>
+                        <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: "#3b82f6", alignItems: "center", justifyContent: "center" }}>
+                          <AppText style={{ fontSize: 11, fontWeight: "700", color: "#fff" }}>{lbUser.initial}</AppText>
+                        </View>
+                        <AppText numberOfLines={1} style={{ flex: 1, fontSize: 14, fontWeight: lbUser.isMe ? "700" : "500", color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? (lbUser.isMe ? "Cairo_600SemiBold" : "Cairo_400Regular") : (lbUser.isMe ? "Inter_600SemiBold" : "Inter_400Regular") }}>
+                          {isArabic ? lbUser.nameAr : lbUser.nameEn}
+                        </AppText>
+                        <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
+                          <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.ink }}>{lbUser.score}</AppText>
+                          <View style={{ width: 16, alignItems: "center", justifyContent: "center" }}>
+                            {lbUser.trend === "up" && (
+                              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                <TrendingUp size={12} color={colors.semanticGreen} />
+                                {lbUser.change ? <AppText style={{ fontSize: 12, color: colors.semanticGreen }}>{lbUser.change}</AppText> : null}
+                              </View>
+                            )}
+                            {lbUser.trend === "down" && <TrendingDown size={12} color={colors.semanticRed} />}
+                            {lbUser.trend === "flat" && <Minus size={12} color={colors.inkMuted48} />}
+                          </View>
+                        </View>
+                      </View>
+                    ))}
+                  </View>
+                </Pressable>
+              );
+            }
+
+            if (key === "coachChat") {
+              return (
+                <View key={key} style={[cardStyle, { padding: 20 }]}>
+                  <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, marginBottom: 20 }}>
+                    <CoachAvatar coachId={user.coach || "khaled"} size={40} />
+                    <View style={{ alignItems: isArabic ? "flex-end" : "flex-start" }}>
+                      <AppText variant="body-strong" style={{ color: colors.ink, lineHeight: 18 }}>{coachName}</AppText>
+                      <AppText style={{ fontSize: 13, color: colors.inkMuted48, fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>{isArabic ? "المدرب" : "Coach"}</AppText>
+                    </View>
+                  </View>
+                  <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 12 }}>
+                    <Pressable onPress={() => router.push("/coach")} style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 16, paddingHorizontal: 8, borderRadius: 12, backgroundColor: "rgba(0,102,204,0.05)", borderWidth: 1, borderColor: "rgba(0,102,204,0.1)" }}>
+                      <MessageCircle size={24} color={colors.primary} />
+                      <AppText style={{ fontSize: 14, fontWeight: "600", color: colors.primary, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "رسالة نصية" : "Message"}</AppText>
+                    </Pressable>
+                    <Pressable onPress={() => router.push("/voice-log")} style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 16, paddingHorizontal: 8, borderRadius: 12, backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(29,29,31,0.05)", borderWidth: 1, borderColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)" }}>
+                      <Mic size={24} color={colors.ink} />
+                      <AppText style={{ fontSize: 14, fontWeight: "600", color: colors.ink, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "رسالة صوتية" : "Voice message"}</AppText>
+                    </Pressable>
+                  </View>
+                </View>
+              );
+            }
+
+            return null;
           })}
         </View>
       </ScrollView>
