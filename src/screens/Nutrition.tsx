@@ -308,8 +308,58 @@ export default function Nutrition() {
   const [showDetailedNutrients, setShowDetailedNutrients] = useState(false);
   const [showFoodDetailedNutrients, setShowFoodDetailedNutrients] = useState(false);
 
+  // ---- Custom foods (user-created, persisted) ----
+  const [localCustomFoods, setLocalCustomFoods] = useState<UIDisplayFood[]>(() => {
+    try {
+      const stored = getItem("synk:customFoods");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [isCustomFoodOpen, setIsCustomFoodOpen] = useState(false);
+  const emptyCustomFood = {
+    name: "", calories: "", protein: "", carbs: "", fat: "",
+    portionValue: "1", portionUnit: "serving",
+    sodium: "", calcium: "", fiber: "", sugar: "", saturatedFat: "", potassium: "", iron: "", cholesterol: "",
+  };
+  const [customFood, setCustomFood] = useState(emptyCustomFood);
+  const cfPill = { height: 44, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderRadius: 9999, paddingHorizontal: 16, fontSize: 15, color: colors.ink, textAlign: (isArabic ? "right" : "left") as "right" | "left" };
+
+  const handleAddCustomFood = () => {
+    if (!customFood.name || !customFood.calories) return;
+    const newFood: UIDisplayFood = {
+      name: customFood.name,
+      calories: Number(customFood.calories) || 0,
+      protein: Number(customFood.protein) || 0,
+      carbs: Number(customFood.carbs) || 0,
+      fat: Number(customFood.fat) || 0,
+      portion: `${customFood.portionValue} ${customFood.portionUnit}`,
+      verified: false,
+      isCustom: true,
+      portionOptions: [
+        {
+          label: customFood.portionUnit,
+          multiplier: 1,
+          isGramBased: ["g", "grams"].includes(customFood.portionUnit.toLowerCase()),
+        },
+      ],
+    };
+    setLocalCustomFoods((prev) => {
+      const next = [newFood, ...prev];
+      setItem("synk:customFoods", JSON.stringify(next));
+      return next;
+    });
+    setIsCustomFoodOpen(false);
+    setCustomFood(emptyCustomFood);
+    showGlobalToast(isArabic ? `تم إضافة ${newFood.name}` : `Added ${newFood.name}`, "success");
+  };
+
   // ---- Foods ----
-  const allAvailableFoods = useMemo(() => ALL_FOODS as UIDisplayFood[], []);
+  const allAvailableFoods = useMemo(
+    () => [...localCustomFoods, ...(ALL_FOODS as UIDisplayFood[])],
+    [localCustomFoods],
+  );
 
   const handleEditMeal = (meal: LoggedFood) => {
     const originalFood = allAvailableFoods.find((f) => f.name === meal.name);
@@ -1149,8 +1199,12 @@ export default function Nutrition() {
             </View>
             {showMoreActions && (
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 8 }}>
-                {[isArabic ? "إنشاء طعام" : "FOOD", isArabic ? "إنشاء وجبة" : "MEAL", isArabic ? "وصفة" : "RECIPE"].map((lbl) => (
-                  <Pressable key={lbl} onPress={() => showGlobalToast(isArabic ? "قريباً" : "Coming soon", "default")} style={{ flex: 1, height: 36, borderRadius: 10, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 }}>
+                {[
+                  { lbl: isArabic ? "إنشاء طعام" : "FOOD", onPress: () => { setShowMoreActions(false); setIsCustomFoodOpen(true); } },
+                  { lbl: isArabic ? "إنشاء وجبة" : "MEAL", onPress: () => showGlobalToast(isArabic ? "قريباً" : "Coming soon", "default") },
+                  { lbl: isArabic ? "وصفة" : "RECIPE", onPress: () => showGlobalToast(isArabic ? "قريباً" : "Coming soon", "default") },
+                ].map(({ lbl, onPress }) => (
+                  <Pressable key={lbl} onPress={onPress} style={{ flex: 1, height: 36, borderRadius: 10, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 }}>
                     <Plus size={12} color={colors.inkMuted80} />
                     <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted80 }} numberOfLines={1}>{lbl}</AppText>
                   </Pressable>
@@ -1453,6 +1507,83 @@ export default function Nutrition() {
           <AppText style={{ fontSize: 15, color: colors.inkMuted48, lineHeight: 22, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}>
             {isArabic ? "في الوقت الحالي، يمكنك تسجيل الوجبات يدوياً وتعديل الحصص مباشرة في اليوميات." : "For now, you can manually log meals and edit portions directly in the diary."}
           </AppText>
+        </View>
+      </BottomSheet>
+
+      {/* ===== Custom Food builder ===== */}
+      <BottomSheet isOpen={isCustomFoodOpen} onClose={() => setIsCustomFoodOpen(false)} title={isArabic ? "إضافة طعام مخصص" : "Add Custom Food"}>
+        <View style={{ gap: 16, paddingBottom: 8 }}>
+          <TextInput
+            value={customFood.name}
+            onChangeText={(t) => setCustomFood((p) => ({ ...p, name: t }))}
+            placeholder={isArabic ? "اسم الطعام" : "Food name"}
+            placeholderTextColor={colors.inkMuted48}
+            style={cfPill}
+          />
+          <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 8 }}>
+            <TextInput
+              value={customFood.portionValue}
+              onChangeText={(t) => setCustomFood((p) => ({ ...p, portionValue: t }))}
+              keyboardType="numeric"
+              placeholder={isArabic ? "الحجم (مثال: ١)" : "Size (e.g. 1)"}
+              placeholderTextColor={colors.inkMuted48}
+              style={[cfPill, { flex: 1 }]}
+            />
+          </View>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, flexDirection: isArabic ? "row-reverse" : "row" }}>
+            {["serving", "g", "ml", "piece", "cup", "tbsp", "tsp", "slice", "scoop"].map((u) => {
+              const sel = customFood.portionUnit === u;
+              return (
+                <Pressable key={u} onPress={() => setCustomFood((p) => ({ ...p, portionUnit: u }))} style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 9999, borderWidth: 1, borderColor: sel ? colors.primary : colors.hairline, backgroundColor: sel ? colors.primary : colors.canvas }}>
+                  <AppText style={{ fontSize: 12, fontWeight: "600", color: sel ? "#fff" : colors.ink }}>{u}</AppText>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
+            {([
+              { k: "calories", ph: isArabic ? "سعرات" : "Kcal", primary: true },
+              { k: "protein", ph: isArabic ? "بروتين (جم)" : "Prot (g)" },
+              { k: "carbs", ph: isArabic ? "كارب (جم)" : "Carbs (g)" },
+              { k: "fat", ph: isArabic ? "دهون (جم)" : "Fat (g)" },
+            ] as const).map((f) => (
+              <TextInput
+                key={f.k}
+                value={customFood[f.k]}
+                onChangeText={(t) => setCustomFood((p) => ({ ...p, [f.k]: t }))}
+                keyboardType="numeric"
+                placeholder={f.ph}
+                placeholderTextColor={colors.inkMuted48}
+                style={[cfPill, { width: "47%", fontWeight: "600", color: "primary" in f && f.primary ? colors.primary : colors.ink }]}
+              />
+            ))}
+          </View>
+          <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic, 600) }}>
+            {isArabic ? "عناصر غذائية إضافية (اختياري)" : "Optional nutrients"}
+          </AppText>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
+            {([
+              ["sodium", "Sodium (mg)"], ["calcium", "Calcium (mg)"], ["iron", "Iron (mg)"], ["fiber", "Fiber (g)"],
+              ["sugar", "Sugar (g)"], ["saturatedFat", "Sat Fat (g)"], ["cholesterol", "Cholesterol (mg)"], ["potassium", "Potassium (mg)"],
+            ] as const).map(([k, ph]) => (
+              <TextInput
+                key={k}
+                value={customFood[k]}
+                onChangeText={(t) => setCustomFood((p) => ({ ...p, [k]: t }))}
+                keyboardType="numeric"
+                placeholder={ph}
+                placeholderTextColor={colors.inkMuted48}
+                style={[cfPill, { width: "47%", height: 38, fontSize: 13 }]}
+              />
+            ))}
+          </View>
+          <Pressable
+            onPress={handleAddCustomFood}
+            disabled={!customFood.name || !customFood.calories}
+            style={{ height: 48, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", marginTop: 4, opacity: !customFood.name || !customFood.calories ? 0.3 : 1 }}
+          >
+            <AppText style={{ color: "#fff", fontWeight: "600", fontSize: 15, fontFamily: ff(isArabic, 600) }}>{isArabic ? "أضف الطعام" : "Add Food"}</AppText>
+          </Pressable>
         </View>
       </BottomSheet>
 
