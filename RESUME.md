@@ -7,11 +7,11 @@ Handoff doc for continuing the web→React Native migration in a fresh session.
 1. Read this file + `../MIGRATION_MAP.md` (the full Phase-0 audit: routes, tokens, state, web-API replacements).
 2. The RN app lives in `mobile/` on branch **`dev`**. Working tree is clean; everything builds.
 3. Web app is the **source of truth** in `../src/` — do not modify it.
-4. Next task: **Phase 2.6 — the social cluster (in progress).** Settings cluster complete; `Inbox` done. Port the rest in route order: `Search` (`app/search.tsx`), `Challenges` (`app/challenges/index.tsx`, `create.tsx`, `[id].tsx`), `Circles` (`app/circles/index.tsx`, `create.tsx`, `[id].tsx`), `UserProfile` (`app/profile/[username].tsx`). After social: CoachChat (`app/coach.tsx`), history, tracking (MuscleRecovery/BodyMeasurements/ProgressPhotos/MorningCheckIn).
+4. Next task: **Phase 2.9 — History.** Phases 2.6 (social), 2.7 (CoachChat), and 2.8 (tracking) are all complete. Port `WorkoutHistory` (`app/history/index.tsx`) and `HistoryWorkoutDetail` (`app/history/workout/[id].tsx` — `html-to-image` → `react-native-view-shot`, pattern already in `app/workout/complete.tsx`). After history: ShareCardRenderer + `share-templates/` (the dedicated 1080×1920 share cards, incl. the ProgressPhotos comparison), then Phase 3 polish.
 
 ## Status (what's done)
 
-Branch `dev`. **Phase 2.3 + 2.4 complete; Phase 2.5 settings cluster complete.** All screens below are typecheck-clean and verified rendering on the iPhone 17 Pro Max simulator.
+Branch `dev`. **Phases 2.3, 2.4, 2.5 (settings), 2.6 (social), 2.7 (CoachChat), 2.8 (tracking) all complete.** All screens below are typecheck-clean and verified rendering on the iPhone 17 Pro Max simulator.
 
 - **Phase 1 — Foundation:** expo-router + NativeWind v4 + reanimated/gesture-handler + svg. Design tokens ported 1:1 from `../src/index.css`. AsyncStorage-backed storage with sync cache + boot hydration. ThemeProvider (light/dark), Inter/Cairo fonts.
 - **Shared components (~32):** Btn, Card, Typography, Input, Screen, AppleBackdrop, Toggle, ContinueButton, BottomSheet, BottomNav, ToastProvider, Avatar, CoachAvatar, CoachIcon, OnboardingLayout, GoalPacePicker, TopBar, EmptyState, WeightTrendChart (svg), WeightLogSheet, BodySVG (svg muscle map).
@@ -24,7 +24,11 @@ Branch `dev`. **Phase 2.3 + 2.4 complete; Phase 2.5 settings cluster complete.**
 ## Remaining work
 - **Phase 2.4:** ✅ Nutrition core + `src/data/commonFoods.ts` + ✅ VoiceLog + ✅ FABRadialMenu. **Optional follow-up:** the Nutrition sheets deferred in the first pass (custom food/meal builders, recipe builder + share, camera label scanner OCR, weekly JSON export). Their triggers currently toast "coming soon".
 - **Phase 2.5:** settings cluster ✅ complete (Settings hub, ai-permissions, plan, profile-edit, subscription, blocked, delete-account, legal, excluded-exercises).
-- **Phase 2.6 (in progress):** social — ✅ Inbox (`app/inbox.tsx`); **still to do:** Search/Challenges/Circles/UserProfile. Then CoachChat, history, tracking (MuscleRecovery/BodyMeasurements/ProgressPhotos/MorningCheckIn), ShareCardRenderer (needs react-native-view-shot — pattern already used in WorkoutComplete).
+- **Phase 2.6 — social cluster (complete):** `app/inbox.tsx` (Inbox), `app/search.tsx` (Search), `app/challenges/{index,create,[id]}.tsx` (Challenges/Create/Detail), `app/circles/{index,create,[id]}.tsx` (Circles/Create/Detail), `app/profile/[username].tsx` (UserProfile). New shared sheets: `src/components/ReportSheet.tsx`, `BlockConfirmSheet.tsx`. Each cluster has a slide-stack `_layout.tsx`.
+- **Phase 2.7 — CoachChat (complete):** `app/coach.tsx`. Subscription gate uses `subscriptionTier !== "free"` (mobile has no `subscriptionStatus`).
+- **Phase 2.8 — tracking (complete):** `app/muscle-recovery/{index,[muscleId]}.tsx` (MuscleRecovery/MuscleDetail — uses the RN-ported `BodySVG`; edit slider via PanResponder), `app/measurements.tsx` (BodyMeasurements — react-native-svg chart), `app/photos.tsx` (ProgressPhotos — expo-image-picker + new `src/lib/photoStorage.ts` on expo-file-system + view-shot share), `app/morning-checkin.tsx` (MorningCheckIn — 4-step, PanResponder slider).
+- **Phase 2.9 (next):** history — `app/history/index.tsx` (WorkoutHistory), `app/history/workout/[id].tsx` (HistoryWorkoutDetail; view-shot share).
+- **ShareCardRenderer + `share-templates/`:** the dedicated 1080×1920 share cards (incl. the ProgressPhotos before/after comparison, currently a simplified on-screen capture). Pattern: `react-native-view-shot` (`app/workout/complete.tsx`).
 - **Phase 3:** polish (safe-area/dark/RTL sweep), Android build, restore the CoachIcon drag + BodySVG pulse animation deferred in this pass.
 
 ## The porting loop (proven workflow)
@@ -66,4 +70,4 @@ Gotchas:
 
 ## Paste-this prompt to start the next session
 
-> Continue the SYNK web→React Native migration. Read `mobile/RESUME.md` and `MIGRATION_MAP.md` first. The RN app is in `mobile/` on branch `dev` (clean, building). The web app in `src/` is the source of truth — don't modify it. The settings cluster is complete and Inbox is done; continue the social cluster by porting `src/screens/main/Search.tsx` → `mobile/app/search.tsx`, following the established loop (read → port → tsc → screenshot natively → commit). Keep the design 1:1 faithful.
+> Continue the SYNK web→React Native migration. Read `mobile/RESUME.md` and `MIGRATION_MAP.md` first. The RN app is in `mobile/` on branch `dev` (clean, building). The web app in `src/` is the source of truth — don't modify it. Phases 2.6 (social), 2.7 (CoachChat), and 2.8 (tracking) are complete; start Phase 2.9 — history by porting `src/screens/main/WorkoutHistory.tsx` → `mobile/app/history/index.tsx`, following the established loop (read → port → tsc → screenshot natively → commit). Keep the design 1:1 faithful.
