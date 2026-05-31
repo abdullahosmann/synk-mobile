@@ -112,7 +112,7 @@ export default function MuscleDetail() {
         {/* Visualization */}
         <View style={{ alignItems: "center", marginBottom: 40, paddingTop: 32 }}>
           <View style={{ width: 112, height: 256 }}>
-            <BodySVG view={view} recoveryData={user.muscleRecovery || {}} highlightedId={muscleId} />
+            <BodySVG view={view} recoveryData={user.muscleRecovery || {}} highlightedId={muscleId} animateHighlight />
           </View>
         </View>
 

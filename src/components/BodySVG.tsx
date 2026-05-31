@@ -1,12 +1,25 @@
 /**
  * BodySVG — RN port of src/components/BodySVG.tsx (react-native-svg).
  * Front/back body silhouette with per-muscle fill driven by recovery data or a
- * highlighted set. Same paths and fill logic as the web; the web's motion.g
- * pulse is omitted (static) and can return in the polish pass.
+ * highlighted set. Same paths and fill logic as the web. The web's motion.g
+ * pulse on active muscles is restored here as a reanimated fill-opacity
+ * "breathing" loop (SVG-G center-scaling is awkward in RN; the opacity pulse
+ * reads the same and is cheap), gated by `animateHighlight` so the off-screen
+ * share-template captures stay static.
  */
-import React from "react";
+import React, { useEffect } from "react";
 import Svg, { G, Path } from "react-native-svg";
+import Animated, {
+  cancelAnimation,
+  Easing,
+  useAnimatedProps,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from "react-native-reanimated";
 import { useColors } from "../theme/ThemeProvider";
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 export const getRecoveryColor = (pct: number) => {
   if (pct >= 90) return "#0066cc";
@@ -20,6 +33,8 @@ interface BodySVGProps {
   highlightedId?: string;
   highlightedMuscles?: string[];
   onMusclePress?: (id: string) => void;
+  /** Pulse active muscles (web motion.g). Off by default so captures are static. */
+  animateHighlight?: boolean;
 }
 
 export const BodySVG: React.FC<BodySVGProps> = ({
@@ -28,9 +43,23 @@ export const BodySVG: React.FC<BodySVGProps> = ({
   highlightedId,
   highlightedMuscles,
   onMusclePress,
+  animateHighlight = false,
 }) => {
   const colors = useColors();
   const isFront = view === "front";
+
+  // Breathing pulse for active muscles (fillOpacity 0.8 ↔ 0.45 over 2s).
+  const pulse = useSharedValue(0);
+  useEffect(() => {
+    if (animateHighlight) {
+      pulse.value = withRepeat(withTiming(1, { duration: 1000, easing: Easing.inOut(Easing.ease) }), -1, true);
+    } else {
+      cancelAnimation(pulse);
+      pulse.value = 0;
+    }
+    return () => cancelAnimation(pulse);
+  }, [animateHighlight, pulse]);
+  const pulseProps = useAnimatedProps(() => ({ fillOpacity: 0.8 - pulse.value * 0.35 }));
 
   const fillFor = (id: string) => {
     if (highlightedId) {
@@ -59,18 +88,30 @@ export const BodySVG: React.FC<BodySVGProps> = ({
   const muscle = (id: string, ds: string[]) => {
     const f = fillFor(id);
     const active = isActive(id);
+    const pulsing = animateHighlight && active && f.fill !== "transparent";
     return (
       <G key={id} onPress={onMusclePress ? () => onMusclePress(id) : undefined}>
-        {ds.map((d, i) => (
-          <Path
-            key={i}
-            d={d}
-            fill={f.fill}
-            fillOpacity={f.fillOpacity}
-            stroke={active ? colors.primary : "rgba(0,0,0,0.2)"}
-            strokeWidth={active ? 0.8 : 0.3}
-          />
-        ))}
+        {ds.map((d, i) =>
+          pulsing ? (
+            <AnimatedPath
+              key={i}
+              d={d}
+              fill={f.fill}
+              animatedProps={pulseProps}
+              stroke={colors.primary}
+              strokeWidth={0.8}
+            />
+          ) : (
+            <Path
+              key={i}
+              d={d}
+              fill={f.fill}
+              fillOpacity={f.fillOpacity}
+              stroke={active ? colors.primary : "rgba(0,0,0,0.2)"}
+              strokeWidth={active ? 0.8 : 0.3}
+            />
+          ),
+        )}
       </G>
     );
   };
