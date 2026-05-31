@@ -8,9 +8,10 @@
  * Full challenge/circle detail screens land in Phase 2.5.
  */
 import React, { useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, Share, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import * as Sharing from "expo-sharing";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import {
   Users, Star, Search, Bell, Heart, Share2, MoreHorizontal,
@@ -19,6 +20,7 @@ import {
 import { useAppContext } from "../../src/AppContext";
 import { useToast } from "../../src/components/ToastProvider";
 import Avatar from "../../src/components/Avatar";
+import { ShareCardRenderer, ShareCardPayload } from "../../src/components/ShareCardRenderer";
 import { useColors } from "../../src/theme/ThemeProvider";
 import { AppText, ScreenTitle } from "../../src/components/ui/Typography";
 import { Btn } from "../../src/components/ui/Btn";
@@ -54,6 +56,49 @@ export default function Community() {
 
   const toggleCheer = (id: string) =>
     setFeed((prev) => prev.map((f) => (f.id === id ? { ...f, cheered: !f.cheered, cheers: f.cheers + (f.cheered ? -1 : 1) } : f)));
+
+  // ---- Achievement share cards (pr / streak) ----
+  const [sharingPostId, setSharingPostId] = useState<string | null>(null);
+  const sharingPost = feed.find((p) => p.id === sharingPostId);
+
+  const getSharingPayload = (post: FeedItem): ShareCardPayload => {
+    if (post.type === "pr") {
+      const m = post.detail ? post.detail.match(/(\d+)\s*(kg|lb)\s*(?:×|x)\s*(\d+)/i) : null;
+      return {
+        exerciseName: post.headline || "NEW PR",
+        weight: m ? parseInt(m[1]) : 80,
+        unit: m ? (m[2].toLowerCase() as "kg" | "lb") : "kg",
+        reps: m ? parseInt(m[3]) : 5,
+        previousWeight: 75,
+        previousReps: 5,
+      };
+    }
+    if (post.type === "streak") {
+      const m = (post.headline || post.detail || "").match(/(\d+)/);
+      return { streakDays: m ? parseInt(m[1]) : 30 };
+    }
+    return {};
+  };
+
+  const onShareCardReady = async (uri: string) => {
+    try {
+      if (await Sharing.isAvailableAsync()) await Sharing.shareAsync(uri);
+      else showToast(isArabic ? "تم حفظ الصورة" : "Image saved", "success");
+    } catch {
+      /* user cancelled */
+    } finally {
+      setSharingPostId(null);
+    }
+  };
+
+  const handleShareClick = (item: FeedItem) => {
+    if (item.type === "pr" || item.type === "streak") {
+      setSharingPostId(item.id);
+      showToast(isArabic ? "بنحضرلك الكارت..." : "Preparing your card...", "info");
+    } else {
+      Share.share({ message: isArabic ? "شوف تمريني على Synk · synk.app" : "Check out my workout on Synk · synk.app" }).catch(() => {});
+    }
+  };
 
   // subscriptionStatus is set loosely by the Paywall (not in the typed profile).
   const subscriptionStatus = (user as { subscriptionStatus?: string })?.subscriptionStatus;
@@ -175,7 +220,7 @@ export default function Community() {
                     <Heart size={18} color={item.cheered ? colors.primary : colors.inkMuted48} fill={item.cheered ? colors.primary : "none"} />
                     {item.cheers > 0 && <AppText variant="caption" style={{ color: item.cheered ? colors.primary : colors.inkMuted48 }}>{String(item.cheers)}</AppText>}
                   </Pressable>
-                  <Pressable onPress={() => showToast(isArabic ? "مشاركة" : "Share", "info")}>
+                  <Pressable onPress={() => handleShareClick(item)}>
                     <Share2 size={18} color={colors.inkMuted48} />
                   </Pressable>
                 </View>
@@ -217,6 +262,20 @@ export default function Community() {
           </View>
         )}
       </ScrollView>
+
+      {/* Off-screen achievement share card (pr / streak) */}
+      {sharingPost && (
+        <ShareCardRenderer
+          type={sharingPost.type as "pr" | "streak"}
+          payload={getSharingPayload(sharingPost)}
+          user={{ name: user?.name || "User", coachName: user?.coach || undefined, language: isArabic ? "ar" : "en" }}
+          onReady={onShareCardReady}
+          onError={() => {
+            showToast(isArabic ? "مقدرناش نحضّر الكارت. جرب تاني." : "Couldn't prepare card. Try again.", "error");
+            setSharingPostId(null);
+          }}
+        />
+      )}
     </View>
   );
 }
