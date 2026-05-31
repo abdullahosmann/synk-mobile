@@ -317,6 +317,14 @@ export default function Nutrition() {
       return [];
     }
   });
+  const [localCustomMeals, setLocalCustomMeals] = useState<UIDisplayFood[]>(() => {
+    try {
+      const stored = getItem("synk:customMeals");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
   const [isCustomFoodOpen, setIsCustomFoodOpen] = useState(false);
   const emptyCustomFood = {
     name: "", calories: "", protein: "", carbs: "", fat: "",
@@ -357,9 +365,67 @@ export default function Nutrition() {
 
   // ---- Foods ----
   const allAvailableFoods = useMemo(
-    () => [...localCustomFoods, ...(ALL_FOODS as UIDisplayFood[])],
-    [localCustomFoods],
+    () => [...localCustomMeals, ...localCustomFoods, ...(ALL_FOODS as UIDisplayFood[])],
+    [localCustomMeals, localCustomFoods],
   );
+
+  // ---- Custom meal builder ----
+  const [isCustomMealOpen, setIsCustomMealOpen] = useState(false);
+  const [customMealBuilder, setCustomMealBuilder] = useState<{
+    name: string;
+    items: { food: UIDisplayFood; multiplier: number; portionStr: string }[];
+  }>({ name: "", items: [] });
+  const [mealItemSearchMode, setMealItemSearchMode] = useState(false);
+  const [mealSearchQuery, setMealSearchQuery] = useState("");
+  const filteredMealItems = useMemo(() => {
+    if (!mealSearchQuery) return allAvailableFoods.slice(0, 10);
+    const q = mealSearchQuery.toLowerCase().trim();
+    const qRaw = mealSearchQuery.trim();
+    return allAvailableFoods
+      .filter((f) => f.name.toLowerCase().includes(q) || ((f as any).nameAr || "").includes(qRaw))
+      .slice(0, 10);
+  }, [mealSearchQuery, allAvailableFoods]);
+  const mealTotals = useMemo(() => {
+    const sum = (sel: (f: UIDisplayFood) => number) =>
+      Math.round(customMealBuilder.items.reduce((acc, it) => acc + sel(it.food) * it.multiplier, 0));
+    return { kcal: sum((f) => f.calories), prot: sum((f) => f.protein), carb: sum((f) => f.carbs), fat: sum((f) => f.fat) };
+  }, [customMealBuilder.items]);
+
+  const handleSaveCustomMeal = () => {
+    if (!customMealBuilder.name || customMealBuilder.items.length === 0) return;
+    const newMeal: UIDisplayFood = {
+      name: customMealBuilder.name,
+      calories: mealTotals.kcal,
+      protein: mealTotals.prot,
+      carbs: mealTotals.carb,
+      fat: mealTotals.fat,
+      portion: "1 meal",
+      verified: false,
+      isCustom: true,
+      subFoods: customMealBuilder.items.map((it) => ({
+        id: "",
+        name: it.food.name,
+        calories: it.food.calories * it.multiplier,
+        protein: it.food.protein * it.multiplier,
+        carbs: it.food.carbs * it.multiplier,
+        fat: it.food.fat * it.multiplier,
+        portion: it.portionStr,
+        time: "",
+      })),
+      portionOptions: [{ label: "meal", multiplier: 1 }],
+    };
+    setLocalCustomMeals((prev) => {
+      const next = [newMeal, ...prev];
+      setItem("synk:customMeals", JSON.stringify(next));
+      return next;
+    });
+    addMeal(newMeal, 1, "1 meal");
+    setIsCustomMealOpen(false);
+    setCustomMealBuilder({ name: "", items: [] });
+    setMealItemSearchMode(false);
+    setMealSearchQuery("");
+    showGlobalToast(isArabic ? "تم حفظ الوجبة وإضافتها" : "Meal saved & added", "success");
+  };
 
   const handleEditMeal = (meal: LoggedFood) => {
     const originalFood = allAvailableFoods.find((f) => f.name === meal.name);
@@ -1201,7 +1267,7 @@ export default function Nutrition() {
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 8 }}>
                 {[
                   { lbl: isArabic ? "إنشاء طعام" : "FOOD", onPress: () => { setShowMoreActions(false); setIsCustomFoodOpen(true); } },
-                  { lbl: isArabic ? "إنشاء وجبة" : "MEAL", onPress: () => showGlobalToast(isArabic ? "قريباً" : "Coming soon", "default") },
+                  { lbl: isArabic ? "إنشاء وجبة" : "MEAL", onPress: () => { setShowMoreActions(false); setIsCustomMealOpen(true); } },
                   { lbl: isArabic ? "وصفة" : "RECIPE", onPress: () => showGlobalToast(isArabic ? "قريباً" : "Coming soon", "default") },
                 ].map(({ lbl, onPress }) => (
                   <Pressable key={lbl} onPress={onPress} style={{ flex: 1, height: 36, borderRadius: 10, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 }}>
@@ -1584,6 +1650,107 @@ export default function Nutrition() {
           >
             <AppText style={{ color: "#fff", fontWeight: "600", fontSize: 15, fontFamily: ff(isArabic, 600) }}>{isArabic ? "أضف الطعام" : "Add Food"}</AppText>
           </Pressable>
+        </View>
+      </BottomSheet>
+
+      {/* ===== Custom Meal builder ===== */}
+      <BottomSheet isOpen={isCustomMealOpen} onClose={() => { setIsCustomMealOpen(false); setMealItemSearchMode(false); }} title={isArabic ? "إنشاء وجبة مخصصة" : "Create Custom Meal"}>
+        <View style={{ gap: 16, paddingBottom: 8 }}>
+          <TextInput
+            value={customMealBuilder.name}
+            onChangeText={(t) => setCustomMealBuilder((p) => ({ ...p, name: t }))}
+            placeholder={isArabic ? "اسم الوجبة" : "Meal name"}
+            placeholderTextColor={colors.inkMuted48}
+            style={cfPill}
+          />
+
+          {!mealItemSearchMode ? (
+            <>
+              <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
+                <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: ff(isArabic, 600) }}>
+                  {isArabic ? "مكونات الوجبة" : "Meal items"}
+                </AppText>
+                <Pressable onPress={() => setMealItemSearchMode(true)} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 4 }}>
+                  <Plus size={14} color={colors.primary} />
+                  <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", fontFamily: ff(isArabic, 600) }}>{isArabic ? "إضافة عنصر" : "Add item"}</AppText>
+                </Pressable>
+              </View>
+
+              {customMealBuilder.items.length === 0 ? (
+                <View style={{ borderWidth: 1, borderStyle: "dashed", borderColor: colors.hairline, borderRadius: 14, padding: 24, alignItems: "center" }}>
+                  <AppText style={{ fontSize: 13, color: colors.inkMuted48, textAlign: "center", fontFamily: ff(isArabic) }}>
+                    {isArabic ? "لا توجد عناصر. أضف طعاماً للوجبة." : "No items yet. Add food to your meal."}
+                  </AppText>
+                </View>
+              ) : (
+                <View style={{ gap: 8 }}>
+                  {customMealBuilder.items.map((it, idx) => (
+                    <View key={idx} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 12, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
+                      <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start" }}>
+                        <AppText style={{ fontSize: 14, fontWeight: "600", color: colors.ink, fontFamily: ff(isArabic, 600) }} numberOfLines={1}>{it.food.name}</AppText>
+                        <AppText style={{ fontSize: 11, color: colors.inkMuted48, fontFamily: ff(isArabic) }}>{it.portionStr}</AppText>
+                      </View>
+                      <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
+                        <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.primary }}>{Math.round(it.food.calories * it.multiplier)} kcal</AppText>
+                        <Pressable onPress={() => setCustomMealBuilder((p) => ({ ...p, items: p.items.filter((_, i) => i !== idx) }))}>
+                          <X size={16} color={colors.inkMuted48} />
+                        </Pressable>
+                      </View>
+                    </View>
+                  ))}
+                  <View style={{ flexDirection: "row", gap: 8, paddingTop: 4 }}>
+                    {([["Kcal", mealTotals.kcal], ["Prot", `${mealTotals.prot}g`], ["Carb", `${mealTotals.carb}g`], ["Fat", `${mealTotals.fat}g`]] as const).map(([lbl, val], i) => (
+                      <View key={lbl} style={{ flex: 1, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, paddingVertical: 8, alignItems: "center" }}>
+                        <AppText style={{ fontSize: 9, color: colors.inkMuted48, textTransform: "uppercase" }}>{lbl}</AppText>
+                        <AppText style={{ fontSize: 13, fontWeight: "600", color: i === 0 ? colors.primary : colors.ink }}>{val}</AppText>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              )}
+
+              <Pressable
+                onPress={handleSaveCustomMeal}
+                disabled={!customMealBuilder.name || customMealBuilder.items.length === 0}
+                style={{ height: 48, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", marginTop: 4, opacity: !customMealBuilder.name || customMealBuilder.items.length === 0 ? 0.3 : 1 }}
+              >
+                <AppText style={{ color: "#fff", fontWeight: "600", fontSize: 15, fontFamily: ff(isArabic, 600) }}>{isArabic ? "حفظ وإضافة الوجبة" : "Save & Add Meal"}</AppText>
+              </Pressable>
+            </>
+          ) : (
+            <>
+              <View style={{ justifyContent: "center" }}>
+                <Search size={14} color={colors.inkMuted48} style={{ position: "absolute", left: isArabic ? undefined : 12, right: isArabic ? 12 : undefined, zIndex: 1 }} />
+                <TextInput
+                  value={mealSearchQuery}
+                  onChangeText={setMealSearchQuery}
+                  placeholder={isArabic ? "ابحث عن عنصر..." : "Search items..."}
+                  placeholderTextColor={colors.inkMuted48}
+                  style={[cfPill, { height: 40, paddingLeft: isArabic ? 16 : 36, paddingRight: isArabic ? 36 : 16 }]}
+                  autoFocus
+                />
+              </View>
+              <View style={{ gap: 2 }}>
+                {filteredMealItems.map((f, i) => (
+                  <View key={i} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
+                    <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start" }}>
+                      <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.ink, fontFamily: ff(isArabic, 600) }} numberOfLines={1}>{f.name}</AppText>
+                      <AppText style={{ fontSize: 11, color: colors.inkMuted48, fontFamily: ff(isArabic) }}>{f.portion}</AppText>
+                    </View>
+                    <Pressable
+                      onPress={() => { setCustomMealBuilder((p) => ({ ...p, items: [...p.items, { food: f, multiplier: 1, portionStr: f.portion }] })); setMealItemSearchMode(false); setMealSearchQuery(""); }}
+                      style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}
+                    >
+                      <Plus size={16} color={colors.primary} />
+                    </Pressable>
+                  </View>
+                ))}
+              </View>
+              <Pressable onPress={() => setMealItemSearchMode(false)} style={{ height: 40, borderRadius: 9999, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+                <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.ink, textTransform: isArabic ? "none" : "uppercase", fontFamily: ff(isArabic, 600) }}>{isArabic ? "إلغاء" : "Cancel"}</AppText>
+              </Pressable>
+            </>
+          )}
         </View>
       </BottomSheet>
 
