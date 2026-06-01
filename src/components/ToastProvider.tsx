@@ -14,6 +14,7 @@ import { View } from "react-native";
 import Animated, { FadeInUp, FadeOutUp } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "../theme/ThemeProvider";
+import { useIsArabic } from "../lib/i18n";
 import { AppText } from "./ui/Typography";
 
 type ToastVariant = "default" | "success" | "error" | "info";
@@ -42,6 +43,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
   const [toasts, setToasts] = useState<Toast[]>([]);
   const insets = useSafeAreaInsets();
   const colors = useColors();
+  const isArabic = useIsArabic();
 
   const removeToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
@@ -88,12 +90,12 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
             entering={FadeInUp.springify().damping(25).stiffness(350)}
             exiting={FadeOutUp.duration(200)}
             style={{
-              flexDirection: "row",
+              flexDirection: isArabic ? "row-reverse" : "row",
               alignItems: "center",
               gap: 10,
               backgroundColor: colors.ink === "#1d1d1f" ? "#1d1d1f" : "#2a2a2c",
-              paddingLeft: 14,
-              paddingRight: 20,
+              paddingLeft: isArabic ? 20 : 14,
+              paddingRight: isArabic ? 14 : 20,
               paddingVertical: 12,
               borderRadius: 9999,
             }}
@@ -108,7 +110,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
             />
             <AppText
               variant="caption-strong"
-              style={{ color: "#ffffff" }}
+              style={{ color: "#ffffff", textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_600SemiBold" : undefined }}
             >
               {toast.message}
             </AppText>
