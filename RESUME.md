@@ -53,14 +53,16 @@ Implementing a **scoped subset** of `UIUX_AUDIT.md` (full audit + screenshots in
 - **M1** completed (`fee309d`): Nutrition food search → `FlatList`. All three unbounded lists now virtualized (feed/history/food-search). Exercise history (`slice(0,10)`) + per-day meal sections are bounded → intentionally left as ScrollView.
 - **B4** increment: food-search rows + FAB-menu actions labeled.
 
-### 👉 NEXT SESSION — where to pick up
-The fix pass has cleared **all blockers, all Major findings, every F-series item except deferred F8, and the bulk of minors/polish.** What genuinely remains is a small, low-urgency long-tail (all in `UIUX_AUDIT.md`):
-- **B4 long-tail**: the remaining decorative/per-card inline icon `Pressable`s still need labels — rest-log sheet X (dashboard), RoutineBuilder/CustomSessionBuilder controls, history calendar day cells, the in-row "+" affordances. Pattern: `accessibilityRole="button"` + localized `accessibilityLabel`. (All standard buttons, nav back buttons, sheets, tabs, send/mic are already done.)
-- **P5 follow-up**: optionally swap remaining fixed `height:` pills/rows to `minHeight:` so they grow with the now-capped Dynamic-Type text.
-- **F8 (deferred by user — keep for later)**, **P4** (dead voice-log error/permission states — harmless until a real recognizer lands).
-- **Android build** — still blocked (no SDK/emulator in this env).
+**Phase 9 — B4 long-tail: ✅** (`7d1d30e`, `6538f16`): all standalone close (X) buttons + history calendar day cells labeled. a11y coverage **11 → 65**. B4 substantially complete (every standard button, nav, sheet, tab, send/mic, close, FAB action, list row, calendar cell labeled).
 
-All work is on branch `dev`, committed, `npx tsc --noEmit` clean. Full per-finding detail + commit hashes are in `FIX_LOG.md` (Phases 1–8). Sim verification uses the deep-link + Quartz-tap method documented above (mind the moving Simulator window, the 2×-vs-1× `screencapture -R` scale per display, and the Metro "No script URL" recovery: restart Metro, fully build the bundle via curl, then terminate+launch).
+### 👉 NEXT SESSION — where to pick up
+The fix pass has cleared **all blockers (incl. B4 to a shippable a11y baseline), all Major findings, every F-series item except deferred F8, and effectively all minors/polish.** What's left is genuinely optional / blocked:
+- **F8 (deferred by user — keep for later)**: onboarding plan-preview "tweak"/"edit anytime" copy honesty.
+- **P5 follow-up (optional, low value)**: swap remaining fixed `height:` text pills to `minHeight:` so they grow with the now-capped Dynamic-Type text. Broad layout sweep with regression risk — only if QA flags clipping at max font size.
+- **P4 (harmless)**: voice-log error/permission states are dead until a real speech recognizer replaces the mock — wire them then.
+- **Android build** — still blocked (no SDK/emulator in this env); code is cross-platform per earlier audit.
+
+If starting fresh: the migration + the full targeted UI/UX fix pass are **done**. Re-run a mobile-vs-web diff only if new web features landed. All work is on branch `dev`, committed, `npx tsc --noEmit` clean. Full per-finding detail + commit hashes are in `FIX_LOG.md` (Phases 1–9). Sim verification uses the deep-link + Quartz-tap method documented above (mind the moving Simulator window, the 2×-vs-1× `screencapture -R` scale per display, and the Metro "No script URL" recovery: restart Metro, fully build the bundle via curl, then terminate+launch).
 
 **Sim note:** Metro is flaky — if you get a "No script URL" red screen, Metro died (`curl -s localhost:8081/status` → 000); restart with `WATCHMAN_DISABLE=1 npx expo start --dev-client`, fully build the bundle (`curl -s "http://localhost:8081/node_modules/expo-router/entry.bundle?platform=ios&dev=true" -o /dev/null` — wait for ~16MB), then terminate+launch. The Simulator window hops between displays (main `1020,52` size `492,930` → `screencapture -R` gives **2× px**; external `2804,52` size `628,995` → **1× px**) — re-query `AXPosition/AXSize` and check the capture's pixel dims before mapping clicks.
 
