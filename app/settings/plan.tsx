@@ -23,6 +23,7 @@ import { useToast } from "../../src/components/ToastProvider";
 import BottomSheet from "../../src/components/BottomSheet";
 import { GoalPacePicker } from "../../src/components/GoalPacePicker";
 import { computeGoalEndDate } from "../../src/lib/planUtils";
+import { generateNutritionPlan, pushNutritionHistory } from "../../src/lib/nutritionPlan";
 import { Toggle } from "../../src/components/ui/Toggle";
 import { useColors } from "../../src/theme/ThemeProvider";
 import { AppText } from "../../src/components/ui/Typography";
@@ -59,7 +60,7 @@ export default function PlanSettings() {
   const [waterTargetSheet, setWaterTargetSheet] = useState(false);
   const [restDurationsSheet, setRestDurationsSheet] = useState(false);
 
-  const [pendingChange, setPendingChange] = useState<{ field: string; newValue: any; oldValue: any; labelEn: string; labelAr: string; apply: () => void } | null>(null);
+  const [pendingChange, setPendingChange] = useState<{ field: string; newValue: any; oldValue: any; labelEn: string; labelAr: string; apply: () => void; kind?: "workout" | "nutrition" } | null>(null);
 
   const [tempTargetWeight, setTempTargetWeight] = useState(user?.targetWeight || 70);
   const [tempRestDurationSets, setTempRestDurationSets] = useState(user?.restDurationSets || 60);
@@ -144,6 +145,24 @@ export default function PlanSettings() {
 
   const saved = () => showToast(isArabic ? "تم الحفظ" : "Saved", "success");
   const rebalancing = () => showToast(isArabic ? "الكوتش بيعيد توزيع الأسبوع" : "Your coach is rebalancing the week", "success");
+
+  // F3 — recompute the nutrition plan from the (already-updated) user and record
+  // the rebuild in plan history. `patch` carries the changed field so the plan
+  // is generated from the new value in the same tick.
+  const rebuildNutrition = (patch: Record<string, any>, summaryEn: string, summaryAr: string) => {
+    const nextUser = { ...user, ...patch } as any;
+    const plan = generateNutritionPlan(nextUser);
+    setUser({
+      ...nextUser,
+      nutritionPlan: plan,
+      calorieTarget: plan.dailyCalories,
+      proteinTarget: plan.proteinTarget,
+      carbsTarget: plan.carbsTarget,
+      fatTarget: plan.fatsTarget,
+    });
+    pushNutritionHistory(summaryEn, summaryAr);
+    showToast(isArabic ? "الكوتش بيعيد بناء خطة التغذية" : "Your coach is rebuilding your nutrition plan", "success");
+  };
 
   // ---- Reusable list-row + toggle-row ----
   const Row = ({ label, value, onPress, last }: { label: string; value: React.ReactNode; onPress: () => void; last?: boolean }) => (
@@ -372,13 +391,13 @@ export default function PlanSettings() {
 
       <BottomSheet isOpen={dietStyleSheet} onClose={() => setDietStyleSheet(false)} title={isArabic ? "أسلوب الأكل" : "Diet style"}>
         <View style={{ gap: 16, paddingVertical: 8 }}>
-          {dietStyleOptions.map((opt) => optionButton(user?.dietStyle === (opt.id as any), () => { setUser({ ...user, dietStyle: opt.id } as any); setDietStyleSheet(false); saved(); }, isArabic ? opt.labelAr : opt.labelEn, undefined, opt.id))}
+          {dietStyleOptions.map((opt) => optionButton(user?.dietStyle === (opt.id as any), () => { if (opt.id === user?.dietStyle) { setDietStyleSheet(false); return; } setDietStyleSheet(false); setTimeout(() => setPendingChange({ field: "dietStyle", newValue: isArabic ? opt.labelAr : opt.labelEn, oldValue: getDietStyleValue(), labelEn: "Diet style", labelAr: "أسلوب الأكل", kind: "nutrition", apply: () => rebuildNutrition({ dietStyle: opt.id }, `Switched diet style to ${opt.labelEn}.`, `تم تغيير أسلوب الأكل إلى ${opt.labelAr}.`) }), 280); }, isArabic ? opt.labelAr : opt.labelEn, undefined, opt.id))}
         </View>
       </BottomSheet>
 
       <BottomSheet isOpen={mealsPerDaySheet} onClose={() => setMealsPerDaySheet(false)} title={isArabic ? "وجبات في اليوم" : "Meals per day"}>
         <View style={{ gap: 16, paddingVertical: 8 }}>
-          {[3, 4, 5, 6].map((meals) => optionButton(user?.mealsPerDay === meals, () => { setUser({ ...user, mealsPerDay: meals } as any); setMealsPerDaySheet(false); saved(); }, String(meals), undefined, String(meals)))}
+          {[3, 4, 5, 6].map((meals) => optionButton(user?.mealsPerDay === meals, () => { if (meals === user?.mealsPerDay) { setMealsPerDaySheet(false); return; } setMealsPerDaySheet(false); setTimeout(() => setPendingChange({ field: "mealsPerDay", newValue: String(meals), oldValue: String(user?.mealsPerDay ?? ""), labelEn: "Meals per day", labelAr: "وجبات في اليوم", kind: "nutrition", apply: () => rebuildNutrition({ mealsPerDay: meals }, `Set meals per day to ${meals}.`, `تم ضبط عدد الوجبات إلى ${meals}.`) }), 280); }, String(meals), undefined, String(meals)))}
         </View>
       </BottomSheet>
 
@@ -427,7 +446,7 @@ export default function PlanSettings() {
               </View>
               <View style={{ flex: 1 }}>
                 <AppText style={{ fontSize: 14, fontWeight: "600", color: colors.ink, marginBottom: 4, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic, 600) }}>{isArabic ? pendingChange.labelAr : pendingChange.labelEn}</AppText>
-                <AppText style={{ fontSize: 13, color: colors.inkMuted48, lineHeight: 19, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}>{isArabic ? "لو غيرت ده، الكوتش هيعيد بناء باقي الأسبوع بناءً على الإعدادات الجديدة. التمارين اللي خلصتها مش هتتغير." : "Changing this will rebuild the rest of your week based on the new settings. Your completed workouts won't be affected."}</AppText>
+                <AppText style={{ fontSize: 13, color: colors.inkMuted48, lineHeight: 19, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}>{pendingChange.kind === "nutrition" ? (isArabic ? "لو غيرت ده، الكوتش هيعيد بناء أهداف التغذية وخطة الوجبات. الوجبات اللي سجلتها مش هتتأثر." : "Changing this will rebuild your nutrition targets and meal plan. Your logged meals won't be affected.") : isArabic ? "لو غيرت ده، الكوتش هيعيد بناء باقي الأسبوع بناءً على الإعدادات الجديدة. التمارين اللي خلصتها مش هتتغير." : "Changing this will rebuild the rest of your week based on the new settings. Your completed workouts won't be affected."}</AppText>
               </View>
             </View>
             <View style={{ backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, padding: 12 }}>

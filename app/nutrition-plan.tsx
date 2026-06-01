@@ -33,7 +33,7 @@ import { AppText } from "../src/components/ui/Typography";
 import BottomSheet from "../src/components/BottomSheet";
 import CoachAvatar from "../src/components/CoachAvatar";
 import EmptyState from "../src/components/EmptyState";
-import { getItem } from "../src/lib/storage";
+import { pushNutritionHistory, readNutritionHistory } from "../src/lib/nutritionPlan";
 import type { CoachNutritionPlan, SuggestedMeal } from "../src/types";
 
 function fontFamily(isArabic: boolean, weight: 400 | 600 = 400) {
@@ -91,14 +91,7 @@ export default function NutritionPlanDetails() {
   const [dietInput, setDietInput] = useState<string>(user.dietStyle || "balanced");
   const [mealsInput, setMealsInput] = useState<number>(user.mealsPerDay || 4);
 
-  const history: NutritionPlanHistoryEntry[] = (() => {
-    try {
-      const raw = getItem("synk:nutritionPlanHistory");
-      return raw ? (JSON.parse(raw) as NutritionPlanHistoryEntry[]) : [];
-    } catch {
-      return [];
-    }
-  })();
+  const history: NutritionPlanHistoryEntry[] = readNutritionHistory();
 
   const openEditor = () => {
     setCalInput(String(user.calorieTarget || plan?.dailyCalories || 0));
@@ -128,6 +121,7 @@ export default function NutritionPlanDetails() {
         ? { ...plan, dailyCalories: cal, proteinTarget: prot, carbsTarget: carb, fatsTarget: fat, mealStructure: ms }
         : plan,
     } as any);
+    pushNutritionHistory(`Targets edited manually — ${cal} kcal, ${prot}P/${carb}C/${fat}F.`, `تعديل يدوي للأهداف — ${cal} سعرة، ${prot}ب/${carb}ك/${fat}د.`);
     setEditOpen(false);
     showToast(isArabic ? "تم تحديث أهداف التغذية" : "Nutrition targets updated", "success");
   };
