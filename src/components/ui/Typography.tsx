@@ -65,13 +65,24 @@ export const AppText: React.FC<AppTextProps> = ({
         ? "Cairo_400Regular"
         : "Inter_400Regular";
 
+  // RN clips tall glyphs when lineHeight is tighter than the font's natural
+  // height. Callers often override `fontSize` inline without a matching
+  // `lineHeight`, which would otherwise leave the (smaller) variant lineHeight
+  // in place and crop digits/descenders. Resolve the final fontSize and apply a
+  // clip-safe lineHeight (>= 1.2×) unless the caller set lineHeight explicitly.
+  const flat = style ? (StyleSheet.flatten(style) as { fontSize?: number; lineHeight?: number }) : null;
+  const finalFontSize = flat?.fontSize ?? v.fontSize;
+  const ratio = v.lineHeight ? v.lineHeight / v.fontSize : 1.2;
+  const resolvedLineHeight =
+    flat?.lineHeight != null ? undefined : Math.round(finalFontSize * Math.max(ratio, 1.2));
+
   return (
     <Text
       className={cn("text-ink dark:text-ink-dark", className)}
       style={[
         {
           fontSize: v.fontSize,
-          lineHeight: v.lineHeight,
+          lineHeight: resolvedLineHeight,
           letterSpacing: v.letterSpacing,
           fontFamily,
           writingDirection: isArabic ? "rtl" : "ltr",
