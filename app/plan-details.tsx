@@ -57,11 +57,33 @@ export default function PlanDetails() {
     { id: "3", date: isArabic ? "٠٨ مارس" : "Mar 08", summary: "Rescheduled leg day due to your feedback.", summaryAr: "تمت إعادة جدولة يوم الأرجل بناءً على ملاحظاتك." },
   ];
 
+  // C3 — derive the grid from the user's actual plan settings so it can't
+  // contradict Plan Settings (was hardcoded "1 workout / Gym / 40 min / Advanced").
+  const days = user.daysPerWeek || 3;
+  const locationLabel = (() => {
+    const map: Record<string, { en: string; ar: string }> = {
+      gym: { en: "Full gym", ar: "جيم كامل" },
+      "home-equipment": { en: "Home (equipped)", ar: "بيت بمعدات" },
+      "home-no-equipment": { en: "Home (no equipment)", ar: "بيت بدون معدات" },
+      outdoor: { en: "Outdoor", ar: "في الخلاء" },
+    };
+    const m = map[(user.trainingLocation as string) || "gym"] || map.gym;
+    return isArabic ? m.ar : m.en;
+  })();
+  const levelLabel = (() => {
+    const map: Record<string, { en: string; ar: string }> = {
+      beginner: { en: "Beginner", ar: "مبتدئ" },
+      intermediate: { en: "Intermediate", ar: "متوسط" },
+      advanced: { en: "Advanced", ar: "متقدم" },
+    };
+    const m = user.fitnessLevel ? map[user.fitnessLevel] : null;
+    return m ? (isArabic ? m.ar : m.en) : isArabic ? "غير محدد" : "Not set";
+  })();
   const metadata = [
-    { icon: Calendar, label: isArabic ? "أسبوعياً" : "Per week", value: isArabic ? "١ تمرين" : "1 workout" },
-    { icon: MapPin, label: isArabic ? "الموقع" : "Location", value: isArabic ? "الجيم" : "Gym" },
-    { icon: Clock, label: isArabic ? "المدة" : "Duration", value: isArabic ? "٤٠ دقيقة" : "40 min" },
-    { icon: SignalHigh, label: isArabic ? "المستوى" : "Level", value: isArabic ? "متقدم" : "Advanced" },
+    { icon: Calendar, label: isArabic ? "أسبوعياً" : "Per week", value: isArabic ? `${days} أيام` : `${days} ${days === 1 ? "day" : "days"}` },
+    { icon: MapPin, label: isArabic ? "الموقع" : "Location", value: locationLabel },
+    { icon: Clock, label: isArabic ? "المدة" : "Duration", value: isArabic ? `${user.workoutDuration || 45} دقيقة` : `${user.workoutDuration || 45} min` },
+    { icon: SignalHigh, label: isArabic ? "المستوى" : "Level", value: levelLabel },
   ];
 
   const dayLabels = isArabic ? ["أح", "اث", "ثل", "أر", "خم", "جم", "سب"] : ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
