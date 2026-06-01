@@ -122,7 +122,7 @@ export default function MorningCheckIn() {
     <View style={{ flex: 1, backgroundColor: colors.canvasParchment }}>
       {/* Header */}
       <View style={{ paddingTop: insets.top + 8, paddingHorizontal: 24, paddingBottom: 8, flexDirection: "row", alignItems: "center", justifyContent: "space-between", maxWidth: 448, width: "100%", alignSelf: "center" }}>
-        <Pressable onPress={() => router.replace("/dashboard")} style={{ width: 44, height: 44, borderRadius: 9999, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+        <Pressable onPress={() => router.replace("/dashboard")} accessibilityRole="button" accessibilityLabel={isArabic ? "إغلاق" : "Close"} style={{ width: 44, height: 44, borderRadius: 9999, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
           <X size={24} strokeWidth={2.5} color={colors.ink} />
         </Pressable>
         <View style={{ flexDirection: "row", gap: 6 }}>

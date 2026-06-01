@@ -1376,7 +1376,7 @@ export default function ActiveWorkout() {
           zIndex: 40,
         }}
       >
-        <Pressable onPress={() => setShowEndConfirmation(true)} style={circleBtn}>
+        <Pressable onPress={() => setShowEndConfirmation(true)} accessibilityRole="button" accessibilityLabel={isArabic ? "إنهاء التمرين" : "End workout"} style={circleBtn}>
           <X size={20} strokeWidth={2.5} color={colors.ink} />
         </Pressable>
         <View style={{ alignItems: "center" }}>
@@ -2428,7 +2428,7 @@ export default function ActiveWorkout() {
               >
                 {isArabic ? "الإعدادات" : "Settings"}
               </AppText>
-              <Pressable onPress={() => setShowSettings(false)} style={circleBtn}>
+              <Pressable onPress={() => setShowSettings(false)} accessibilityRole="button" accessibilityLabel={isArabic ? "إغلاق" : "Close"} style={circleBtn}>
                 <X size={20} color={colors.ink} />
               </Pressable>
             </View>

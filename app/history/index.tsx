@@ -218,6 +218,8 @@ export default function WorkoutHistory() {
                   <View key={dNum} style={{ width: `${100 / 7}%`, aspectRatio: 1, padding: 2 }}>
                     <Pressable
                       onPress={() => wFound && router.push(`/history/workout/${wFound.id}`)}
+                      accessibilityRole="button"
+                      accessibilityLabel={`${monthName} ${dNum}${dayWorkouts.length ? ` · ${dayWorkouts.length} ${isArabic ? "تمرين" : dayWorkouts.length === 1 ? "workout" : "workouts"}` : ""}`}
                       style={{ flex: 1, borderRadius: 8, alignItems: "center", justifyContent: "flex-start", paddingVertical: 6, backgroundColor: wFound ? cardBg : slot, borderWidth: wFound ? 1 : 0, borderColor: colors.hairline, opacity: isFuture ? 0.3 : 1, ...(isToday ? { borderWidth: 2, borderColor: colors.primary } : null) }}
                     >
                       <AppText style={{ fontSize: 13, fontWeight: "500", color: wFound ? colors.ink : colors.inkMuted48, fontVariant: ["tabular-nums"], marginBottom: 4 }}>{dNum}</AppText>

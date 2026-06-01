@@ -461,7 +461,7 @@ export default function Dashboard() {
           {/* Welcome card */}
           {showWelcome && isTodaySelected && (
             <Animated.View entering={FadeInDown} style={{ backgroundColor: withAlpha(colors.primary, 0.05), borderWidth: 1, borderColor: withAlpha(colors.primary, 0.2), borderRadius: 14, padding: 20 }}>
-              <Pressable onPress={() => { setShowWelcome(false); setItem("synk:welcomeShown", "true"); }} style={{ position: "absolute", top: 12, right: isArabic ? undefined : 12, left: isArabic ? 12 : undefined, padding: 6, zIndex: 1 }}>
+              <Pressable onPress={() => { setShowWelcome(false); setItem("synk:welcomeShown", "true"); }} accessibilityRole="button" accessibilityLabel={isArabic ? "إغلاق" : "Dismiss"} style={{ position: "absolute", top: 12, right: isArabic ? undefined : 12, left: isArabic ? 12 : undefined, padding: 6, zIndex: 1 }}>
                 <X size={16} color={colors.inkMuted48} />
               </Pressable>
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, marginBottom: 12 }}>

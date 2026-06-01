@@ -186,6 +186,8 @@ const RoutineReplacementSheet: React.FC<RoutineReplacementSheetProps> = ({
           <Pressable
             onPress={onClose}
             hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={isArabic ? "إغلاق" : "Close"}
             style={{ width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center" }}
           >
             <X size={20} color={colors.inkMuted48} />

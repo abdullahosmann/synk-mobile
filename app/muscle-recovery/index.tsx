@@ -100,7 +100,7 @@ export default function MuscleRecovery() {
       {/* Header */}
       <View style={{ paddingTop: insets.top + 8, paddingBottom: 8, paddingHorizontal: 24, height: undefined, flexDirection: "row", alignItems: "center", justifyContent: "space-between", backgroundColor: colors.canvasParchment, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
         {isEditing ? (
-          <Pressable onPress={handleCancel} style={{ width: 44, height: 44, borderRadius: 9999, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+          <Pressable onPress={handleCancel} accessibilityRole="button" accessibilityLabel={isArabic ? "إلغاء" : "Cancel"} style={{ width: 44, height: 44, borderRadius: 9999, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
             <X size={20} color={colors.ink} strokeWidth={2.5} />
           </Pressable>
         ) : (

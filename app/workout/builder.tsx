@@ -740,6 +740,8 @@ export default function RoutineBuilder() {
               </AppText>
               <Pressable
                 onPress={closeLibrary}
+                accessibilityRole="button"
+                accessibilityLabel={isArabic ? "إغلاق" : "Close"}
                 style={{
                   width: 40,
                   height: 40,
