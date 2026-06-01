@@ -20,6 +20,7 @@ import {
 } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
+  Easing,
   Extrapolation,
   interpolate,
   runOnJS,
@@ -42,6 +43,13 @@ interface BottomSheetProps {
 }
 
 const SPRING = { damping: 30, stiffness: 350 } as const;
+// Entrance/exit use a clean decelerate curve (no overshoot) so the sheet — and
+// the buttons inside it — slide up smoothly instead of bouncing/jumping. The
+// spring is kept only for the drag-release snap-back, where a little give reads
+// as natural.
+const OPEN_DURATION = 300;
+const CLOSE_DURATION = 220;
+const EASE_OUT = Easing.bezier(0.22, 1, 0.36, 1);
 const DISMISS_THRESHOLD = 120;
 
 const BottomSheet: React.FC<BottomSheetProps> = ({
@@ -70,16 +78,31 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
 
   useEffect(() => {
     if (isOpen) {
-      setMounted(true);
-      translateY.value = screenH;
-      translateY.value = withSpring(0, SPRING);
+      if (mounted) {
+        // Reopened while still mounted (e.g. during a close) — animate up now.
+        translateY.value = withTiming(0, { duration: OPEN_DURATION, easing: EASE_OUT });
+      } else {
+        // Park fully off-screen, then mount; the entrance fires from the
+        // [mounted] effect below so the sheet never paints partway up.
+        translateY.value = screenH;
+        setMounted(true);
+      }
     } else if (mounted) {
-      translateY.value = withTiming(screenH, { duration: 220 }, (finished) => {
+      translateY.value = withTiming(screenH, { duration: CLOSE_DURATION, easing: EASE_OUT }, (finished) => {
         if (finished) runOnJS(setMounted)(false);
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
+
+  // Start the entrance only after the sheet has mounted and painted off-screen.
+  useEffect(() => {
+    if (mounted && isOpen) {
+      translateY.value = screenH;
+      translateY.value = withTiming(0, { duration: OPEN_DURATION, easing: EASE_OUT });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mounted]);
 
   const sheetStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
