@@ -58,7 +58,9 @@ Nudge gaps/margins onto a 4-pt rhythm where it's cheap; lowest priority.
 3. **Depth:** normalize values in place + add shared primitives (`radii`/`controlHeight` tokens, `<SectionLabel>`, extend `Card`) and adopt where cheap. **No blanket sed** — radii/heights are context-dependent (icon circles, inputs vs buttons); normalize per-surface, highest-traffic screens first, verified in light + dark.
 
 ## Progress log
-- **D1 (centralize vocabulary)** — in progress.
+- **D1 (centralize vocabulary) — DONE** (`tokens.ts` radii/controlHeight + `<SectionLabel>`).
+- **D2 (radii) — installment 1 DONE & verified**: Nutrition + Plan Settings main cards 10→14, coach-plan/customize 12→14. **Remaining:** the long tail of outer cards still at 10 + off-scale 12/16/18/20 on the other ~30 screens (settings/index, profile rows, social, workout/*, onboarding, etc.) — normalize per-surface (cards→14, chips/inputs→10/8, circles stay).
+- **D3 (control heights), D4 (padding + adopt SectionLabel), D5 (spacing)** — pending.
 
 ## Open decisions (block the sweep) — superseded by the RESOLVED block above
 1. **Card radius target:** (a) unify ALL cards to **14** (source of truth; slightly rounder than the ~100 currently at 10); (b) keep a **2-tier** system — outer cards **14**, inner tiles/chips **10** — and just kill the off-scale values. *(Recommend b — most natural.)*
