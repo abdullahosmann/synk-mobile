@@ -48,14 +48,19 @@ Implementing a **scoped subset** of `UIUX_AUDIT.md` (full audit + screenshots in
 - **B4** (`f33c821` + `4d06dfb`): primitives + 37 back buttons + BottomSheet close + send/mic/close; a11y coverage 11 → 52.
 - **M1** (`d3bf592`): community feed → `FlatList`, workout history → `SectionList`. Both sim-verified.
 
+**Phase 8 — P5 + M1 tail + B4 increment: ✅ done**:
+- **P5** (`5266607`): per-variant `maxFontSizeMultiplier` in `AppText` (Dynamic-Type cap).
+- **M1** completed (`fee309d`): Nutrition food search → `FlatList`. All three unbounded lists now virtualized (feed/history/food-search). Exercise history (`slice(0,10)`) + per-day meal sections are bounded → intentionally left as ScrollView.
+- **B4** increment: food-search rows + FAB-menu actions labeled.
+
 ### 👉 NEXT SESSION — where to pick up
-The fix pass has now cleared **all blockers, all Major findings, every F-series item except deferred F8, and the bulk of minors/polish.** What genuinely remains is a small long-tail (all in `UIUX_AUDIT.md`):
-- **M1 tail**: Nutrition per-day meal sections + per-exercise set history → `FlatList`/`SectionList`. (Bounded length in practice — a day's meals / one exercise's sessions — so low urgency. Pattern to follow: see `app/(tabs)/community.tsx` (FlatList) and `app/history/index.tsx` (SectionList with `renderWorkoutCard` + sections, calendar/empty kept in a sibling ScrollView).)
-- **B4 long-tail**: remaining inline icon-only `Pressable`s (rest-log sheet X, RoutineBuilder/CustomSessionBuilder controls, calendar day cells, FAB-menu actions). Pattern: add `accessibilityRole="button"` + localized `accessibilityLabel`.
-- **F8 (deferred by user — keep for later)**, **P4** (dead voice-log error/permission states — harmless until a real recognizer lands), **P5** (set `maxFontSizeMultiplier` on display/stat variants + min-heights on fixed-height pills for Dynamic Type).
+The fix pass has cleared **all blockers, all Major findings, every F-series item except deferred F8, and the bulk of minors/polish.** What genuinely remains is a small, low-urgency long-tail (all in `UIUX_AUDIT.md`):
+- **B4 long-tail**: the remaining decorative/per-card inline icon `Pressable`s still need labels — rest-log sheet X (dashboard), RoutineBuilder/CustomSessionBuilder controls, history calendar day cells, the in-row "+" affordances. Pattern: `accessibilityRole="button"` + localized `accessibilityLabel`. (All standard buttons, nav back buttons, sheets, tabs, send/mic are already done.)
+- **P5 follow-up**: optionally swap remaining fixed `height:` pills/rows to `minHeight:` so they grow with the now-capped Dynamic-Type text.
+- **F8 (deferred by user — keep for later)**, **P4** (dead voice-log error/permission states — harmless until a real recognizer lands).
 - **Android build** — still blocked (no SDK/emulator in this env).
 
-All work is on branch `dev`, committed, `npx tsc --noEmit` clean. Full per-finding detail + commit hashes are in `FIX_LOG.md` (Phases 1–7). Sim verification uses the deep-link + Quartz-tap method documented above (mind the moving Simulator window, the 2×-vs-1× `screencapture -R` scale per display, and the Metro "No script URL" recovery: restart Metro, fully build the bundle via curl, then terminate+launch).
+All work is on branch `dev`, committed, `npx tsc --noEmit` clean. Full per-finding detail + commit hashes are in `FIX_LOG.md` (Phases 1–8). Sim verification uses the deep-link + Quartz-tap method documented above (mind the moving Simulator window, the 2×-vs-1× `screencapture -R` scale per display, and the Metro "No script URL" recovery: restart Metro, fully build the bundle via curl, then terminate+launch).
 
 **Sim note:** Metro is flaky — if you get a "No script URL" red screen, Metro died (`curl -s localhost:8081/status` → 000); restart with `WATCHMAN_DISABLE=1 npx expo start --dev-client`, fully build the bundle (`curl -s "http://localhost:8081/node_modules/expo-router/entry.bundle?platform=ios&dev=true" -o /dev/null` — wait for ~16MB), then terminate+launch. The Simulator window hops between displays (main `1020,52` size `492,930` → `screencapture -R` gives **2× px**; external `2804,52` size `628,995` → **1× px**) — re-query `AXPosition/AXSize` and check the capture's pixel dims before mapping clicks.
 
