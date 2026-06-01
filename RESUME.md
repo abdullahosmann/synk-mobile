@@ -12,8 +12,9 @@ All 5 phases implemented + verified (decisions: auto-balance / soft-warn / propa
 - **Polish** (`cedf97f`/`d38fd2b`): food-row kcal/badge collision, TopBar real avatar, pluralization, past-day hydration, silenced the benign Reanimated warning banner.
 Full per-finding detail + the 3 resolved decisions + deferrals are in **`mobile/UX_REVIEW_2.md`**.
 
-## 🎨 PENDING APPROVAL: Design-system consistency audit — see `mobile/DESIGN_SYSTEM_AUDIT.md`
-Visual-language drift quantified: card radius split 10 vs 14 (~100 wrong), off-scale radii (12/16/18/20), control heights scattered (44/48/56), padding drift, and the small uppercase "eyebrow" label hand-written ~63× (shared `Card` primitive exists but is bypassed). Phased fix plan + 3 open decisions in the doc. **Awaiting approval + decisions before editing.** **Remaining (optional/deferred):** I2 double-tap nav guard (systemic), V3/V4 minor visuals, A3/A8/A9 + the onboarding "filtering injuries" loading copy (backend/coach engine).
+## 🎨 Design-system consistency pass (D1–D4) — DONE & verified, ON BRANCH `design-system` (PENDING KEEP/REVERT)
+Done on branch **`design-system`** (dev frozen at tag **`pre-design-system`** = bf2451d). Decisions: 2-tier radii (14 outer / 10 inner), strict 44 + 52-hero heights, normalize-in-place (no blanket sed). Result: every non-circle card → 14, off-scale 12/16 → 14 (circles kept), non-square control heights → 44/52, eyebrow letterSpacing → 1; new `src/theme/tokens.ts` + `<SectionLabel>` primitive. tsc clean; verified light + dark across ~11 screens. **D5 (spacing rhythm) deferred** to the device/designer pass per the no-blanket-sed decision. Full detail in `mobile/DESIGN_SYSTEM_AUDIT.md`.
+**⏳ Awaiting user keep/revert:** if kept → `git checkout dev && git merge design-system`; if not → `git checkout dev` (untouched) or `git branch -D design-system`. **Still optional/deferred elsewhere:** I2 double-tap nav guard, V3/V4 minor visuals, A3/A8/A9 + onboarding "filtering injuries" copy (backend/coach engine).
 
 ## 🔧 Targeted UI/UX fix pass (Phases 1–9 ✅ done — see FIX_LOG.md)
 
