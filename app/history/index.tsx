@@ -124,6 +124,10 @@ export default function WorkoutHistory() {
           <View style={{ paddingVertical: 48, marginTop: 48, paddingHorizontal: 24 }}>
             <EmptyState icon={<ClipboardList size={32} color={colors.primary} />} title={isArabic ? "لسه مفيش تمارين" : "No workouts yet"} body={isArabic ? "اعمل أول تمرين عشان نبدأ نسجّل ليك." : "Complete your first workout to start building your history."} />
           </View>
+        ) : viewMode === "list" && listByMonth.length === 0 ? (
+          <View style={{ paddingVertical: 48, marginTop: 48, paddingHorizontal: 24 }}>
+            <EmptyState icon={<ClipboardList size={32} color={colors.primary} />} title={isArabic ? "مفيش تمارين بالفلتر ده" : "No workouts match this filter"} body={isArabic ? "جرّب فلتر تاني عشان تشوف باقي تمارينك." : "Try a different filter to see the rest of your history."} />
+          </View>
         ) : viewMode === "list" ? (
           <View style={{ marginTop: 16 }}>
             {listByMonth.map(([monthKey, workouts]) => (
