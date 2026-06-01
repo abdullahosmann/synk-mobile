@@ -4,7 +4,10 @@ Handoff doc for continuing the web→React Native migration in a fresh session.
 
 ---
 
-## 🔧 ACTIVE: Targeted UI/UX fix pass (in progress)
+## 🔎 PENDING APPROVAL: Deep coherence / "what-if" pass — see `mobile/UX_REVIEW_2.md`
+A second, deeper audit (driving the app as different user mindsets: "if I edit calories does it still match my goal?", "is the coach actually adaptive?"). **Key finding: the adaptive levers are write-only** — `getWorkoutForDate` only reads split+days, so excluded exercises, injuries, fitness level, workout duration, week overrides, and the "replace-today" routine override all persist but never change the workout. Plus several screens show contradictory numbers (Me progress card hardcoded; workout count 0 vs 21; plan-details mock vs Plan Settings). Full findings + a phased fix plan + 3 open design decisions are in **`mobile/UX_REVIEW_2.md`**. **Awaiting user confirmation + decisions before editing.** Once confirmed: Phase 1 (trust/coherence) → 2 (adaptive propagation) → 3 (nutrition edit coherence) → 4 (units/visual) → 5 (interaction/dev), one commit per finding, sim-verified, logged in UX_REVIEW_2.md + FIX_LOG.md.
+
+## 🔧 Targeted UI/UX fix pass (Phases 1–9 ✅ done — see FIX_LOG.md)
 
 Implementing a **scoped subset** of `UIUX_AUDIT.md` (full audit + screenshots in `screenshots/`). Tracking in `FIX_LOG.md`; Android-runtime items deferred in `DEVICE_CONFIRM.md`. Branch `dev`, one commit per finding.
 
