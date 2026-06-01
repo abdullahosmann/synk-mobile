@@ -211,70 +211,151 @@ const SPLIT_PATTERNS: Record<string, (keyof typeof WORKOUTS | null)[]> = {
 /**
  * Get the workout for a given user and date.
  */
+interface SelectionUser {
+  split?: string;
+  workoutSplit?: string;
+  daysPerWeek?: number;
+  trainingStartDay?: number;
+  fitnessLevel?: string | null;
+  workoutDuration?: number;
+  excludedExercises?: Array<{ exerciseId: string; exerciseName: string }>;
+  weekOverrides?: Record<string, { newWorkoutPreview?: { name: string; duration: number; sets: number } }>;
+  planOverride?: { routineId: string; appliesTo: "just-today" | "replace-today"; date: string } | null;
+  defaultRoutineId?: string | null;
+  customWorkouts?: Array<{
+    id: string;
+    name: string;
+    arabicName?: string;
+    exercises: Array<{ id: string; name: string; arabicName?: string; sets: number; reps: number | string; weight: number; muscleGroup?: string; equipment?: string }>;
+  }>;
+}
+
+// "Use this routine" override (PreSession adapt) or saved default routine, if any
+// applies to this date. Returns the CustomRoutine to swap in, else null. (A5)
+function resolveRoutineOverride(user: SelectionUser | null | undefined, dateStr: string) {
+  const cw = user?.customWorkouts || [];
+  if (!cw.length) return null;
+  const po = user?.planOverride;
+  if (po && po.date === dateStr) {
+    const r = cw.find((c) => c.id === po.routineId);
+    if (r) return r;
+  }
+  if (user?.defaultRoutineId) {
+    const r = cw.find((c) => c.id === user.defaultRoutineId);
+    if (r) return r;
+  }
+  return null;
+}
+
 export function getWorkoutForDate(
-  user: { split?: string; workoutSplit?: string; daysPerWeek?: number; trainingStartDay?: number } | null | undefined,
+  user: SelectionUser | null | undefined,
   date: Date
 ): MockWorkout {
+  const dateStr = date.toISOString().split('T')[0];
+
+  // A6 — map every offered split (incl. arnold/phul/phat) to a real pattern.
   const splitMap: Record<string, string> = {
     'ppl': 'push-pull-legs',
     'upper-lower': 'upper-lower',
     'bro-split': 'bro-split',
     'full-body': 'full-body',
-    'auto': 'push-pull-legs'
+    'auto': 'push-pull-legs',
+    'arnold': 'arnold',
+    'phul': 'upper-lower',
+    'phat': 'push-pull-legs',
   };
-  
+
   const rawSplit = user?.workoutSplit || user?.split || 'ppl';
   const split = splitMap[rawSplit] || 'push-pull-legs';
   const daysPerWeek = user?.daysPerWeek || 3;
-  const patternKey = `${split}-${daysPerWeek}`;
-  const pattern = SPLIT_PATTERNS[patternKey] || SPLIT_PATTERNS['push-pull-legs-3'];
 
-  // Day index relative to the user's week.
-  // For now: dayOfWeek (0=Sun, 6=Sat). User's "training start day" defaults to Monday.
+  // A7 — prefer the exact split-days pattern; otherwise the nearest pattern for
+  // the same split (by day count) instead of silently dropping to PPL-3.
+  let pattern = SPLIT_PATTERNS[`${split}-${daysPerWeek}`];
+  if (!pattern) {
+    const sameSplit = Object.keys(SPLIT_PATTERNS).filter((k) => k.startsWith(`${split}-`));
+    if (sameSplit.length) {
+      sameSplit.sort((a, b) => Math.abs(Number(a.split('-').pop()) - daysPerWeek) - Math.abs(Number(b.split('-').pop()) - daysPerWeek));
+      pattern = SPLIT_PATTERNS[sameSplit[0]];
+    }
+  }
+  pattern = pattern || SPLIT_PATTERNS['push-pull-legs-3'];
+
   const dayOfWeek = date.getDay(); // 0–6
   const trainingStart = user?.trainingStartDay ?? 1; // Monday by default
   const dayIndex = (dayOfWeek - trainingStart + 7) % 7;
 
   const workoutKey = pattern[dayIndex];
   const trainingDaysInPattern = pattern.filter(Boolean).length;
-
-  // Count how many training days occur in the pattern up to and including this day
-  let dayLabel = '';
   let trainingDayNumber = 0;
-  for (let i = 0; i <= dayIndex; i++) {
-    if (pattern[i]) trainingDayNumber++;
-  }
+  for (let i = 0; i <= dayIndex; i++) if (pattern[i]) trainingDayNumber++;
 
-  if (workoutKey === null) {
-    // Rest day
+  // A4 — a week override can turn a day into rest (duration 0).
+  const override = user?.weekOverrides?.[dateStr]?.newWorkoutPreview;
+  const routine = resolveRoutineOverride(user, dateStr);
+
+  if ((workoutKey === null && !routine) || (override && override.duration === 0)) {
     return {
-      id: `rest-${date.toISOString().split('T')[0]}`,
-      name: 'Rest Day',
-      arabicName: 'يوم راحة',
-      category: 'REST',
-      arabicCategory: 'راحة',
-      image: '',
-      estimatedMinutes: 0,
-      dayLabel: 'REST DAY',
-      arabicDayLabel: 'يوم راحة',
-      isRestDay: true,
-      exercises: [],
+      id: `rest-${dateStr}`,
+      name: 'Rest Day', arabicName: 'يوم راحة', category: 'REST', arabicCategory: 'راحة',
+      image: '', estimatedMinutes: 0, dayLabel: 'REST DAY', arabicDayLabel: 'يوم راحة',
+      isRestDay: true, exercises: [],
     };
   }
 
-  const w = WORKOUTS[workoutKey];
+  // Base workout: the saved/override routine (A5) or the split's mock day.
+  const baseKey = (workoutKey || 'fullbody') as keyof typeof WORKOUTS;
+  const w = WORKOUTS[baseKey];
+  let name = w.name;
+  let arabicName = w.arabicName;
+  let category = w.category;
+  let arabicCategory = w.arabicCategory;
+  let exercises: MockWorkoutExercise[] = w.exercises.map((ex) => ({ ...ex }));
+
+  if (routine) {
+    name = routine.name;
+    arabicName = routine.arabicName || routine.name;
+    category = 'CUSTOM ROUTINE';
+    arabicCategory = 'روتين مخصص';
+    exercises = routine.exercises.map((ex) => ({
+      id: ex.id, name: ex.name, arabicName: ex.arabicName || ex.name,
+      sets: ex.sets, reps: typeof ex.reps === 'number' ? ex.reps : parseInt(String(ex.reps), 10) || 10,
+      weight: ex.weight, muscleGroup: ex.muscleGroup || '', equipment: ex.equipment || '',
+    }));
+  }
+
+  // A2 — drop the user's excluded exercises (guard: keep at least 2).
+  const excludedIds = new Set((user?.excludedExercises || []).map((e) => e.exerciseId));
+  const excludedNames = new Set((user?.excludedExercises || []).map((e) => (e.exerciseName || '').toLowerCase()));
+  const kept = exercises.filter((ex) => !excludedIds.has(ex.id) && !excludedNames.has(ex.name.toLowerCase()));
+  if (kept.length >= 2) exercises = kept;
+
+  // A1 — fitness level shifts the set count; workout duration trims the list.
+  const lvl = user?.fitnessLevel;
+  if (lvl === 'beginner') exercises = exercises.map((ex) => ({ ...ex, sets: Math.max(2, ex.sets - 1) }));
+  else if (lvl === 'advanced') exercises = exercises.map((ex) => ({ ...ex, sets: ex.sets + 1 }));
+
+  const dur = user?.workoutDuration || w.estimatedMinutes;
+  const maxEx = dur <= 30 ? 4 : dur <= 45 ? 5 : dur <= 60 ? 6 : exercises.length;
+  exercises = exercises.slice(0, Math.max(3, Math.min(exercises.length, maxEx)));
+
+  // A4 — a week override renames/retimes the day (keeps the resolved exercises).
+  let estimatedMinutes = dur;
+  if (override) {
+    name = override.name;
+    arabicName = override.name;
+    estimatedMinutes = override.duration || estimatedMinutes;
+  }
+
   return {
-    id: `workout-${workoutKey}-${date.toISOString().split('T')[0]}`,
-    name: w.name,
-    arabicName: w.arabicName,
-    category: w.category,
-    arabicCategory: w.arabicCategory,
+    id: `workout-${routine ? routine.id : baseKey}-${dateStr}`,
+    name, arabicName, category, arabicCategory,
     image: w.image,
-    estimatedMinutes: w.estimatedMinutes,
+    estimatedMinutes,
     dayLabel: `DAY ${trainingDayNumber} OF ${trainingDaysInPattern}`,
     arabicDayLabel: `يوم ${trainingDayNumber} من ${trainingDaysInPattern}`,
     isRestDay: false,
-    exercises: w.exercises.map(ex => ({ ...ex })), // shallow copy
+    exercises,
   };
 }
 
