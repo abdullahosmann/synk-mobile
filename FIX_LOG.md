@@ -71,4 +71,12 @@ Implementation order **F2 → F1 → F3**, one commit per finding.
 | **P2** splash flashes white in dark mode | `[FIXED+CODE-ONLY]` | `228e4a4` | — | Pre-hydration splash View bg now follows `useColorScheme()` (dark → `#0B0D10`, light → white) instead of hardcoded white. |
 | **P3** CoachAvatar grayscale no-op | `[FIXED+CODE-ONLY]` | `711dadb` | — | Replaced `tintColor:undefined` with an opacity dim proportional to the grayscale amount (expo-image has no grayscale filter) so idle coaches look muted, approximating web. |
 
-**Remaining (not started), per UIUX_AUDIT.md:** F8 (deferred), B4 per-screen icon-button sweep, M1 (list virtualization — biggest/riskiest), P1 (dark-mode primary tints — 64 `rgba(0,102,204,*)` literals across 28 files; replace with `withAlpha(colors.primary, …)`), P4 (dead voice-log states — harmless until a real recognizer), P5 (dynamic-type overflow). Android build still blocked (no toolchain).
+## Phase 7 — M1 / P1 / B4 (the big three)
+
+| Item | Status | Commit | Screenshot | Notes |
+|------|--------|--------|------------|-------|
+| **P1** primary tints don't adapt to dark | `[FIXED+VERIFIED]` | `3cf4394` | (dark premium sanity) | New `src/theme/tint.ts` `withAlpha(hex, alpha)`; replaced **63** `rgba(0,102,204,*)` literals across 28 files with `withAlpha(colors.primary, …)` so tints follow the palette (dark primary #2997ff). Sim-checked in forced dark (premium) — tints render brighter-blue, nothing broke. |
+| **B4** screen-reader labels (cont.) | `[FIXED+VERIFIED-by-inspection]` | `f33c821` (primitives) + `4d06dfb` (sweep) | — | Primitives (Btn/Toggle/BottomNav/ContinueButton/TopBar) + **37 header back buttons** across 36 screens + BottomSheet close + CoachChat send + voice-log mic + Paywall close. a11y label coverage 11 → 52. **Remaining long-tail:** assorted per-card/decorative icon buttons (rest-log sheet X, builder controls, calendar day cells) — documented follow-up, not a blocker for the core flows. |
+| **M1** no list virtualization | `[FIXED+VERIFIED]` (2 of 4 lists) | `d3bf592` | `M1_community_flatlist.png`, `M1_history_sectionlist.png` | Community feed → `FlatList` (drops the N×40ms `FadeInDown` stagger); Workout history → `SectionList` (months=sections, card extracted; calendar/empty stay in a plain ScrollView so nothing nests a VirtualizedList). Both sim-verified. **Remaining:** Nutrition per-day meal sections + per-exercise set history (bounded in practice — a day's meals / one exercise's sessions — lower priority). |
+
+**Remaining (not started), per UIUX_AUDIT.md:** F8 (deferred), B4 long-tail icon buttons, M1 tail (Nutrition logs / exercise history), P4 (dead voice-log states — harmless until a real recognizer), P5 (dynamic-type overflow caps). Android build still blocked (no toolchain).

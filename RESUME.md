@@ -43,15 +43,19 @@ Implementing a **scoped subset** of `UIUX_AUDIT.md` (full audit + screenshots in
 - **P2** (`228e4a4`): splash fallback follows `useColorScheme()` (no white flash in dark).
 - **P3** (`711dadb`): CoachAvatar grayscale prop now dims opacity (was a no-op).
 
+**Phase 7 — M1 / P1 / B4 (the big three): ✅ substantially done**:
+- **P1** (`3cf4394`): new `src/theme/tint.ts` `withAlpha`; 63 `rgba(0,102,204,*)` literals across 28 files → `withAlpha(colors.primary, …)` (dark-adaptive). Dark-sanity-checked.
+- **B4** (`f33c821` + `4d06dfb`): primitives + 37 back buttons + BottomSheet close + send/mic/close; a11y coverage 11 → 52.
+- **M1** (`d3bf592`): community feed → `FlatList`, workout history → `SectionList`. Both sim-verified.
+
 ### 👉 NEXT SESSION — where to pick up
-The targeted fix pass has cleared **all blockers (B1–B4), all Major findings (M1 is the only one left), every F-series item except the deferred F8, and most minors/polish.** What remains (all in `UIUX_AUDIT.md`, none started):
-- **M1 — list virtualization** (the biggest + riskiest remaining): convert `.map()`-in-`ScrollView` lists (history, community feed, Nutrition logs, exercise history) to `FlatList`. Touches many screens — do one list per commit, watch the css-interop Pressable gotcha.
-- **P1 — dark-mode primary tints**: 64 `rgba(0,102,204,*)` literals across 28 files → replace with `withAlpha(colors.primary, …)` (helper already used in Nutrition.tsx). Mechanical but broad; sim-verify in forced dark.
-- **B4 per-screen icon-button sweep**: shared primitives are done (`f33c821`); inline icon-only `Pressable`s in individual screens (back chevrons, close X, mic, send) still need `accessibilityLabel`.
-- **F8 (deferred by user — keep for later)**, **P4** (dead voice-log states — harmless), **P5** (dynamic-type overflow caps).
+The fix pass has now cleared **all blockers, all Major findings, every F-series item except deferred F8, and the bulk of minors/polish.** What genuinely remains is a small long-tail (all in `UIUX_AUDIT.md`):
+- **M1 tail**: Nutrition per-day meal sections + per-exercise set history → `FlatList`/`SectionList`. (Bounded length in practice — a day's meals / one exercise's sessions — so low urgency. Pattern to follow: see `app/(tabs)/community.tsx` (FlatList) and `app/history/index.tsx` (SectionList with `renderWorkoutCard` + sections, calendar/empty kept in a sibling ScrollView).)
+- **B4 long-tail**: remaining inline icon-only `Pressable`s (rest-log sheet X, RoutineBuilder/CustomSessionBuilder controls, calendar day cells, FAB-menu actions). Pattern: add `accessibilityRole="button"` + localized `accessibilityLabel`.
+- **F8 (deferred by user — keep for later)**, **P4** (dead voice-log error/permission states — harmless until a real recognizer lands), **P5** (set `maxFontSizeMultiplier` on display/stat variants + min-heights on fixed-height pills for Dynamic Type).
 - **Android build** — still blocked (no SDK/emulator in this env).
 
-All work is on branch `dev`, committed, `npx tsc --noEmit` clean. Full per-finding detail + commit hashes are in `FIX_LOG.md` (Phases 1–6). Sim verification uses the deep-link + Quartz-tap method documented above (mind the moving Simulator window + the Metro "No script URL" recovery).
+All work is on branch `dev`, committed, `npx tsc --noEmit` clean. Full per-finding detail + commit hashes are in `FIX_LOG.md` (Phases 1–7). Sim verification uses the deep-link + Quartz-tap method documented above (mind the moving Simulator window, the 2×-vs-1× `screencapture -R` scale per display, and the Metro "No script URL" recovery: restart Metro, fully build the bundle via curl, then terminate+launch).
 
 **Sim note:** Metro is flaky — if you get a "No script URL" red screen, Metro died (`curl -s localhost:8081/status` → 000); restart with `WATCHMAN_DISABLE=1 npx expo start --dev-client`, fully build the bundle (`curl -s "http://localhost:8081/node_modules/expo-router/entry.bundle?platform=ios&dev=true" -o /dev/null` — wait for ~16MB), then terminate+launch. The Simulator window hops between displays (main `1020,52` size `492,930` → `screencapture -R` gives **2× px**; external `2804,52` size `628,995` → **1× px**) — re-query `AXPosition/AXSize` and check the capture's pixel dims before mapping clicks.
 
