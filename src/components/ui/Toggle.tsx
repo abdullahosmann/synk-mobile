@@ -15,9 +15,11 @@ import { useIsArabic } from "../../lib/i18n";
 interface ToggleProps {
   value: boolean;
   onValueChange: () => void;
+  /** Optional spoken label for screen readers (e.g. the row's setting name). */
+  accessibilityLabel?: string;
 }
 
-export const Toggle: React.FC<ToggleProps> = ({ value, onValueChange }) => {
+export const Toggle: React.FC<ToggleProps> = ({ value, onValueChange, accessibilityLabel }) => {
   const colors = useColors();
   const isArabic = useIsArabic();
 
@@ -35,6 +37,9 @@ export const Toggle: React.FC<ToggleProps> = ({ value, onValueChange }) => {
   return (
     <Pressable
       onPress={onValueChange}
+      accessibilityRole="switch"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityState={{ checked: value }}
       style={{
         width: 44,
         height: 24,

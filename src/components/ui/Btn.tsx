@@ -86,6 +86,10 @@ export const Btn: React.FC<BtnProps> = ({
   const vc = useVariantColors(variant);
   const scale = useSharedValue(1);
 
+  // a11y: default the label to the button's own text; icon-only callers
+  // (e.g. circle) should pass their own accessibilityLabel via props.
+  const a11yLabel = label ?? (typeof children === "string" ? children : undefined);
+
   const animStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }));
@@ -112,6 +116,9 @@ export const Btn: React.FC<BtnProps> = ({
         scale.value = withTiming(1, { duration: 120 });
       }}
       disabled={disabled}
+      accessibilityRole="button"
+      accessibilityLabel={a11yLabel}
+      accessibilityState={{ disabled: !!disabled }}
       {...rest}
     >
       <Animated.View

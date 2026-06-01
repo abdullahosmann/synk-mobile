@@ -24,7 +24,7 @@ export const ContinueButton: React.FC<ContinueButtonProps> = ({
 }) => {
   const isArabic = useIsArabic();
   return (
-    <Btn variant="primary" fullWidth onPress={onPress} disabled={disabled}>
+    <Btn variant="primary" fullWidth onPress={onPress} disabled={disabled} accessibilityLabel={isArabic ? arabicLabel : label}>
       <AppText variant="body-strong" style={{ color: "#fff" }}>
         {isArabic ? arabicLabel : label}
       </AppText>

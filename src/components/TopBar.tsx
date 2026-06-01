@@ -52,6 +52,8 @@ const TopBar: React.FC<TopBarProps> = ({
           {showProfile && (
             <Pressable
               onPress={() => router.push("/me")}
+              accessibilityRole="button"
+              accessibilityLabel={isArabic ? "الملف الشخصي" : "Profile"}
               style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden", backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline }}
             >
               <Image source={{ uri: PROFILE_IMG }} style={{ width: "100%", height: "100%" }} contentFit="cover" />
@@ -64,12 +66,12 @@ const TopBar: React.FC<TopBarProps> = ({
 
         <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
           {showNotifications && (
-            <Pressable onPress={() => showToast(isArabic ? "لا توجد إشعارات جديدة" : "No new notifications", "info")} style={{ padding: 8 }}>
+            <Pressable onPress={() => showToast(isArabic ? "لا توجد إشعارات جديدة" : "No new notifications", "info")} accessibilityRole="button" accessibilityLabel={isArabic ? "الإشعارات" : "Notifications"} style={{ padding: 8 }}>
               <Bell size={24} color={colors.ink} />
             </Pressable>
           )}
           {showSettings && (
-            <Pressable onPress={() => router.push("/settings")} style={{ padding: 8 }}>
+            <Pressable onPress={() => router.push("/settings")} accessibilityRole="button" accessibilityLabel={isArabic ? "الإعدادات" : "Settings"} style={{ padding: 8 }}>
               <Settings size={22} color={colors.ink} />
             </Pressable>
           )}

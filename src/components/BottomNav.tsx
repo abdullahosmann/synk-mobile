@@ -72,9 +72,10 @@ const TABS: TabDef[] = [
   },
 ];
 
-const FabButton: React.FC<{ onPress: () => void; bg: string }> = ({
+const FabButton: React.FC<{ onPress: () => void; bg: string; label: string }> = ({
   onPress,
   bg,
+  label,
 }) => {
   const scale = useSharedValue(1);
   const animStyle = useAnimatedStyle(() => ({
@@ -86,6 +87,8 @@ const FabButton: React.FC<{ onPress: () => void; bg: string }> = ({
         onPressIn={() => (scale.value = withTiming(0.95, { duration: 80 }))}
         onPressOut={() => (scale.value = withTiming(1, { duration: 120 }))}
         onPress={onPress}
+        accessibilityRole="button"
+        accessibilityLabel={label}
       >
         <Animated.View
           style={[
@@ -127,6 +130,9 @@ export const BottomNav: React.FC = () => {
       <Pressable
         key={tab.route}
         onPress={() => router.push(tab.route as any)}
+        accessibilityRole="tab"
+        accessibilityLabel={isArabic ? tab.ar : tab.en}
+        accessibilityState={{ selected: active }}
         className="flex-1 items-center justify-center"
       >
         <Icon size={22} strokeWidth={active ? 2.5 : 2} color={color} />
@@ -168,7 +174,7 @@ export const BottomNav: React.FC = () => {
         }}
       >
         {left.map(renderTab)}
-        <FabButton onPress={onFab} bg={colors.primary} />
+        <FabButton onPress={onFab} bg={colors.primary} label={isArabic ? "أضف" : "Add"} />
         {right.map(renderTab)}
       </View>
     </AppleBackdrop>
