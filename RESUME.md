@@ -32,7 +32,12 @@ Implementing a **scoped subset** of `UIUX_AUDIT.md` (full audit + screenshots in
 - **M6** (`be93452`): new `src/lib/permissions.ts` `showPermissionDeniedAlert()` (persistent alert + `Linking.openSettings`) replaces the dead-end toasts in photos / me-avatar / settings-notifications.
 - **M7** (`ad05e64`): history list shows a filtered-empty EmptyState when a filter matches nothing.
 
-**Next (not started), per UIUX_AUDIT.md:** **F8 deferred at user request** (onboarding plan-preview "tweak"/"edit anytime" copy — keep for later). Remaining: B4 (a11y labels — systemic), M1 (list virtualization), RTL minors m1/m1b/m2/m3, polish P1–P5. Android build still blocked (no toolchain).
+**Phase 5 — a11y + RTL minors: ✅ DONE** (B4/m2 code-only; m1b sim-verified):
+- **B4** (`f33c821`): accessibility baked into shared primitives — `Btn`/`Toggle`/`BottomNav`/`ContinueButton`/`TopBar` now carry role/label/state, propagating to most controls. Per-screen inline icon-buttons (back/close) still need a sweep.
+- **m2** (`3ac324b`): toast is RTL-aware (row/padding/text mirror for Arabic).
+- **m1b** (`8de1c7d`): `src/lib/muscleLabels.ts` localizes muscle tags; AR history sim-verified.
+
+**Next (not started), per UIUX_AUDIT.md:** **F8 deferred at user request**. Remaining: B4 per-screen icon-button sweep, M1 (list virtualization), RTL minors m1 (history calendar grid) / m3 (multi-workout day), polish P1–P5. Android build still blocked (no toolchain).
 
 **Sim note:** Metro is flaky — if you get a "No script URL" red screen, Metro died (`curl -s localhost:8081/status` → 000); restart with `WATCHMAN_DISABLE=1 npx expo start --dev-client`, fully build the bundle (`curl -s "http://localhost:8081/node_modules/expo-router/entry.bundle?platform=ios&dev=true" -o /dev/null` — wait for ~16MB), then terminate+launch. The Simulator window hops between displays (main `1020,52` size `492,930` → `screencapture -R` gives **2× px**; external `2804,52` size `628,995` → **1× px**) — re-query `AXPosition/AXSize` and check the capture's pixel dims before mapping clicks.
 

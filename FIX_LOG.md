@@ -54,4 +54,12 @@ Implementation order **F2 → F1 → F3**, one commit per finding.
 
 **Deferred at user request:** **F8** (onboarding plan-preview "tweak"/"edit anytime" copy) — keep for later.
 
-**Remaining (not started), per UIUX_AUDIT.md:** F8 (deferred), B4 (a11y labels — systemic), M1 (list virtualization), RTL minors m1/m1b/m2/m3, polish P1–P5. Android build still blocked (no toolchain).
+## Phase 5 — accessibility + RTL minors
+
+| Item | Status | Commit | Screenshot | Notes |
+|------|--------|--------|------------|-------|
+| **B4** zero screen-reader labels app-wide | `[FIXED+CODE-ONLY]` (primitives) | `f33c821` | — | a11y baked into the shared primitives so it propagates broadly: `Btn` (role=button + label from text + disabled state), `Toggle` (role=switch + checked state + optional label), `BottomNav` tabs (role=tab + label + selected) and FAB, `ContinueButton`, `TopBar` (profile/bell/settings). Verified by inspection (VoiceOver can't be screenshotted). **Follow-up:** the remaining inline icon-only Pressables in individual screens (back chevrons, close X, etc.) still need labels — large per-screen sweep, not done. |
+| **m2** toast not RTL-aware | `[FIXED+CODE-ONLY]` | `3ac324b` | — | `ToastProvider` row reverses + padding swaps + text right-aligns (Cairo) when `isArabic`. (Transient; verified by inspection.) |
+| **m1b** muscle-group tags English under Arabic | `[FIXED+VERIFIED]` | `8de1c7d` | `m1b_muscle_tags_ar.png` | New `src/lib/muscleLabels.ts` (key→Arabic); history list + workout-detail tags localize. Sim-verified: AR history shows الصدر/الترايسبس/الأكتاف/الظهر/… |
+
+**Remaining (not started), per UIUX_AUDIT.md:** F8 (deferred), B4 per-screen icon-button sweep, M1 (list virtualization), RTL minors m1 (history calendar) / m3 (multi-workout day), polish P1–P5. Android build still blocked (no toolchain).
