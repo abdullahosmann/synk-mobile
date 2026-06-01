@@ -575,7 +575,7 @@ export default function PreSession() {
               placeholder={isArabic ? "مثال: تمارين الصدر" : "e.g. Chest Day"}
               placeholderTextColor={colors.inkMuted48}
               maxLength={40}
-              style={{ height: 48, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, paddingHorizontal: 16, fontSize: 15, color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}
+              style={{ height: 44, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, paddingHorizontal: 16, fontSize: 15, color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}
             />
           </View>
           <Pressable onPress={handleSaveRoutine} style={{ height: 44, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
@@ -624,7 +624,7 @@ export default function PreSession() {
           const sel = exercises.find((e: any) => e.id === exerciseMenuOpen);
           if (!sel) return <View />;
           const row = (Icon: any, label: string, onPress: () => void, danger?: boolean) => (
-            <Pressable onPress={onPress} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, height: 56, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
+            <Pressable onPress={onPress} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, height: 52, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
               <Icon size={20} color={danger ? colors.semanticRed : colors.inkMuted48} />
               <AppText style={{ flex: 1, fontSize: 15, fontWeight: "500", color: danger ? colors.semanticRed : colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>{label}</AppText>
             </Pressable>
@@ -641,7 +641,7 @@ export default function PreSession() {
               {row(RefreshCw, isArabic ? "بدّل التمرين" : "Replace Exercise", () => { setExerciseMenuOpen(null); showToast(isArabic ? "بدور على بدائل..." : "Finding alternatives...", "success"); })}
               {row(X, isArabic ? "متقترحش تاني" : "Don't Recommend Again", () => { setExerciseMenuOpen(null); setConfirmDontRecommend(sel); })}
               {row(Trash2, isArabic ? "احذف من التمرين" : "Remove from Workout", () => { setExerciseMenuOpen(null); setConfirmRemoveExercise(sel); }, true)}
-              <Pressable onPress={() => setExerciseMenuOpen(null)} style={{ marginTop: 16, height: 48, borderRadius: 14, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
+              <Pressable onPress={() => setExerciseMenuOpen(null)} style={{ marginTop: 16, height: 44, borderRadius: 14, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
                 <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "إغلاق" : "Close"}</AppText>
               </Pressable>
             </View>
@@ -737,7 +737,7 @@ export default function PreSession() {
               ] as const).map((reason) => {
                 const active = tweakReason === reason.id;
                 return (
-                  <Pressable key={reason.id} onPress={() => setTweakReason(reason.id)} style={{ height: 48, borderRadius: 14, borderWidth: 1, justifyContent: "center", backgroundColor: active ? colors.ink : colors.canvas, borderColor: active ? colors.ink : colors.hairline, paddingHorizontal: 16 }}>
+                  <Pressable key={reason.id} onPress={() => setTweakReason(reason.id)} style={{ height: 44, borderRadius: 14, borderWidth: 1, justifyContent: "center", backgroundColor: active ? colors.ink : colors.canvas, borderColor: active ? colors.ink : colors.hairline, paddingHorizontal: 16 }}>
                     <AppText style={{ fontSize: 15, fontWeight: "600", color: active ? colors.canvas : colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: fontFamily(isArabic, 600) }}>{isArabic ? reason.ar : reason.en}</AppText>
                   </Pressable>
                 );
@@ -745,7 +745,7 @@ export default function PreSession() {
             </View>
 
             <View style={{ alignItems: "center", gap: 12 }}>
-              <Pressable onPress={() => { showToast(isArabic ? "اتخطّى — نشوفك بكره" : "Skipped — see you tomorrow"); setAdaptStep(null); }} style={{ width: "100%", height: 48, borderRadius: 14, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+              <Pressable onPress={() => { showToast(isArabic ? "اتخطّى — نشوفك بكره" : "Skipped — see you tomorrow"); setAdaptStep(null); }} style={{ width: "100%", height: 44, borderRadius: 14, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
                 <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.semanticRed, fontFamily: fontFamily(isArabic, 600) }}>{isArabic ? "تخطّى النهاردة" : "SKIP TODAY"}</AppText>
               </Pressable>
               <Pressable onPress={() => showToast(isArabic ? "افتح النقل هنا" : "Reschedule opens here")} hitSlop={8}>
@@ -753,7 +753,7 @@ export default function PreSession() {
               </Pressable>
             </View>
 
-            <Pressable onPress={applyTweak} style={{ height: 48, borderRadius: 14, backgroundColor: colors.ink, alignItems: "center", justifyContent: "center" }}>
+            <Pressable onPress={applyTweak} style={{ height: 44, borderRadius: 14, backgroundColor: colors.ink, alignItems: "center", justifyContent: "center" }}>
               <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.canvas, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: fontFamily(isArabic, 600) }}>{isArabic ? "طبّق" : "APPLY"}</AppText>
             </Pressable>
           </View>

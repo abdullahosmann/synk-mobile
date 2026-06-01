@@ -110,7 +110,7 @@ export default function PlanPreview() {
       <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, backgroundColor: "rgba(0,0,0,0.1)", zIndex: 60, flexDirection: isArabic ? "row-reverse" : "row" }}>
         <View style={{ width: `${(11 / 15) * 100}%`, height: "100%", backgroundColor: colors.primary }} />
       </View>
-      <View style={{ height: 56, justifyContent: "center", alignItems: "center" }}>
+      <View style={{ height: 52, justifyContent: "center", alignItems: "center" }}>
         <AppText style={{ color: colors.primary, fontFamily: "Inter_600SemiBold", letterSpacing: 3.25, fontSize: 13 }}>SYNK</AppText>
       </View>
 

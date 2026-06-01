@@ -58,10 +58,10 @@ export default function Subscription() {
   const cancelSheet = (
     <BottomSheet isOpen={showCancelSheet} onClose={() => setShowCancelSheet(false)} title={isArabic ? "إدارة الاشتراك" : "Manage subscription"}>
       <View style={{ gap: 16, paddingVertical: 8 }}>
-        <Pressable onPress={() => { setIsPremium(false); setShowCancelSheet(false); showToast(isArabic ? "تم إلغاء الاشتراك" : "Subscription cancelled", "info"); }} style={{ height: 56, borderRadius: 10, backgroundColor: "rgba(255,59,48,0.1)", alignItems: "center", justifyContent: "center" }}>
+        <Pressable onPress={() => { setIsPremium(false); setShowCancelSheet(false); showToast(isArabic ? "تم إلغاء الاشتراك" : "Subscription cancelled", "info"); }} style={{ height: 52, borderRadius: 10, backgroundColor: "rgba(255,59,48,0.1)", alignItems: "center", justifyContent: "center" }}>
           <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.semanticRed, fontFamily: ff(isArabic, 600) }}>{isArabic ? "إلغاء الاشتراك" : "Cancel subscription"}</AppText>
         </Pressable>
-        <Pressable onPress={() => setShowCancelSheet(false)} style={{ height: 56, borderRadius: 10, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
+        <Pressable onPress={() => setShowCancelSheet(false)} style={{ height: 52, borderRadius: 10, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
           <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, fontFamily: ff(isArabic, 600) }}>{isArabic ? "رجوع" : "Go back"}</AppText>
         </Pressable>
       </View>

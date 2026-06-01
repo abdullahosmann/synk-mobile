@@ -102,7 +102,7 @@ export default function GeneratingPlan() {
         <View style={{ width: `${(10 / 15) * 100}%`, height: "100%", backgroundColor: colors.primary }} />
       </View>
 
-      <View style={{ height: 56, justifyContent: "center", marginBottom: 24 }}>
+      <View style={{ height: 52, justifyContent: "center", marginBottom: 24 }}>
         <AppText style={{ color: colors.primary, fontFamily: "Inter_600SemiBold", letterSpacing: 3.25, fontSize: 13 }}>
           SYNK
         </AppText>

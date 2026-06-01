@@ -168,7 +168,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
       >
         {/* Drag handle (gesture target) */}
         <GestureDetector gesture={pan}>
-          <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: 56 }}>
+          <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: 52 }}>
             <View
               style={{
                 position: "absolute",

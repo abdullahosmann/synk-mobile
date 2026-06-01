@@ -1610,7 +1610,7 @@ export default function ActiveWorkout() {
                 onPress={() => setIsVideoPlaying(!isVideoPlaying)}
                 style={{
                   width: 56,
-                  height: 56,
+                  height: 52,
                   borderRadius: 28,
                   backgroundColor: colors.primary,
                   alignItems: "center",
@@ -2069,7 +2069,7 @@ export default function ActiveWorkout() {
           right: isArabic ? undefined : 24,
           left: isArabic ? 24 : undefined,
           width: 56,
-          height: 56,
+          height: 52,
           borderRadius: 28,
           backgroundColor: colors.canvas,
           borderWidth: 1,
@@ -2126,7 +2126,7 @@ export default function ActiveWorkout() {
             disabled={currentExerciseIndex === 0}
             style={{
               width: 56,
-              height: 56,
+              height: 52,
               borderRadius: 28,
               backgroundColor: "rgba(210,210,215,0.64)",
               alignItems: "center",
@@ -2140,7 +2140,7 @@ export default function ActiveWorkout() {
             onPress={togglePause}
             style={{
               width: 56,
-              height: 56,
+              height: 52,
               borderRadius: 28,
               backgroundColor: "rgba(210,210,215,0.64)",
               alignItems: "center",
@@ -2157,7 +2157,7 @@ export default function ActiveWorkout() {
             onPress={handleNext}
             style={{
               flex: 1,
-              height: 56,
+              height: 52,
               backgroundColor: colors.primary,
               borderRadius: 9999,
               flexDirection: isArabic ? "row-reverse" : "row",
@@ -2240,7 +2240,7 @@ export default function ActiveWorkout() {
                 onPress={togglePause}
                 style={{
                   width: "100%",
-                  height: 56,
+                  height: 52,
                   backgroundColor: "#fff",
                   borderRadius: 9999,
                   flexDirection: "row",
@@ -2262,7 +2262,7 @@ export default function ActiveWorkout() {
                 }}
                 style={{
                   width: "100%",
-                  height: 48,
+                  height: 44,
                   alignItems: "center",
                   justifyContent: "center",
                 }}
@@ -2745,7 +2745,7 @@ export default function ActiveWorkout() {
                     <View
                       style={{
                         width: 48,
-                        height: 48,
+                        height: 44,
                         borderRadius: 8,
                         backgroundColor: colors.canvasParchment,
                         borderWidth: 1,
@@ -2972,7 +2972,7 @@ export default function ActiveWorkout() {
               </View>
               <View
                 style={{
-                  height: 48,
+                  height: 44,
                   marginTop: 8,
                   backgroundColor: colors.canvas,
                   borderWidth: 1,
@@ -3208,7 +3208,7 @@ export default function ActiveWorkout() {
                   onPress={() => setSelectedPlateSet(null)}
                   style={{
                     width: "100%",
-                    height: 48,
+                    height: 44,
                     borderRadius: 14,
                     backgroundColor: colors.primary,
                     alignItems: "center",

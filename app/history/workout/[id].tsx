@@ -137,7 +137,7 @@ export default function HistoryWorkoutDetail() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.canvasParchment }}>
       {/* Header */}
-      <View style={{ backgroundColor: cardBg, borderBottomWidth: 1, borderBottomColor: colors.hairline, paddingTop: insets.top + 8, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", height: 48 + insets.top + 8, paddingHorizontal: 16 }}>
+      <View style={{ backgroundColor: cardBg, borderBottomWidth: 1, borderBottomColor: colors.hairline, paddingTop: insets.top + 8, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", height: 44 + insets.top + 8, paddingHorizontal: 16 }}>
         <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={{ width: 44, height: 44, borderRadius: 9999, alignItems: "center", justifyContent: "center" }}>
           <ChevronLeft size={24} color={colors.ink} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
         </Pressable>

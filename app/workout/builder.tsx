@@ -183,7 +183,7 @@ function SelectedExerciseRow({
             <View
               style={{
                 width: 48,
-                height: 48,
+                height: 44,
                 borderRadius: 8,
                 overflow: "hidden",
                 backgroundColor: colors.canvas,
@@ -555,7 +555,7 @@ export default function RoutineBuilder() {
               placeholder={isArabic ? "مثال: تمارين الصدر" : "e.g. Chest Day"}
               placeholderTextColor={colors.hairline}
               style={{
-                height: 56,
+                height: 52,
                 backgroundColor: colors.canvas,
                 borderWidth: 1,
                 borderColor: colors.hairline,
@@ -767,7 +767,7 @@ export default function RoutineBuilder() {
                   placeholder={isArabic ? "ابحث عن تمرين..." : "Search exercises..."}
                   placeholderTextColor={colors.hairline}
                   style={{
-                    height: 48,
+                    height: 44,
                     backgroundColor: colors.canvas,
                     borderWidth: 1,
                     borderColor: colors.hairline,

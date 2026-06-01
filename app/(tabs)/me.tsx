@@ -242,7 +242,7 @@ export default function Profile() {
               {isArabic ? "تقدمك" : "YOUR PROGRESS"}
             </AppText>
             <AppText variant="caption-strong" style={{ color: colors.ink, marginBottom: 12, textAlign: isArabic ? "right" : "left" }}>{isArabic ? "التحليلات" : "Analytics"}</AppText>
-            <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-end", gap: 6, height: 48, marginBottom: 16, justifyContent: isArabic ? "flex-end" : "flex-start" }}>
+            <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-end", gap: 6, height: 44, marginBottom: 16, justifyContent: isArabic ? "flex-end" : "flex-start" }}>
               {chartBars.map((hp, i) => (
                 <View key={i} style={{ width: 8, backgroundColor: colors.primary, borderRadius: 2, height: `${hp}%` }} />
               ))}
@@ -292,7 +292,7 @@ export default function Profile() {
             { icon: Camera, label: isArabic ? "كاميرا" : "Take photo", mode: "camera" as const },
             { icon: ImageIcon, label: isArabic ? "من الاستوديو" : "Choose from library", mode: "library" as const },
           ].map(({ icon: Icon, label, mode }) => (
-            <Btn key={mode} variant="secondary" fullWidth onPress={() => pickPhoto(mode)} style={{ height: 56, borderRadius: 14, justifyContent: "flex-start" }}>
+            <Btn key={mode} variant="secondary" fullWidth onPress={() => pickPhoto(mode)} style={{ height: 52, borderRadius: 14, justifyContent: "flex-start" }}>
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, width: "100%" }}>
                 <Icon size={20} color={colors.inkMuted48} />
                 <AppText variant="body-strong" style={{ color: colors.ink }}>{label}</AppText>

@@ -1625,7 +1625,7 @@ export default function Nutrition() {
                   <Pressable onPress={handleDecreasePortion} style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
                     <AppText style={{ fontSize: 20, fontWeight: "600", color: colors.ink }}>−</AppText>
                   </Pressable>
-                  <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, paddingHorizontal: 12, width: 112, height: 48 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, paddingHorizontal: 12, width: 112, height: 44 }}>
                     <TextInput value={String(portionValue)} onChangeText={setPortionValue} keyboardType="numeric" style={{ flex: 1, fontSize: 22, fontWeight: "600", color: colors.ink, textAlign: "center" }} />
                     <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.inkMuted48 }}>{isGramBased ? "g" : "x"}</AppText>
                   </View>

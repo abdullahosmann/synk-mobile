@@ -193,7 +193,7 @@ export default function NutritionPlanDetails() {
 
   const inputPill = {
     flex: 1,
-    height: 48,
+    height: 44,
     borderWidth: 1,
     borderColor: colors.hairline,
     borderRadius: 14,
@@ -372,7 +372,7 @@ export default function NutritionPlanDetails() {
                 { l: isArabic ? "كارب" : "Carbs", v: editorMacros.carbs },
                 { l: isArabic ? "دهون" : "Fats", v: editorMacros.fats },
               ].map((m, i) => (
-                <View key={i} style={{ flex: 1, height: 48, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, backgroundColor: colors.canvas, alignItems: "center", justifyContent: "center" }}>
+                <View key={i} style={{ flex: 1, height: 44, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, backgroundColor: colors.canvas, alignItems: "center", justifyContent: "center" }}>
                   <AppText style={{ fontSize: 16, fontWeight: "600", color: colors.ink }}>{m.v}g</AppText>
                   <AppText style={{ fontSize: 10, color: colors.inkMuted48, fontFamily: fontFamily(isArabic) }}>{m.l}</AppText>
                 </View>

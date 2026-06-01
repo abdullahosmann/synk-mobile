@@ -836,7 +836,7 @@ export default function Dashboard() {
                     <AppText style={{ fontSize: 13, color: colors.inkMuted48, marginBottom: 12, fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
                       {isArabic ? "هذا الأسبوع" : "This week"}
                     </AppText>
-                    <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-end", gap: 6, height: 48, marginBottom: 16 }}>
+                    <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-end", gap: 6, height: 44, marginBottom: 16 }}>
                       {chartBars.map((h, i) => (
                         <View key={i} style={{ width: 8, borderRadius: 2, backgroundColor: colors.primary, height: `${h}%` }} />
                       ))}

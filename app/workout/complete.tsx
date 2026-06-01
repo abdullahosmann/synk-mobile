@@ -267,11 +267,11 @@ export default function WorkoutComplete() {
 
           {/* Actions */}
           <View style={{ gap: 12 }}>
-            <Btn variant="primary" fullWidth onPress={() => handleShare(false)} style={{ height: 56 }}>
+            <Btn variant="primary" fullWidth onPress={() => handleShare(false)} style={{ height: 52 }}>
               <Share2 size={20} color="#fff" />
               <AppText variant="body-strong" style={{ color: "#fff" }}>{isArabic ? "شارك" : "Share"}</AppText>
             </Btn>
-            <Btn variant="ghost" fullWidth onPress={() => handleShare(true)} style={{ height: 56 }}>
+            <Btn variant="ghost" fullWidth onPress={() => handleShare(true)} style={{ height: 52 }}>
               <Copy size={20} color={colors.primary} />
               <AppText variant="body-strong" className="text-primary dark:text-primary-dark">{isArabic ? "احفظ على الصور" : "Save to photos"}</AppText>
             </Btn>

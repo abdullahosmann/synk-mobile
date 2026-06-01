@@ -128,12 +128,12 @@ export default function DeleteAccount() {
       <BottomSheet isOpen={confirmSheet} onClose={() => { setConfirmSheet(false); setFinalConfirmText(""); }} title={isArabic ? "تأكيد أخير" : "Final confirmation"}>
         <View style={{ paddingVertical: 8 }}>
           <AppText style={{ fontSize: 14, color: colors.inkMuted48, marginBottom: 20, lineHeight: 20, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}>{isArabic ? 'اكتب "حذف" تحت عشان تأكد إنك عايز تحذف حسابك نهائياً.' : 'Type "DELETE" below to confirm you want to permanently delete your account.'}</AppText>
-          <TextInput value={finalConfirmText} onChangeText={setFinalConfirmText} placeholder={isArabic ? "حذف" : "DELETE"} placeholderTextColor={colors.inkMuted48} autoCapitalize="characters" style={{ height: 56, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, paddingHorizontal: 16, marginBottom: 20, textAlign: "center", fontSize: 16, fontWeight: "700", letterSpacing: 2, color: colors.ink }} />
+          <TextInput value={finalConfirmText} onChangeText={setFinalConfirmText} placeholder={isArabic ? "حذف" : "DELETE"} placeholderTextColor={colors.inkMuted48} autoCapitalize="characters" style={{ height: 52, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, paddingHorizontal: 16, marginBottom: 20, textAlign: "center", fontSize: 16, fontWeight: "700", letterSpacing: 2, color: colors.ink }} />
           <View style={{ gap: 12 }}>
             <Pressable onPress={handleConfirmDelete} style={{ height: 52, borderRadius: 9999, backgroundColor: RED, alignItems: "center", justifyContent: "center" }}>
               <AppText style={{ fontSize: 15, fontWeight: "600", color: "#fff", fontFamily: ff(isArabic, 600) }}>{isArabic ? "احذف نهائياً" : "Delete permanently"}</AppText>
             </Pressable>
-            <Pressable onPress={() => { setConfirmSheet(false); setFinalConfirmText(""); }} style={{ height: 48, alignItems: "center", justifyContent: "center" }}>
+            <Pressable onPress={() => { setConfirmSheet(false); setFinalConfirmText(""); }} style={{ height: 44, alignItems: "center", justifyContent: "center" }}>
               <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.inkMuted48, fontFamily: ff(isArabic, 600) }}>{isArabic ? "إلغاء" : "Cancel"}</AppText>
             </Pressable>
           </View>

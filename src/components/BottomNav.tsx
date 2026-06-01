@@ -96,7 +96,7 @@ const FabButton: React.FC<{ onPress: () => void; bg: string; label: string }> = 
             {
               backgroundColor: bg,
               width: 56,
-              height: 56,
+              height: 52,
               borderRadius: 9999,
               alignItems: "center",
               justifyContent: "center",

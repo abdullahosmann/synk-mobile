@@ -186,7 +186,7 @@ export default function ProgressPhotos() {
     <View style={{ flex: 1, backgroundColor: colors.canvasParchment }}>
       {/* Header */}
       <View style={{ backgroundColor: cardBg, borderBottomWidth: 1, borderBottomColor: colors.hairline, paddingTop: insets.top + 8 }}>
-        <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", height: 48, paddingHorizontal: 16 }}>
+        <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", height: 44, paddingHorizontal: 16 }}>
           <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={{ width: 44, height: 44, borderRadius: 9999, alignItems: "center", justifyContent: "center" }}>
             <ChevronLeft size={24} color={colors.ink} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
           </Pressable>
@@ -314,11 +314,11 @@ export default function ProgressPhotos() {
             <Camera size={20} color={colors.onPrimary} />
             <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.onPrimary, fontFamily: ff(isArabic, 600) }}>{isArabic ? "الكاميرا" : "Take Photo"}</AppText>
           </Pressable>
-          <Pressable onPress={() => pick("library")} style={{ width: "100%", height: 56, borderRadius: 14, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
+          <Pressable onPress={() => pick("library")} style={{ width: "100%", height: 52, borderRadius: 14, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
             <Upload size={20} color={colors.inkMuted48} />
             <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, fontFamily: ff(isArabic, 600) }}>{isArabic ? "من المعرض" : "Choose from Gallery"}</AppText>
           </Pressable>
-          <View style={{ marginTop: 16, width: "100%", height: 48, borderRadius: 14, borderWidth: 1, borderStyle: "dashed", borderColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)", flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
+          <View style={{ marginTop: 16, width: "100%", height: 44, borderRadius: 14, borderWidth: 1, borderStyle: "dashed", borderColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)", flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
             <Heart size={16} color={colors.inkMuted48} />
             <AppText style={{ fontSize: 14, fontWeight: "500", color: colors.inkMuted48, fontFamily: ff(isArabic, 600) }}>{isArabic ? "ربط Apple Health — قريبًا" : "Connect Apple Health — Soon"}</AppText>
           </View>

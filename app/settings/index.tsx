@@ -418,7 +418,7 @@ export default function Settings() {
                 {Array.from({ length: 24 }).map((_, h) => {
                   const active = timePicker.hour === h;
                   return (
-                    <Pressable key={h} onPress={() => setTimePicker({ ...timePicker, hour: h })} style={{ height: 48, alignItems: "center", justifyContent: "center" }}>
+                    <Pressable key={h} onPress={() => setTimePicker({ ...timePicker, hour: h })} style={{ height: 44, alignItems: "center", justifyContent: "center" }}>
                       <AppText style={{ fontSize: 24, fontWeight: "600", color: active ? colors.primary : colors.inkMuted48, opacity: active ? 1 : 0.3, transform: [{ scale: active ? 1.25 : 1 }] }}>{h.toString().padStart(2, "0")}</AppText>
                     </Pressable>
                   );
@@ -432,7 +432,7 @@ export default function Settings() {
                 {[0, 15, 30, 45].map((m) => {
                   const active = timePicker.minute === m;
                   return (
-                    <Pressable key={m} onPress={() => setTimePicker({ ...timePicker, minute: m })} style={{ height: 48, alignItems: "center", justifyContent: "center" }}>
+                    <Pressable key={m} onPress={() => setTimePicker({ ...timePicker, minute: m })} style={{ height: 44, alignItems: "center", justifyContent: "center" }}>
                       <AppText style={{ fontSize: 24, fontWeight: "600", color: active ? colors.primary : colors.inkMuted48, opacity: active ? 1 : 0.3, transform: [{ scale: active ? 1.25 : 1 }] }}>{m.toString().padStart(2, "0")}</AppText>
                     </Pressable>
                   );
@@ -449,7 +449,7 @@ export default function Settings() {
       {/* Country Sheet */}
       <BottomSheet isOpen={countrySheet} onClose={() => setCountrySheet(false)} title={isArabic ? "اختر دولتك" : "Select country"}>
         <View style={{ paddingVertical: 8, height: 420 }}>
-          <TextInput value={countrySearch} onChangeText={setCountrySearch} placeholder={isArabic ? "بحث..." : "Search..."} placeholderTextColor={colors.inkMuted48} style={{ height: 48, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, backgroundColor: colors.canvasParchment, paddingHorizontal: 16, marginBottom: 16, fontSize: 15, color: colors.ink, textAlign: isArabic ? "right" : "left" }} />
+          <TextInput value={countrySearch} onChangeText={setCountrySearch} placeholder={isArabic ? "بحث..." : "Search..."} placeholderTextColor={colors.inkMuted48} style={{ height: 44, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, backgroundColor: colors.canvasParchment, paddingHorizontal: 16, marginBottom: 16, fontSize: 15, color: colors.ink, textAlign: isArabic ? "right" : "left" }} />
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 24 }}>
             {filteredCountries.map((c, i) => {
               if (c.divider) return <View key={`d${i}`} style={{ height: 1, backgroundColor: colors.hairline, marginVertical: 12, marginHorizontal: 12 }} />;
@@ -474,7 +474,7 @@ export default function Settings() {
             <Pressable onPress={() => { if (disconnectSheetFor) disconnectIntegrationStub(disconnectSheetFor, user, setUser).then(() => { const name = getIntegrationDetails(disconnectSheetFor).name; setDisconnectSheetFor(null); showToast(isArabic ? `اتقطع اتصال ${name}` : `${name} disconnected`, "success"); }); }} style={{ height: 52, borderRadius: 9999, borderWidth: 1, borderColor: colors.semanticRed, alignItems: "center", justifyContent: "center" }}>
               <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.semanticRed, fontFamily: ff(isArabic, 600) }}>{isArabic ? "إلغاء الاتصال" : "Disconnect"}</AppText>
             </Pressable>
-            <Pressable onPress={() => setDisconnectSheetFor(null)} style={{ height: 48, alignItems: "center", justifyContent: "center" }}>
+            <Pressable onPress={() => setDisconnectSheetFor(null)} style={{ height: 44, alignItems: "center", justifyContent: "center" }}>
               <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.inkMuted48, fontFamily: ff(isArabic, 600) }}>{isArabic ? "إلغاء" : "Cancel"}</AppText>
             </Pressable>
           </View>
@@ -502,7 +502,7 @@ export default function Settings() {
           {[1500, 2000, 2500, 3000, 3500].map((amount) => {
             const active = user.dailyWaterTarget === amount;
             return (
-              <Pressable key={amount} onPress={() => { setUser({ ...user, dailyWaterTarget: amount }); setWaterTargetSheet(false); }} style={{ height: 56, borderRadius: 10, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", paddingHorizontal: 20, borderWidth: 1, backgroundColor: active ? withAlpha(colors.primary, 0.2) : colors.canvasParchment, borderColor: active ? colors.primary : colors.hairline }}>
+              <Pressable key={amount} onPress={() => { setUser({ ...user, dailyWaterTarget: amount }); setWaterTargetSheet(false); }} style={{ height: 52, borderRadius: 10, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", paddingHorizontal: 20, borderWidth: 1, backgroundColor: active ? withAlpha(colors.primary, 0.2) : colors.canvasParchment, borderColor: active ? colors.primary : colors.hairline }}>
                 <AppText style={{ fontSize: 15, fontWeight: "600", color: active ? colors.primary : colors.ink, fontFamily: ff(isArabic, 600) }}>{isArabic ? `${amount} مل` : `${amount} ml`}</AppText>
               </Pressable>
             );

@@ -472,7 +472,7 @@ export default function AdaptiveInsights() {
             </Pressable>
             <Pressable
               onPress={() => setIsRevertModalOpen(false)}
-              style={{ width: "100%", height: 56, alignItems: "center", justifyContent: "center" }}
+              style={{ width: "100%", height: 52, alignItems: "center", justifyContent: "center" }}
             >
               <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.inkMuted48, fontFamily: fontFamily(isArabic, 600) }}>
                 {isArabic ? "إلغاء" : "Cancel"}

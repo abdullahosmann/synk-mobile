@@ -79,7 +79,7 @@ export default function EditProfile() {
     borderWidth: 1,
     borderColor: colors.hairline,
     borderRadius: 10,
-    height: 48,
+    height: 44,
     paddingHorizontal: 16,
     fontSize: 14,
     color: colors.ink,
@@ -111,7 +111,7 @@ export default function EditProfile() {
         {/* Handle */}
         <View>
           {label(isArabic ? "اسم المستخدم" : "Handle")}
-          <View style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, height: 48, paddingHorizontal: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center" }}>
+          <View style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, height: 44, paddingHorizontal: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center" }}>
             <AppText style={{ fontSize: 14, color: colors.inkMuted48, marginHorizontal: 4 }}>@</AppText>
             <TextInput value={handle} onChangeText={handleHandleChange} autoCapitalize="none" style={{ flex: 1, fontSize: 14, color: colors.ink, textAlign: "left" }} />
           </View>

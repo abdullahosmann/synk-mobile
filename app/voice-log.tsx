@@ -245,7 +245,7 @@ export default function VoiceLog() {
         </View>
 
         {/* Status line */}
-        <View style={{ height: 48, alignItems: "center", justifyContent: "center" }}>
+        <View style={{ height: 44, alignItems: "center", justifyContent: "center" }}>
           {phase === "idle" && (
             <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, fontFamily: ff(isArabic, 600) }}>
               {isArabic ? "اضغط وتكلم" : "Tap and hold to speak"}
@@ -311,7 +311,7 @@ export default function VoiceLog() {
                 {isArabic ? "تأكيد الحفظ" : "Confirm & Save"}
               </AppText>
             </Pressable>
-            <Pressable onPress={() => setPhase("idle")} style={{ height: 56, alignItems: "center", justifyContent: "center" }}>
+            <Pressable onPress={() => setPhase("idle")} style={{ height: 52, alignItems: "center", justifyContent: "center" }}>
               <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: isArabic ? 0 : 1.5, fontFamily: ff(isArabic, 600) }}>
                 {isArabic ? "إلغاء" : "Discard"}
               </AppText>

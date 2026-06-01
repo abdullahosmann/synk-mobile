@@ -101,7 +101,7 @@ export default function CircleCreate() {
                 onChangeText={(t) => t.length <= 30 && setCircleName(t)}
                 placeholder={isArabic ? "مثلاً: شلة الجيم" : "e.g. Gym Squad"}
                 placeholderTextColor={colors.inkMuted48}
-                style={{ height: 48, borderRadius: 14, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, paddingHorizontal: 16, fontSize: 15, color: colors.ink, textAlign: label, fontFamily: ff(isArabic) }}
+                style={{ height: 44, borderRadius: 14, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, paddingHorizontal: 16, fontSize: 15, color: colors.ink, textAlign: label, fontFamily: ff(isArabic) }}
               />
               <AppText style={{ fontSize: 11, color: colors.inkMuted48, marginTop: 4, textAlign: isArabic ? "left" : "right", fontVariant: ["tabular-nums"] }}>{circleName.length} / 30</AppText>
             </View>

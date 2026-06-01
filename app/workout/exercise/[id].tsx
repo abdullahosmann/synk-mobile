@@ -248,7 +248,7 @@ export default function PreSessionExerciseDetail() {
           <View
             style={{
               width: 56,
-              height: 56,
+              height: 52,
               borderRadius: 14,
               backgroundColor: colors.canvasParchment,
               alignItems: "center",
@@ -368,7 +368,7 @@ export default function PreSessionExerciseDetail() {
             style={{
               maxWidth: 200,
               width: "100%",
-              height: 48,
+              height: 44,
               borderRadius: 14,
               backgroundColor: colors.canvasParchment,
               borderWidth: 1,
