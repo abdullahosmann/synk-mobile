@@ -706,26 +706,26 @@ export default function Dashboard() {
 
             if (key === "hydration") {
               const waterValue = todaysLogs?.water || 0;
+              const waterTarget = user.dailyWaterTarget || 2000;
               return (
                 <Pressable key={key} onPress={() => router.push("/fitness?tab=nutrition")} style={[cardStyle, { padding: 20 }]}>
-                  <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, marginBottom: 16 }}>
-                    <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
-                      <AppText style={{ fontSize: 18 }}>💧</AppText>
-                    </View>
+                  <View style={{ flexDirection: isArabic ? "row-reverse" : "row", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 12 }}>
                     <View style={{ alignItems: isArabic ? "flex-end" : "flex-start" }}>
-                      <AppText variant="body-strong" style={{ color: colors.ink }}>{isArabic ? "الترطيب" : "Hydration"}</AppText>
-                      <AppText style={{ fontSize: 13, color: colors.inkMuted48, fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
-                        {waterValue === 0
-                          ? isArabic ? "اضغط لتسجيل الماء" : "Tap to log water"
-                          : isArabic ? `${(waterValue / 1000).toFixed(1)} من ٢٫٥ لتر` : `${(waterValue / 1000).toFixed(1)} of 2.5 L`}
+                      <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: isArabic ? 0 : 0.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                        {isArabic ? "الترطيب" : "HYDRATION"}
                       </AppText>
-                      {waterValue > 0 && (
-                        <AppText style={{ fontSize: 11, color: colors.inkMuted48 }}>{waterValue}/2500ml</AppText>
-                      )}
+                      <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "baseline", gap: 6, marginTop: 4 }}>
+                        <AppText style={{ fontSize: 22, fontWeight: "600", color: colors.ink }}>{waterValue.toLocaleString()}</AppText>
+                        <AppText style={{ fontSize: 13, color: colors.inkMuted48 }}>/ {waterTarget.toLocaleString()} {isArabic ? "مل" : "ML"}</AppText>
+                      </View>
                     </View>
+                    <ChevronRight size={16} strokeWidth={2.5} color={colors.hairline} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
+                  </View>
+                  <View style={{ height: 6, width: "100%", backgroundColor: colors.hairline, borderRadius: 9999, overflow: "hidden", marginBottom: 16 }}>
+                    <View style={{ height: "100%", backgroundColor: colors.primary, width: `${Math.min(100, (waterValue / Math.max(1, waterTarget)) * 100)}%`, borderRadius: 9999 }} />
                   </View>
                   <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
-                    {[250, 500, 1000].map((amount) => (
+                    {[100, 500, 1000].map((amount) => (
                       <Pressable
                         key={amount}
                         onPress={() => {
