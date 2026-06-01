@@ -196,7 +196,7 @@ export default function PlanSettings() {
     <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.inkMuted48, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12, paddingHorizontal: 4, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic, 600) }}>{text}</AppText>
   );
 
-  const card = { backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, overflow: "hidden" as const };
+  const card = { backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, overflow: "hidden" as const };
 
   // ---- Shared option-picker sheet ----
   const optionButton = (selected: boolean, onPress: () => void, label: string, desc?: string, key?: string) => (

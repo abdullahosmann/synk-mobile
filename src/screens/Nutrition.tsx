@@ -976,7 +976,7 @@ export default function Nutrition() {
     backgroundColor: colors.canvas,
     borderWidth: 1,
     borderColor: colors.hairline,
-    borderRadius: 10,
+    borderRadius: 14,
     padding: 16,
   } as const;
   const circleBtn = {
@@ -1016,7 +1016,7 @@ export default function Nutrition() {
     if (!user.nutritionPlan || !nutritionCards.coachPlan) return null;
     const p = user.nutritionPlan as any;
     return (
-      <View key="coachPlan" style={{ backgroundColor: colors.canvas, borderWidth: 2, borderColor: withAlpha(colors.primary, isDark ? 0.1 : 0.2), borderRadius: 12, padding: 20, marginBottom: 8, overflow: "hidden" }}>
+      <View key="coachPlan" style={{ backgroundColor: colors.canvas, borderWidth: 2, borderColor: withAlpha(colors.primary, isDark ? 0.1 : 0.2), borderRadius: 14, padding: 20, marginBottom: 8, overflow: "hidden" }}>
         <View style={{ position: "absolute", top: 0, left: 0, width: 4, height: "100%", backgroundColor: colors.primary }} />
         <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, marginBottom: 16 }}>
           <CoachAvatar coachId={user.coach || "khaled"} size={32} />
@@ -1775,7 +1775,7 @@ export default function Nutrition() {
               setItem("synk:nutritionCardOrder", JSON.stringify(newOrder));
             };
             return (
-              <View key={key} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", padding: 16, backgroundColor: colors.canvas, borderRadius: 12, borderWidth: 1, borderColor: colors.hairline, gap: 12 }}>
+              <View key={key} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", padding: 16, backgroundColor: colors.canvas, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, gap: 12 }}>
                 <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, flex: 1 }}>
                   <Pressable onPress={() => index > 0 && move(-1)} disabled={index === 0} style={{ opacity: index === 0 ? 0.3 : 1 }}>
                     <ChevronUp size={20} color={colors.inkMuted48} />
