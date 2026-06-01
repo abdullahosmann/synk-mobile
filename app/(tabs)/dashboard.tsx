@@ -607,7 +607,7 @@ export default function Dashboard() {
                 { label: isArabic ? "دهون" : "FAT", c: consumed.f, t: targets.f },
               ];
               return (
-                <Pressable key={key} onPress={() => router.push("/nutrition")} style={[cardStyle, { padding: 24, alignItems: "center" }]}>
+                <Pressable key={key} onPress={() => router.push("/fitness?tab=nutrition&openSearch=1")} style={[cardStyle, { padding: 24, alignItems: "center" }]}>
                   {isFutureSelected && (
                     <View style={{ width: "100%", alignItems: "center", marginBottom: 16 }}>
                       <View style={{ backgroundColor: "rgba(0,102,204,0.1)", paddingHorizontal: 12, paddingVertical: 4, borderRadius: 9999 }}>
@@ -674,7 +674,7 @@ export default function Dashboard() {
             if (key === "hydration") {
               const waterValue = todaysLogs?.water || 0;
               return (
-                <Pressable key={key} onPress={() => router.push("/nutrition")} style={[cardStyle, { padding: 20 }]}>
+                <Pressable key={key} onPress={() => router.push("/fitness?tab=nutrition")} style={[cardStyle, { padding: 20 }]}>
                   <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, marginBottom: 16 }}>
                     <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
                       <AppText style={{ fontSize: 18 }}>💧</AppText>
