@@ -215,7 +215,6 @@ export default function Nutrition() {
     return { summary: true, meals: true, aiCoaching: true, aiPick: true, hydration: true, coachPlan: true };
   });
   const [showCustomizeSheet, setShowCustomizeSheet] = useState(false);
-  const [showAdjustPlanSheet, setShowAdjustPlanSheet] = useState(false);
   const [nutritionCardOrder, setNutritionCardOrder] = useState<string[]>(() => {
     try {
       const stored = getItem("synk:nutritionCardOrder");
@@ -1055,7 +1054,7 @@ export default function Nutrition() {
           <Pressable onPress={handleUsePlanToday} style={{ flex: 1, height: 44, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
             <AppText style={{ color: "#fff", fontSize: 14, fontWeight: "600", textAlign: "center", fontFamily: ff(isArabic, 600) }}>{isArabic ? "استخدم هذه الخطة اليوم" : "Use this plan today"}</AppText>
           </Pressable>
-          <Pressable onPress={() => setShowAdjustPlanSheet(true)} style={{ flex: 1, height: 44, borderRadius: 9999, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+          <Pressable onPress={() => router.push("/nutrition-plan")} style={{ flex: 1, height: 44, borderRadius: 9999, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
             <AppText style={{ color: colors.ink, fontSize: 14, fontWeight: "600", fontFamily: ff(isArabic, 600) }}>{isArabic ? "تعديل الخطة" : "Adjust plan"}</AppText>
           </Pressable>
         </View>
@@ -1784,16 +1783,6 @@ export default function Nutrition() {
               </View>
             );
           })}
-        </View>
-      </BottomSheet>
-
-      {/* ===== Adjust Plan Sheet ===== */}
-      <BottomSheet isOpen={showAdjustPlanSheet} onClose={() => setShowAdjustPlanSheet(false)} title={isArabic ? "تعديل الخطة" : "Adjust plan"} doneLabel={isArabic ? "فهمت ذلك" : "Got it"}>
-        <View style={{ paddingVertical: 8 }}>
-          <AppText style={{ fontSize: 17, fontWeight: "600", color: colors.ink, marginBottom: 8, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic, 600) }}>{isArabic ? "تعديل الخطة قريباً" : "Plan adjustment is coming soon."}</AppText>
-          <AppText style={{ fontSize: 15, color: colors.inkMuted48, lineHeight: 22, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}>
-            {isArabic ? "في الوقت الحالي، يمكنك تسجيل الوجبات يدوياً وتعديل الحصص مباشرة في اليوميات." : "For now, you can manually log meals and edit portions directly in the diary."}
-          </AppText>
         </View>
       </BottomSheet>
 

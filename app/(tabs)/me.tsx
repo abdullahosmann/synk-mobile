@@ -221,6 +221,24 @@ export default function Profile() {
             <ChevronRight size={18} color={colors.hairline} strokeWidth={2.5} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
           </PressableScale>
 
+          {/* Nutrition plan */}
+          {!!user?.nutritionPlan && (
+            <PressableScale onPress={() => router.push("/nutrition-plan")} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16 }}>
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
+                <Flame size={20} color={colors.primary} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, marginBottom: 2, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                  {isArabic ? "خطة التغذية" : "NUTRITION PLAN"}
+                </AppText>
+                <AppText variant="caption-strong" numberOfLines={1} style={{ color: colors.ink, textAlign: isArabic ? "right" : "left" }}>
+                  {`${(user.calorieTarget || user.nutritionPlan?.dailyCalories || 0).toLocaleString()} ${isArabic ? "سعرة/يوم" : "kcal / day"}`}
+                </AppText>
+              </View>
+              <ChevronRight size={18} color={colors.hairline} strokeWidth={2.5} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
+            </PressableScale>
+          )}
+
           {/* Analytics preview */}
           <PressableScale onPress={() => router.push("/analytics")} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16 }}>
             <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, marginBottom: 2, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
