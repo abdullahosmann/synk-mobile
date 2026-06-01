@@ -58,13 +58,12 @@ const CoachAvatar: React.FC<CoachAvatarProps> = ({
         {!hasError && coach?.image ? (
           <Image
             source={{ uri: coach.image }}
-            style={{ width: "100%", height: "100%" }}
+            // expo-image has no grayscale filter; approximate web's desaturated
+            // "idle" coaches by dimming opacity proportional to the grayscale
+            // amount (P3 — was a no-op `tintColor: undefined`).
+            style={{ width: "100%", height: "100%", opacity: grayscale > 0 ? 1 - grayscale * 0.55 : 1 }}
             contentFit="cover"
             onError={() => setHasError(true)}
-            // grayscale tint approximation
-            {...(grayscale > 0
-              ? { tintColor: undefined }
-              : {})}
           />
         ) : (
           <View
