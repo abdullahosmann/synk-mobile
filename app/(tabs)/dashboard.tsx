@@ -324,6 +324,34 @@ export default function Dashboard() {
     }
   }, [isTodaySelected, selectedDateStr, todaysLogs.foods]);
 
+  // I1 — hydration reads/writes the *selected* day's log (not always today),
+  // matching the M2 past-day behavior.
+  const [logRefresh, setLogRefresh] = useState(0);
+  const selectedDayWater = useMemo(() => {
+    if (isTodaySelected) return todaysLogs.water || 0;
+    try {
+      const raw = getItem(`synk:logs:${selectedDateStr}`);
+      return (raw ? JSON.parse(raw).water : 0) || 0;
+    } catch {
+      return 0;
+    }
+  }, [isTodaySelected, selectedDateStr, todaysLogs.water, logRefresh]);
+
+  const addSelectedDayWater = (amount: number) => {
+    if (isTodaySelected) {
+      setTodaysLogs((prev) => ({ ...prev, water: (prev.water || 0) + amount }));
+    } else {
+      try {
+        const raw = getItem(`synk:logs:${selectedDateStr}`);
+        const log = raw ? JSON.parse(raw) : { date: selectedDateStr, foods: [], workouts: [], water: 0 };
+        log.water = (log.water || 0) + amount;
+        setItem(`synk:logs:${selectedDateStr}`, JSON.stringify(log));
+        setLogRefresh((k) => k + 1);
+      } catch {}
+    }
+    showToast(isArabic ? `تم إضافة ${amount} مل` : `Added ${amount}ml`);
+  };
+
   const consumed = {
     cal: selectedDayFoods.reduce((s, f) => s + f.calories, 0),
     p: selectedDayFoods.reduce((s, f) => s + f.protein, 0),
@@ -720,7 +748,7 @@ export default function Dashboard() {
             }
 
             if (key === "hydration") {
-              const waterValue = todaysLogs?.water || 0;
+              const waterValue = selectedDayWater;
               const waterTarget = user.dailyWaterTarget || 2000;
               return (
                 <Pressable key={key} onPress={() => router.push("/fitness?tab=nutrition")} style={[cardStyle, { padding: 20 }]}>
@@ -743,10 +771,7 @@ export default function Dashboard() {
                     {[100, 500, 1000].map((amount) => (
                       <Pressable
                         key={amount}
-                        onPress={() => {
-                          setTodaysLogs((prev) => ({ ...prev, water: (prev.water || 0) + amount }));
-                          showToast(isArabic ? `تم إضافة ${amount} مل` : `Added ${amount}ml`);
-                        }}
+                        onPress={() => addSelectedDayWater(amount)}
                         style={{ flex: 1, height: 36, borderRadius: 8, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.dividerSoft, alignItems: "center", justifyContent: "center" }}
                       >
                         <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.inkMuted80 }}>+{amount}ml</AppText>

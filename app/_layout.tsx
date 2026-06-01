@@ -1,6 +1,11 @@
 import "../global.css";
 import React, { useEffect, useState } from "react";
-import { useColorScheme, View } from "react-native";
+import { LogBox, useColorScheme, View } from "react-native";
+
+// D1 — silence the benign, framework-level Reanimated/Animated noise that
+// otherwise raises the dev "view warnings" banner on every screen. Scoped to
+// this exact message so real warnings still surface.
+LogBox.ignoreLogs(["Sending `onAnimatedValueUpdate` with no listeners registered."]);
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
