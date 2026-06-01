@@ -4,8 +4,13 @@ Handoff doc for continuing the web→React Native migration in a fresh session.
 
 ---
 
-## 🔎 PENDING APPROVAL: Deep coherence / "what-if" pass — see `mobile/UX_REVIEW_2.md`
-A second, deeper audit (driving the app as different user mindsets: "if I edit calories does it still match my goal?", "is the coach actually adaptive?"). **Key finding: the adaptive levers are write-only** — `getWorkoutForDate` only reads split+days, so excluded exercises, injuries, fitness level, workout duration, week overrides, and the "replace-today" routine override all persist but never change the workout. Plus several screens show contradictory numbers (Me progress card hardcoded; workout count 0 vs 21; plan-details mock vs Plan Settings). Full findings + a phased fix plan + 3 open design decisions are in **`mobile/UX_REVIEW_2.md`**. **Awaiting user confirmation + decisions before editing.** Once confirmed: Phase 1 (trust/coherence) → 2 (adaptive propagation) → 3 (nutrition edit coherence) → 4 (units/visual) → 5 (interaction/dev), one commit per finding, sim-verified, logged in UX_REVIEW_2.md + FIX_LOG.md.
+## ✅ Deep coherence / "what-if" pass (UX_REVIEW_2) — DONE & sim-verified
+All 5 phases implemented + verified (decisions: auto-balance / soft-warn / propagate-deterministic-levers). Highlights:
+- **Adaptive levers now actually change the workout** (`197c0f1`): `getWorkoutForDate` honors arnold/phul/phat splits, split×days fallback, excluded exercises, saved-routine override, week overrides, and level/duration (sets + count). *Deferred to backend:* A3 injuries + A8/A9 feedback-loop/tweak-swaps.
+- **Coherence numbers fixed** (`78a5c63`/`d565bd2`/`82a6a61`): Me progress card + workout count now derive from `getAllWorkouts` (match Analytics/History); plan-details metadata derives from settings; WeekEditor date range matches its rows.
+- **Nutrition editing is coherent** (`bea8cfa`): macros auto-balance from calories+diet (read-only); soft-warn on goal conflict; explanation reflects diet style; "Use this plan today" toggles/undoes.
+- **Polish** (`cedf97f`/`d38fd2b`): food-row kcal/badge collision, TopBar real avatar, pluralization, past-day hydration, silenced the benign Reanimated warning banner.
+Full per-finding detail + the 3 resolved decisions + deferrals are in **`mobile/UX_REVIEW_2.md`**. **Remaining (optional/deferred):** I2 double-tap nav guard (systemic), V3/V4 minor visuals, A3/A8/A9 + the onboarding "filtering injuries" loading copy (backend/coach engine).
 
 ## 🔧 Targeted UI/UX fix pass (Phases 1–9 ✅ done — see FIX_LOG.md)
 

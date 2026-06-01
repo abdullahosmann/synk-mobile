@@ -58,6 +58,14 @@ Status legend: 🔴 trust/coherence · 🟠 adaptive-lever does nothing · 🟡 
 
 ---
 
+## Progress log — ✅ ALL PHASES DONE (branch dev, tsc clean)
+- **Phase 1 — DONE & sim-verified** (`78a5c63` C1+C2, `d565bd2` C3, `82a6a61` C4).
+- **Phase 2 — DONE & sim-verified** (`197c0f1`): A1/A2/A4/A5/A6/A7 in `getWorkoutForDate` (split=arnold→Chest, exclude bench→removed, beginner→sets-1, duration reflected, routine override honored).
+- **Phase 3 — DONE & sim-verified** (`bea8cfa`): N1 auto-balanced read-only macros, N2 soft-warn goal conflict, N3 diet-style clause in coach copy, N4 "Use this plan today" toggle/undo.
+- **Phase 4 — DONE & sim-verified** (`cedf97f`): V1 food-row collision fixed, V2 TopBar real avatar, U2 pluralization. **U1 was a false positive** (measurements already convert via `heightUnit`; user's heightUnit is "ft"). V3 (coach-chat gap) / V4 (settings glyph) left as minor/subjective.
+- **Phase 5 — DONE & sim-verified** (`d38fd2b`): I1 hydration reads/writes the selected day, D1 silenced the benign Reanimated warning (banner gone).
+- **Deferred (documented):** A3 injuries + A8/A9 feedback-loop/tweak-swaps (backend/coach engine, per decision); I2 double-tap nav guard (systemic, regression risk); V3/V4 (minor visual). The rebuild/adapt copy is now honest because the deterministic levers (Phase 2) actually work.
+
 ## Part B — Fix plan (phased; approve before I start)
 
 Frontend-only, mock-aware: the aim is **internal consistency** — derived/mock state should behave as if the system were real, so the backend can later swap in real data with no UI change.
@@ -99,10 +107,10 @@ Centralize in `getWorkoutForDate` (or a thin wrapper the screens already call):
 
 ---
 
-## Open design decisions (block Phases 2–3)
-1. **Nutrition "Edit targets" model (N1/N3):** (a) lock macros = auto-derive from calories + diet style (user only edits calories/diet); (b) free-edit macros but show a live "≈X kcal from macros" reconciliation and a warning when it ≠ the calorie target; (c) hybrid — edit either, the other auto-balances. 
-2. **Goal/diet conflict (N2/X1):** hard-block the save, soft-warn (toast/inline) but allow, or just silently allow.
-3. **Adaptive depth (A1/A8/A9):** make level/duration/RPE genuinely reshape the (mock) workout on the frontend, or keep cosmetic + make the copy honest and leave the real adaptation to backend?
+## Design decisions — ✅ RESOLVED (user-approved)
+1. **Nutrition "Edit targets" model (N1/N3): AUTO-BALANCE.** User edits calories + diet style; protein/carbs/fat auto-derive (via the generator's diet-style profiles) to always match the calorie target. Macros become read-only outputs in the editor.
+2. **Goal/diet conflict (N2/X1): SOFT-WARN, ALLOW.** Non-blocking inline warning when an edit contradicts the goal direction (deficit goal + surplus; loss goal + higher target weight); the user can still save.
+3. **Adaptive depth (A1/A8/A9): PROPAGATE THE DETERMINISTIC LEVERS.** Make `getWorkoutForDate` honor excluded exercises, injuries, plan-override routine, week overrides, and split/days validity, and have level/duration visibly affect sets/warm-up. **Defer** the RPE/heavy-weight feedback loop (A8) and tweak→real-exercise-swap (A9) to backend — and make their copy honest in the meantime.
 
 ## Sequencing & resumability
 Order: **Phase 1 → 2 → 3 → 4 → 5**, one commit per finding (or tight group), `npx tsc --noEmit` + sim-verify each (deep-link + Quartz-tap method in RESUME.md). Log progress in this file (a status column per finding) and in `FIX_LOG.md`; update `RESUME.md` at each checkpoint so a new session continues. **Do not start editing until the user confirms the plan + answers the 3 decisions above.**
