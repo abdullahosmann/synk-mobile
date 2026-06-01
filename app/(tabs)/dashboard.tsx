@@ -309,11 +309,25 @@ export default function Dashboard() {
   });
   const subtitle = isArabic ? coachLine.ar : coachLine.en;
 
+  // M2 — past/future days read their archived diary (synk:logs:<date>, the same
+  // key the Nutrition date-stepper writes/reads) instead of showing a hollow zero.
+  const selectedDateStr = selectedDate.toISOString().split("T")[0];
+  const selectedDayFoods = useMemo(() => {
+    if (isTodaySelected) return todaysLogs.foods;
+    try {
+      const raw = getItem(`synk:logs:${selectedDateStr}`);
+      const parsed = raw ? JSON.parse(raw) : null;
+      return (parsed?.foods ?? []) as typeof todaysLogs.foods;
+    } catch {
+      return [] as typeof todaysLogs.foods;
+    }
+  }, [isTodaySelected, selectedDateStr, todaysLogs.foods]);
+
   const consumed = {
-    cal: isTodaySelected ? todaysLogs.foods.reduce((s, f) => s + f.calories, 0) : 0,
-    p: isTodaySelected ? todaysLogs.foods.reduce((s, f) => s + f.protein, 0) : 0,
-    c: isTodaySelected ? todaysLogs.foods.reduce((s, f) => s + f.carbs, 0) : 0,
-    f: isTodaySelected ? todaysLogs.foods.reduce((s, f) => s + f.fat, 0) : 0,
+    cal: selectedDayFoods.reduce((s, f) => s + f.calories, 0),
+    p: selectedDayFoods.reduce((s, f) => s + f.protein, 0),
+    c: selectedDayFoods.reduce((s, f) => s + f.carbs, 0),
+    f: selectedDayFoods.reduce((s, f) => s + f.fat, 0),
   };
   const plan = computePlanPreview(user);
   const targets = {
