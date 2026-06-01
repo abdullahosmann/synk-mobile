@@ -25,6 +25,7 @@ import { useAppContext } from "../src/AppContext";
 import BottomSheet from "../src/components/BottomSheet";
 import { TemplateProgressComparison } from "../src/components/share-templates/WorkoutShareTemplates";
 import { useToast } from "../src/components/ToastProvider";
+import { showPermissionDeniedAlert } from "../src/lib/permissions";
 import { savePhotoUri, getPhotoUrl, deletePhotoBlob } from "../src/lib/photoStorage";
 import { useTheme } from "../src/theme/ThemeProvider";
 import { AppText } from "../src/components/ui/Typography";
@@ -97,7 +98,7 @@ export default function ProgressPhotos() {
     try {
       const perm = mode === "camera" ? await ImagePicker.requestCameraPermissionsAsync() : await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!perm.granted) {
-        showToast(isArabic ? "الإذن مرفوض" : "Permission denied", "info");
+        showPermissionDeniedAlert(mode === "camera" ? "camera" : "photos", isArabic);
         return;
       }
       const result = mode === "camera" ? await ImagePicker.launchCameraAsync({ quality: 0.8 }) : await ImagePicker.launchImageLibraryAsync({ quality: 0.8 });

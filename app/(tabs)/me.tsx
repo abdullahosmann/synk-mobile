@@ -17,6 +17,7 @@ import {
 } from "lucide-react-native";
 import { useAppContext } from "../../src/AppContext";
 import { useToast } from "../../src/components/ToastProvider";
+import { showPermissionDeniedAlert } from "../../src/lib/permissions";
 import BottomSheet from "../../src/components/BottomSheet";
 import CoachIcon from "../../src/components/CoachIcon";
 import CoachAvatar from "../../src/components/CoachAvatar";
@@ -131,7 +132,7 @@ export default function Profile() {
           ? await ImagePicker.requestCameraPermissionsAsync()
           : await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!perm.granted) {
-        showToast(isArabic ? "الإذن مرفوض" : "Permission denied", "info");
+        showPermissionDeniedAlert(mode === "camera" ? "camera" : "photos", isArabic);
         return;
       }
       const result =

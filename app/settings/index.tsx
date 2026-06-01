@@ -32,6 +32,7 @@ import {
 } from "lucide-react-native";
 import { useAppContext } from "../../src/AppContext";
 import { useToast } from "../../src/components/ToastProvider";
+import { showPermissionDeniedAlert } from "../../src/lib/permissions";
 import LanguageToggle from "../../src/components/LanguageToggle";
 import BottomSheet from "../../src/components/BottomSheet";
 import CoachAvatar from "../../src/components/CoachAvatar";
@@ -198,7 +199,7 @@ export default function Settings() {
     {
       title: isArabic ? "إعدادات التطبيق" : "APP SETTINGS",
       items: [
-        { label: isArabic ? "التنبيهات" : "Notifications", toggle: true, checked: user.notificationPermission === "granted", sub: user.notificationPermission === "denied" ? (isArabic ? "قم بالتمكين في إعدادات الجهاز" : "Enable in device settings") : undefined, onToggle: () => { if (user.notificationPermission === "denied") { showToast(isArabic ? "يرجى تمكين التنبيهات من إعدادات النظام" : "Please enable notifications in system settings", "info"); return; } setUser({ ...user, notificationPermission: user.notificationPermission === "granted" ? "default" : "granted" }); } },
+        { label: isArabic ? "التنبيهات" : "Notifications", toggle: true, checked: user.notificationPermission === "granted", sub: user.notificationPermission === "denied" ? (isArabic ? "قم بالتمكين في إعدادات الجهاز" : "Enable in device settings") : undefined, onToggle: () => { if (user.notificationPermission === "denied") { showPermissionDeniedAlert("notifications", isArabic); return; } setUser({ ...user, notificationPermission: user.notificationPermission === "granted" ? "default" : "granted" }); } },
         { label: isArabic ? "تسجيل الصباح" : "Morning Check-in", time: formatDisplayTime(user.morningCheckInTime), toggle: true, checked: true, onToggle: () => {}, onTimeClick: () => openTimePicker("morning", user.morningCheckInTime) },
         { label: isArabic ? "تذكيرات السلسلة" : "Streak Reminders", time: formatDisplayTime(user.streakReminderTime), toggle: true, checked: false, onToggle: () => {}, onTimeClick: () => openTimePicker("streak", user.streakReminderTime) },
         { label: isArabic ? "تذكيرات التمرين" : "Workout Reminders", time: formatDisplayTime(user.workoutReminderTime), toggle: true, checked: true, onToggle: () => {}, onTimeClick: () => openTimePicker("workout", user.workoutReminderTime) },
