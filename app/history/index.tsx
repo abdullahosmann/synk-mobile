@@ -182,21 +182,22 @@ export default function WorkoutHistory() {
               </Pressable>
             </View>
 
-            <View style={{ flexDirection: "row", marginBottom: 8 }}>
-              {["S", "M", "T", "W", "T", "F", "S"].map((dd, i) => (
+            <View style={{ flexDirection: isArabic ? "row-reverse" : "row", marginBottom: 8 }}>
+              {(isArabic ? ["ح", "ن", "ث", "ر", "خ", "ج", "س"] : ["S", "M", "T", "W", "T", "F", "S"]).map((dd, i) => (
                 <View key={i} style={{ flex: 1, alignItems: "center", paddingVertical: 4 }}>
                   <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, fontFamily: ff(isArabic, 600) }}>{dd}</AppText>
                 </View>
               ))}
             </View>
 
-            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+            <View style={{ flexDirection: isArabic ? "row-reverse" : "row", flexWrap: "wrap" }}>
               {Array.from({ length: firstDay }).map((_, i) => (
                 <View key={`e${i}`} style={{ width: `${100 / 7}%`, aspectRatio: 1, padding: 2 }} />
               ))}
               {Array.from({ length: daysInMonth }).map((_, i) => {
                 const dNum = i + 1;
-                const wFound = calMonthWorkouts.find((w) => new Date(w.date).getDate() === dNum);
+                const dayWorkouts = calMonthWorkouts.filter((w) => new Date(w.date).getDate() === dNum);
+                const wFound = dayWorkouts[0];
                 const today = new Date();
                 const isToday = calDate.getFullYear() === today.getFullYear() && calDate.getMonth() === today.getMonth() && dNum === today.getDate();
                 const isFuture = new Date(calDate.getFullYear(), calDate.getMonth(), dNum) > today;
@@ -207,7 +208,13 @@ export default function WorkoutHistory() {
                       style={{ flex: 1, borderRadius: 8, alignItems: "center", justifyContent: "flex-start", paddingVertical: 6, backgroundColor: wFound ? cardBg : slot, borderWidth: wFound ? 1 : 0, borderColor: colors.hairline, opacity: isFuture ? 0.3 : 1, ...(isToday ? { borderWidth: 2, borderColor: colors.primary } : null) }}
                     >
                       <AppText style={{ fontSize: 13, fontWeight: "500", color: wFound ? colors.ink : colors.inkMuted48, fontVariant: ["tabular-nums"], marginBottom: 4 }}>{dNum}</AppText>
-                      {wFound && <View style={{ width: 8, height: 8, borderRadius: 9999, backgroundColor: colors.primary, marginTop: "auto" }} />}
+                      {dayWorkouts.length > 0 && (
+                        <View style={{ flexDirection: "row", gap: 2, marginTop: "auto" }}>
+                          {dayWorkouts.slice(0, 3).map((_, di) => (
+                            <View key={di} style={{ width: 6, height: 6, borderRadius: 9999, backgroundColor: colors.primary }} />
+                          ))}
+                        </View>
+                      )}
                     </Pressable>
                   </View>
                 );
