@@ -37,6 +37,7 @@ const THUMB_SCALE = THUMB_W / 1080;
 import { useTheme } from "../../../src/theme/ThemeProvider";
 import { AppText } from "../../../src/components/ui/Typography";
 import type { CustomRoutine } from "../../../src/types";
+import { muscleLabel } from "../../../src/lib/muscleLabels";
 
 const AMBER = "#f59e0b";
 const AMBER_DARK = "#d97706";
@@ -152,7 +153,7 @@ export default function HistoryWorkoutDetail() {
           <View style={{ flexDirection: isArabic ? "row-reverse" : "row", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
             {workout.muscleGroups.map((m) => (
               <View key={m} style={{ paddingHorizontal: 12, paddingVertical: 4, borderRadius: 4, backgroundColor: primaryTint }}>
-                <AppText style={{ fontSize: 11, fontWeight: "700", color: colors.primary, textTransform: "uppercase", letterSpacing: 0.8 }}>{m}</AppText>
+                <AppText style={{ fontSize: 11, fontWeight: "700", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.8, fontFamily: ff(isArabic, 700) }}>{muscleLabel(m, isArabic)}</AppText>
               </View>
             ))}
           </View>

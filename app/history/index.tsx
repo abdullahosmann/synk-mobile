@@ -19,6 +19,7 @@ import EmptyState from "../../src/components/EmptyState";
 import { useTheme } from "../../src/theme/ThemeProvider";
 import { AppText } from "../../src/components/ui/Typography";
 import type { WorkoutLog } from "../../src/types";
+import { muscleLabel } from "../../src/lib/muscleLabels";
 
 const AMBER = "#f59e0b";
 const AMBER_DARK = "#d97706";
@@ -148,7 +149,7 @@ export default function WorkoutHistory() {
                           <View style={{ flexDirection: isArabic ? "row-reverse" : "row", flexWrap: "wrap", gap: 4 }}>
                             {w.muscleGroups.map((m) => (
                               <View key={m} style={{ paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4, backgroundColor: primaryTint }}>
-                                <AppText style={{ fontSize: 10, fontWeight: "700", color: colors.primary, textTransform: "uppercase", letterSpacing: 0.8 }}>{m}</AppText>
+                                <AppText style={{ fontSize: 10, fontWeight: "700", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.8, fontFamily: ff(isArabic, 700) }}>{muscleLabel(m, isArabic)}</AppText>
                               </View>
                             ))}
                           </View>
