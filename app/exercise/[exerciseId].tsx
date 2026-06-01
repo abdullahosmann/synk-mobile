@@ -341,7 +341,7 @@ export default function ExerciseProgression() {
               height: 256,
               marginHorizontal: 16,
               backgroundColor: colors.canvas,
-              borderRadius: 16,
+              borderRadius: 14,
               borderWidth: 1,
               borderColor: colors.hairline,
               padding: 16,
@@ -553,7 +553,7 @@ export default function ExerciseProgression() {
             <View
               style={{
                 backgroundColor: colors.canvas,
-                borderRadius: 16,
+                borderRadius: 14,
                 borderWidth: 1,
                 borderColor: colors.hairline,
                 overflow: "hidden",
@@ -621,7 +621,7 @@ export default function ExerciseProgression() {
           <View
             style={{
               backgroundColor: colors.canvas,
-              borderRadius: 16,
+              borderRadius: 14,
               borderWidth: 1,
               borderColor: colors.hairline,
               overflow: "hidden",
@@ -707,7 +707,7 @@ export default function ExerciseProgression() {
               backgroundColor: colors.canvasParchment,
               borderWidth: 1,
               borderColor: colors.hairline,
-              borderRadius: 16,
+              borderRadius: 14,
               overflow: "hidden",
             }}
           >

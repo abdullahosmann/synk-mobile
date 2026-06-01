@@ -111,7 +111,7 @@ export default function EditProfile() {
         {/* Handle */}
         <View>
           {label(isArabic ? "اسم المستخدم" : "Handle")}
-          <View style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, height: 48, paddingHorizontal: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center" }}>
+          <View style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, height: 48, paddingHorizontal: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center" }}>
             <AppText style={{ fontSize: 14, color: colors.inkMuted48, marginHorizontal: 4 }}>@</AppText>
             <TextInput value={handle} onChangeText={handleHandleChange} autoCapitalize="none" style={{ flex: 1, fontSize: 14, color: colors.ink, textAlign: "left" }} />
           </View>
@@ -125,7 +125,7 @@ export default function EditProfile() {
               value={bio}
               onChangeText={(t) => setBio(t.slice(0, 150))}
               multiline
-              style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, minHeight: 80, padding: 16, fontSize: 14, color: colors.ink, textAlignVertical: "top", textAlign: isArabic ? "right" : "left" }}
+              style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, minHeight: 80, padding: 16, fontSize: 14, color: colors.ink, textAlignVertical: "top", textAlign: isArabic ? "right" : "left" }}
             />
             <AppText style={{ position: "absolute", bottom: 12, right: 16, fontSize: 11, color: colors.inkMuted48 }}>{bio.length}/150</AppText>
           </View>
@@ -171,7 +171,7 @@ export default function EditProfile() {
             {(["male", "female"] as const).map((g) => {
               const active = gender === g;
               return (
-                <Pressable key={g} onPress={() => setGender(g)} style={{ flex: 1, height: 48, alignItems: "center", justifyContent: "center", borderRadius: 9999, borderWidth: 1, backgroundColor: active ? colors.primary : colors.canvasParchment, borderColor: active ? colors.primary : colors.hairline }}>
+                <Pressable key={g} onPress={() => setGender(g)} style={{ flex: 1, height: 44, alignItems: "center", justifyContent: "center", borderRadius: 9999, borderWidth: 1, backgroundColor: active ? colors.primary : colors.canvasParchment, borderColor: active ? colors.primary : colors.hairline }}>
                   <AppText style={{ fontSize: 14, fontWeight: "500", color: active ? "#fff" : colors.ink, fontFamily: ff(isArabic, 500) }}>{g === "male" ? (isArabic ? "ذكر" : "Male") : isArabic ? "أنثى" : "Female"}</AppText>
                 </Pressable>
               );

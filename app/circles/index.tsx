@@ -79,7 +79,7 @@ export default function Circles() {
         ) : (
           <View style={{ gap: 8 }}>
             {MOCK_CIRCLES.map((g) => (
-              <Pressable key={g.id} onPress={() => router.push(`/circles/${g.id}`)} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, padding: 12, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10 }}>
+              <Pressable key={g.id} onPress={() => router.push(`/circles/${g.id}`)} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, padding: 12, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14 }}>
                 <View style={{ width: 48, height: 48, borderRadius: 10, backgroundColor: primaryTint, alignItems: "center", justifyContent: "center" }}>
                   <Users size={22} color={colors.primary} />
                 </View>

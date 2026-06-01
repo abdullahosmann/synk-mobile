@@ -141,7 +141,7 @@ export default function MuscleRecovery() {
           </View>
 
           {/* Legend */}
-          <View style={{ paddingHorizontal: 16, paddingVertical: 16, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, marginBottom: 32, alignItems: isArabic ? "flex-end" : "flex-start" }}>
+          <View style={{ paddingHorizontal: 16, paddingVertical: 16, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, marginBottom: 32, alignItems: isArabic ? "flex-end" : "flex-start" }}>
             <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.inkMuted48, marginBottom: 12, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: ff(isArabic, 600) }}>{isArabic ? "دليل الألوان" : "LEGEND"}</AppText>
             {[
               { c: primary30, t: isArabic ? "جاهز للتدريب (٩٠٪+)" : "Fresh — ready to train (90%+)" },
@@ -160,7 +160,7 @@ export default function MuscleRecovery() {
 
           {!hasAnyCompletedWorkout && averageRecovery === 100 && !isEditing ? (
             <View style={{ backgroundColor: colors.canvasParchment, borderRadius: 22, padding: 20, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", marginTop: 0 }}>
-              <View style={{ width: 48, height: 48, borderRadius: 12, backgroundColor: primaryTint, alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+              <View style={{ width: 48, height: 48, borderRadius: 14, backgroundColor: primaryTint, alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
                 <Activity size={24} color={colors.primary} />
               </View>
               <AppText style={{ fontSize: 13, color: colors.inkMuted48, lineHeight: 19, textAlign: "center", fontFamily: ff(isArabic) }}>{isArabic ? "بمجرد ما تخلص أول تمرين، هنبدأ نقيس إيه العضلات اللي محتاجة راحة، علشان الكوتش يعدّل التمارين القادمة." : "Once you complete your first workout, we'll start measuring which muscles need rest."}</AppText>

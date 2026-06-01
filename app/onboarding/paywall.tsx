@@ -128,7 +128,7 @@ export default function Paywall() {
                 onPress={() => setSelectedPlan(plan.id)}
                 style={{
                   backgroundColor: colors.canvas,
-                  borderRadius: 12,
+                  borderRadius: 14,
                   padding: 16,
                   borderWidth: 2,
                   borderColor: sel ? colors.primary : colors.hairline,
@@ -186,7 +186,7 @@ export default function Paywall() {
 
       {/* Sticky footer */}
       <AppleBackdrop style={{ position: "absolute", bottom: 0, left: 0, right: 0, borderTopWidth: 1, borderTopColor: colors.hairline, paddingHorizontal: 24, paddingTop: 16, paddingBottom: insets.bottom + 16 }}>
-        <Btn variant="primary" fullWidth onPress={handleSubscribe} style={{ height: 54, borderRadius: 16 }}>
+        <Btn variant="primary" fullWidth onPress={handleSubscribe} style={{ height: 54, borderRadius: 14 }}>
           <AppText style={{ color: "#fff", fontSize: 17, fontWeight: "700", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
             {isArabic ? `ابدأ خطتي — ${plans[selectedPlan].cta}` : `Start my plan — ${plans[selectedPlan].cta}`}
           </AppText>

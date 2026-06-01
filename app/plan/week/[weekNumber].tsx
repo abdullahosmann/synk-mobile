@@ -259,7 +259,7 @@ export default function WeekEditor() {
                   borderWidth: 1,
                   borderColor: colors.hairline,
                   padding: 12,
-                  borderRadius: 16,
+                  borderRadius: 14,
                   borderTopLeftRadius: isArabic ? 16 : 4,
                   borderTopRightRadius: isArabic ? 4 : 16,
                 }}

@@ -336,7 +336,7 @@ export default function PlanDetails() {
                     gap: 16,
                   }}
                 >
-                  <View style={{ minWidth: 50, paddingVertical: 4, backgroundColor: colors.canvasParchment, borderRadius: 12, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+                  <View style={{ minWidth: 50, paddingVertical: 4, backgroundColor: colors.canvasParchment, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
                     <AppText style={{ fontSize: 10, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: fontFamily(isArabic, 600) }}>
                       {entry.date.split(" ")[0]}
                     </AppText>

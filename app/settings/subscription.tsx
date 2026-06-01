@@ -74,7 +74,7 @@ export default function Subscription() {
       <View style={{ flex: 1, backgroundColor: colors.canvasParchment }}>
         {header}
         <View style={{ paddingHorizontal: 24, paddingTop: 24, maxWidth: 448, width: "100%", alignSelf: "center" }}>
-          <LinearGradient colors={[colors.primary, "#1d4ed8"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ borderRadius: 16, padding: 24, overflow: "hidden" }}>
+          <LinearGradient colors={[colors.primary, "#1d4ed8"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ borderRadius: 14, padding: 24, overflow: "hidden" }}>
             <View style={{ position: "absolute", top: -32, right: -32, width: 128, height: 128, borderRadius: 64, backgroundColor: "rgba(255,255,255,0.1)" }} />
             <View style={{ position: "absolute", bottom: -40, left: -16, width: 96, height: 96, borderRadius: 48, backgroundColor: "rgba(255,255,255,0.05)" }} />
             <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8, marginBottom: 16 }}>
@@ -104,7 +104,7 @@ export default function Subscription() {
     const selected = selectedPlan === plan;
     const p = planPricing[plan];
     return (
-      <Pressable onPress={() => setSelectedPlan(plan)} style={{ borderRadius: 16, borderWidth: 2, padding: 16, borderColor: selected ? colors.primary : colors.hairline, backgroundColor: selected ? withAlpha(colors.primary, 0.05) : "transparent" }}>
+      <Pressable onPress={() => setSelectedPlan(plan)} style={{ borderRadius: 14, borderWidth: 2, padding: 16, borderColor: selected ? colors.primary : colors.hairline, backgroundColor: selected ? withAlpha(colors.primary, 0.05) : "transparent" }}>
         {badge && selected && (
           <View style={{ position: "absolute", top: -10, right: isArabic ? undefined : 16, left: isArabic ? 16 : undefined, backgroundColor: colors.primary, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 9999 }}>
             <AppText style={{ color: "#fff", fontSize: 10, fontWeight: "700", textTransform: "uppercase", letterSpacing: 0.5 }}>{badge}</AppText>
@@ -130,7 +130,7 @@ export default function Subscription() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24, paddingVertical: 24, paddingBottom: insets.bottom + 32, maxWidth: 448, width: "100%", alignSelf: "center" }}>
         {/* Hero */}
         <View style={{ alignItems: "center", marginBottom: 32 }}>
-          <LinearGradient colors={[colors.primary, "#2563eb"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ width: 64, height: 64, borderRadius: 16, alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+          <LinearGradient colors={[colors.primary, "#2563eb"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ width: 64, height: 64, borderRadius: 14, alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
             <Sparkles size={32} color="#fff" fill="#fff" />
           </LinearGradient>
           <AppText style={{ fontSize: 28, fontWeight: "700", color: colors.ink, marginBottom: 8, textAlign: "center", fontFamily: ff(isArabic, 700) }}>{isArabic ? "افتح كل المميزات" : "Unlock Everything"}</AppText>
@@ -156,7 +156,7 @@ export default function Subscription() {
         </View>
 
         {/* CTA */}
-        <Pressable onPress={() => { setIsPremium(true); showToast(isArabic ? "مبروك! أنت الآن بريميوم" : "Welcome to Premium!", "success"); }} style={{ height: 56, backgroundColor: colors.primary, borderRadius: 9999, alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
+        <Pressable onPress={() => { setIsPremium(true); showToast(isArabic ? "مبروك! أنت الآن بريميوم" : "Welcome to Premium!", "success"); }} style={{ height: 52, backgroundColor: colors.primary, borderRadius: 9999, alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
           <AppText style={{ color: "#fff", fontSize: 16, fontWeight: "700", fontFamily: ff(isArabic, 700) }}>{isArabic ? "ابدأ الآن" : "Start Now"}</AppText>
         </Pressable>
         <AppText style={{ textAlign: "center", fontSize: 12, color: colors.inkMuted48, fontFamily: ff(isArabic) }}>{isArabic ? "يمكنك الإلغاء في أي وقت" : "Cancel anytime"}</AppText>

@@ -185,7 +185,7 @@ export default function CircleDetail() {
             <AppText style={{ fontSize: 22, fontWeight: "600", color: colors.ink, letterSpacing: -0.3, marginBottom: 16, textAlign: align, fontFamily: ff(isArabic, 600) }}>{isArabic ? "نشط في الحلقة دي" : "Active in this circle"}</AppText>
             <View style={{ gap: 12, marginBottom: 24 }}>
               {challenges.map((c) => (
-                <Pressable key={c.id} onPress={() => router.push(`/challenges/${c.id}`)} style={{ padding: 16, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, alignItems: "stretch" }}>
+                <Pressable key={c.id} onPress={() => router.push(`/challenges/${c.id}`)} style={{ padding: 16, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, alignItems: "stretch" }}>
                   <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8, marginBottom: 4 }}>
                     <AppText style={{ fontSize: 11, fontWeight: "700", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, color: colors.inkMuted48, fontFamily: ff(isArabic, 600) }}>🥉 {isArabic ? "ودي" : "Friendly"}</AppText>
                   </View>
@@ -201,7 +201,7 @@ export default function CircleDetail() {
                 </Pressable>
               ))}
             </View>
-            <Pressable onPress={() => router.push(`/challenges/create?circle=${circleId}`)} style={{ width: "100%", height: 48, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", marginVertical: 8 }}>
+            <Pressable onPress={() => router.push(`/challenges/create?circle=${circleId}`)} style={{ width: "100%", height: 44, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", marginVertical: 8 }}>
               <AppText style={{ fontSize: 17, fontWeight: "600", color: colors.onPrimary, fontFamily: ff(isArabic, 600) }}>{isArabic ? "ابدأ تحدي في الحلقة دي" : "Start a challenge in this circle"}</AppText>
             </Pressable>
           </View>

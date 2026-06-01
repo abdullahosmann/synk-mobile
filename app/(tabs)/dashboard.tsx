@@ -984,11 +984,11 @@ export default function Dashboard() {
                     </View>
                   </View>
                   <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 12 }}>
-                    <Pressable onPress={() => router.push("/coach")} style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 16, paddingHorizontal: 8, borderRadius: 12, backgroundColor: withAlpha(colors.primary, 0.05), borderWidth: 1, borderColor: withAlpha(colors.primary, 0.1) }}>
+                    <Pressable onPress={() => router.push("/coach")} style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 16, paddingHorizontal: 8, borderRadius: 14, backgroundColor: withAlpha(colors.primary, 0.05), borderWidth: 1, borderColor: withAlpha(colors.primary, 0.1) }}>
                       <MessageCircle size={24} color={colors.primary} />
                       <AppText style={{ fontSize: 14, fontWeight: "600", color: colors.primary, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "رسالة نصية" : "Message"}</AppText>
                     </Pressable>
-                    <Pressable onPress={() => router.push("/voice-log")} style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 16, paddingHorizontal: 8, borderRadius: 12, backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(29,29,31,0.05)", borderWidth: 1, borderColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)" }}>
+                    <Pressable onPress={() => router.push("/voice-log")} style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 16, paddingHorizontal: 8, borderRadius: 14, backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(29,29,31,0.05)", borderWidth: 1, borderColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)" }}>
                       <Mic size={24} color={colors.ink} />
                       <AppText style={{ fontSize: 14, fontWeight: "600", color: colors.ink, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "رسالة صوتية" : "Voice message"}</AppText>
                     </Pressable>

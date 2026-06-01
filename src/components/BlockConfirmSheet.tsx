@@ -44,7 +44,7 @@ const BlockConfirmSheet: React.FC<BlockConfirmSheetProps> = ({ isOpen, onClose, 
     <BottomSheet isOpen={isOpen} onClose={onClose} title={isArabic ? "حظر المستخدم" : "Block user"}>
       <View style={{ paddingTop: 8, paddingBottom: 24, gap: 16 }}>
         <View style={{ alignItems: "center", gap: 12 }}>
-          <View style={{ width: 48, height: 48, borderRadius: 9999, backgroundColor: RED + "1A", alignItems: "center", justifyContent: "center" }}>
+          <View style={{ width: 48, height: 44, borderRadius: 9999, backgroundColor: RED + "1A", alignItems: "center", justifyContent: "center" }}>
             <AlertTriangle size={24} color={RED} />
           </View>
           <AppText style={{ fontSize: 17, fontWeight: "600", color: colors.ink, textAlign: "center", fontFamily: ff(isArabic, 600) }}>{isArabic ? `حظر ${targetName}؟` : `Block ${targetName}?`}</AppText>
@@ -53,10 +53,10 @@ const BlockConfirmSheet: React.FC<BlockConfirmSheetProps> = ({ isOpen, onClose, 
           </AppText>
         </View>
         <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 8 }}>
-          <Pressable onPress={onClose} style={{ flex: 1, height: 48, borderRadius: 9999, backgroundColor: tile1, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+          <Pressable onPress={onClose} style={{ flex: 1, height: 44, borderRadius: 9999, backgroundColor: tile1, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
             <AppText style={{ fontSize: 14, fontWeight: "600", color: colors.ink, fontFamily: ff(isArabic, 600) }}>{isArabic ? "إلغاء" : "Cancel"}</AppText>
           </Pressable>
-          <Pressable onPress={handleBlock} style={{ flex: 1, height: 48, borderRadius: 9999, backgroundColor: RED, alignItems: "center", justifyContent: "center" }}>
+          <Pressable onPress={handleBlock} style={{ flex: 1, height: 44, borderRadius: 9999, backgroundColor: RED, alignItems: "center", justifyContent: "center" }}>
             <AppText style={{ fontSize: 14, fontWeight: "600", color: "#ffffff", fontFamily: ff(isArabic, 600) }}>{isArabic ? "حظر" : "Block"}</AppText>
           </Pressable>
         </View>

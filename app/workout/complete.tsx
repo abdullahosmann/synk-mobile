@@ -185,7 +185,7 @@ export default function WorkoutComplete() {
         {/* Coach quote */}
         <Animated.View entering={FadeIn.delay(800)} style={{ width: "100%", maxWidth: 384, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-start", gap: 16, marginBottom: 40 }}>
           <CoachAvatar coachId={selectedCoach} size={48} />
-          <View style={{ flex: 1, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, padding: 16, borderRadius: 16, borderTopLeftRadius: isArabic ? 16 : 0, borderTopRightRadius: isArabic ? 0 : 16 }}>
+          <View style={{ flex: 1, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, padding: 16, borderRadius: 14, borderTopLeftRadius: isArabic ? 16 : 0, borderTopRightRadius: isArabic ? 0 : 16 }}>
             <AppText variant="body" className="text-ink-muted-48 dark:text-ink-dark-muted-48" style={{ fontStyle: "italic", lineHeight: 22, textAlign: isArabic ? "right" : "left" }}>
               "{quote}"
             </AppText>
@@ -239,7 +239,7 @@ export default function WorkoutComplete() {
               <Pressable
                 key={idx}
                 onPress={() => setActiveTemplateIdx(idx)}
-                style={{ width: THUMB_W, height: THUMB_W * (1920 / 1080), borderRadius: 16, overflow: "hidden", borderWidth: 2, borderColor: activeTemplateIdx === idx ? colors.primary : "transparent" }}
+                style={{ width: THUMB_W, height: THUMB_W * (1920 / 1080), borderRadius: 14, overflow: "hidden", borderWidth: 2, borderColor: activeTemplateIdx === idx ? colors.primary : "transparent" }}
               >
                 <View style={{ width: 1080, height: 1920, transform: [{ scale: THUMB_SCALE }], transformOrigin: "top left" }} pointerEvents="none">
                   <Temp workout={workoutData} user={{ name: user.name || "Athlete", coachName: selectedCoach }} isArabic={isArabic} hideNumbers={hideNumbers} />

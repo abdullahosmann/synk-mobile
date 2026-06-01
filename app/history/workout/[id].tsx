@@ -159,12 +159,12 @@ export default function HistoryWorkoutDetail() {
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12, width: "100%" }}>
             {stats.map((s) => (
-              <View key={s.label} style={{ width: "48%", backgroundColor: cardBg, padding: 16, borderRadius: 12, borderWidth: 1, borderColor: colors.hairline }}>
+              <View key={s.label} style={{ width: "48%", backgroundColor: cardBg, padding: 16, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline }}>
                 <AppText style={{ fontSize: 11, color: colors.inkMuted48, textTransform: "uppercase", letterSpacing: 1.5, fontWeight: "600", marginBottom: 4, fontFamily: ff(isArabic, 600) }}>{s.label}</AppText>
                 <AppText style={{ fontSize: 24, fontWeight: "700", color: s.primary ? colors.primary : colors.ink, fontVariant: ["tabular-nums"], fontFamily: ff(isArabic, 700) }}>{s.value}{s.unit ? <AppText style={{ fontSize: 14, color: colors.inkMuted48 }}> {s.unit}</AppText> : null}</AppText>
               </View>
             ))}
-            <View style={{ width: "48%", backgroundColor: cardBg, padding: 16, borderRadius: 12, borderWidth: 1, borderColor: colors.hairline }}>
+            <View style={{ width: "48%", backgroundColor: cardBg, padding: 16, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline }}>
               <AppText style={{ fontSize: 11, color: colors.inkMuted48, textTransform: "uppercase", letterSpacing: 1.5, fontWeight: "600", marginBottom: 4, fontFamily: ff(isArabic, 600) }}>{isArabic ? "أعلى وزن" : "BEST LIFT"}</AppText>
               <AppText numberOfLines={1} style={{ fontSize: 18, fontWeight: "700", color: colors.ink, fontFamily: ff(isArabic, 700) }}>{bestE || "—"}</AppText>
               <AppText style={{ fontSize: 13, color: colors.inkMuted48, fontFamily: ff(isArabic) }}>{bestW}{isArabic ? "كجم" : "kg"} × {bestR}</AppText>
@@ -175,7 +175,7 @@ export default function HistoryWorkoutDetail() {
         {/* Exercises */}
         <View style={{ gap: 16 }}>
           {workout.exercises.map((ex, idx) => (
-            <View key={idx} style={{ backgroundColor: cardBg, borderRadius: 12, borderWidth: 1, borderColor: colors.hairline, overflow: "hidden" }}>
+            <View key={idx} style={{ backgroundColor: cardBg, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, overflow: "hidden" }}>
               <Pressable onPress={() => router.push(`/exercise/${ex.id}`)} style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: colors.hairline, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
                 <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
                   <View style={{ width: 32, height: 32, borderRadius: 6, backgroundColor: slot, alignItems: "center", justifyContent: "center" }}>
@@ -209,7 +209,7 @@ export default function HistoryWorkoutDetail() {
         </View>
 
         {notes && (
-          <View style={{ marginTop: 32, backgroundColor: cardBg, borderRadius: 12, padding: 16, borderWidth: 1, borderColor: colors.hairline }}>
+          <View style={{ marginTop: 32, backgroundColor: cardBg, borderRadius: 14, padding: 16, borderWidth: 1, borderColor: colors.hairline }}>
             <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.inkMuted48, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 8, fontFamily: ff(isArabic, 600) }}>{isArabic ? "ملاحظات" : "NOTES"}</AppText>
             <AppText style={{ fontSize: 14, lineHeight: 21, color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}>{notes}</AppText>
           </View>
@@ -218,7 +218,7 @@ export default function HistoryWorkoutDetail() {
 
       {/* Sticky Repeat CTA */}
       <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, backgroundColor: colors.canvasParchment, borderTopWidth: 1, borderTopColor: colors.hairline, paddingHorizontal: 16, paddingTop: 12, paddingBottom: insets.bottom + 12, alignItems: "center" }}>
-        <Pressable onPress={handleRepeat} style={{ width: "100%", maxWidth: 512, height: 48, borderRadius: 9999, backgroundColor: colors.primary, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
+        <Pressable onPress={handleRepeat} style={{ width: "100%", maxWidth: 512, height: 44, borderRadius: 9999, backgroundColor: colors.primary, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
           <RotateCcw size={18} color={colors.onPrimary} />
           <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.onPrimary, fontFamily: ff(isArabic, 600) }}>{isArabic ? "كرر التمرين" : "Repeat this workout"}</AppText>
         </Pressable>
@@ -240,7 +240,7 @@ export default function HistoryWorkoutDetail() {
               <Pressable
                 key={idx}
                 onPress={() => setActiveTemplateIdx(idx)}
-                style={{ width: THUMB_W, height: THUMB_W * (1920 / 1080), borderRadius: 16, overflow: "hidden", borderWidth: 2, borderColor: activeTemplateIdx === idx ? colors.primary : "transparent" }}
+                style={{ width: THUMB_W, height: THUMB_W * (1920 / 1080), borderRadius: 14, overflow: "hidden", borderWidth: 2, borderColor: activeTemplateIdx === idx ? colors.primary : "transparent" }}
               >
                 <View style={{ width: 1080, height: 1920, transform: [{ scale: THUMB_SCALE }], transformOrigin: "top left" }} pointerEvents="none">
                   <Temp workout={workoutData} user={{ name: user.name || "Athlete", coachName: user.coach || "khaled" }} isArabic={isArabic} hideNumbers={hideNumbers} />
@@ -268,7 +268,7 @@ export default function HistoryWorkoutDetail() {
             </Pressable>
           </View>
 
-          <Pressable onPress={handleShare} style={{ width: "100%", height: 56, borderRadius: 9999, backgroundColor: colors.primary, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
+          <Pressable onPress={handleShare} style={{ width: "100%", height: 52, borderRadius: 9999, backgroundColor: colors.primary, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
             <Share2 size={20} color={colors.onPrimary} />
             <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.onPrimary, fontFamily: ff(isArabic, 600) }}>{isArabic ? "مشاركة" : "Share"}</AppText>
           </Pressable>

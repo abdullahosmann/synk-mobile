@@ -72,7 +72,7 @@ export default function BlockedAccounts() {
           {blocked.map((u) => {
             const displayName = isArabic ? u.arabicName : u.name;
             return (
-              <View key={u.id} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, padding: 12, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
+              <View key={u.id} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 12, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
                 <Avatar initials={u.initials} size={40} />
                 <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start" }}>
                   <AppText style={{ fontSize: 14, fontWeight: "600", color: colors.ink, fontFamily: ff(isArabic, 600) }}>{displayName}</AppText>
@@ -96,10 +96,10 @@ export default function BlockedAccounts() {
           <AppText style={{ fontSize: 17, fontWeight: "600", color: colors.ink, textAlign: "center", marginBottom: 8, fontFamily: ff(isArabic, 600) }}>{isArabic ? `إلغاء حظر ${confirmTarget?.arabicName}؟` : `Unblock ${confirmTarget?.name}?`}</AppText>
           <AppText style={{ fontSize: 13, color: colors.inkMuted48, maxWidth: 280, textAlign: "center", marginBottom: 32, fontFamily: ff(isArabic) }}>{isArabic ? "هيقدر يشوف ملفك ومنشوراتك تاني، ويمكنه يبعتلك طلب متابعة." : "They'll be able to see your profile and posts again, and may send you a follow request."}</AppText>
           <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, width: "100%" }}>
-            <Pressable onPress={() => setConfirmTarget(null)} style={{ flex: 1, height: 48, borderRadius: 9999, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+            <Pressable onPress={() => setConfirmTarget(null)} style={{ flex: 1, height: 44, borderRadius: 9999, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
               <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, fontFamily: ff(isArabic, 600) }}>{isArabic ? "إلغاء" : "Cancel"}</AppText>
             </Pressable>
-            <Pressable onPress={handleUnblockConfirm} style={{ flex: 1, height: 48, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
+            <Pressable onPress={handleUnblockConfirm} style={{ flex: 1, height: 44, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
               <AppText style={{ fontSize: 15, fontWeight: "600", color: "#fff", fontFamily: ff(isArabic, 600) }}>{isArabic ? "إلغاء الحظر" : "Unblock"}</AppText>
             </Pressable>
           </View>

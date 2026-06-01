@@ -219,7 +219,7 @@ export default function PlanSettings() {
   );
 
   const saveBtn = (onPress: () => void, label?: string) => (
-    <Pressable onPress={onPress} style={{ height: 56, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", marginTop: 8 }}>
+    <Pressable onPress={onPress} style={{ height: 52, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", marginTop: 8 }}>
       <AppText style={{ color: "#fff", fontSize: 15, fontWeight: "600", fontFamily: ff(isArabic, 600) }}>{label ?? (isArabic ? "حفظ" : "Save")}</AppText>
     </Pressable>
   );
@@ -406,8 +406,8 @@ export default function PlanSettings() {
         <View style={{ gap: 16, paddingVertical: 8 }}>
           {[1500, 2000, 2500, 3000, 3500].map((amount) => optionButton(user?.dailyWaterTarget === amount, () => { setUser({ ...user, dailyWaterTarget: amount } as any); setWaterTargetSheet(false); saved(); }, isArabic ? `${amount} مل` : `${amount} ml`, undefined, String(amount)))}
           <View style={{ paddingTop: 16, borderTopWidth: 1, borderTopColor: colors.hairline, marginTop: 8 }}>
-            <TextInput value={customWater} onChangeText={setCustomWater} keyboardType="number-pad" placeholder={isArabic ? "كمية مخصصة (مل)" : "Custom (ml)"} placeholderTextColor={colors.inkMuted48} style={{ height: 56, backgroundColor: colors.canvas, borderRadius: 10, paddingHorizontal: 16, borderWidth: 1, borderColor: colors.hairline, fontSize: 15, color: colors.ink, textAlign: isArabic ? "right" : "left" }} />
-            <Pressable disabled={!customWater} onPress={() => { if (customWater && !isNaN(parseInt(customWater))) { setUser({ ...user, dailyWaterTarget: parseInt(customWater) } as any); setWaterTargetSheet(false); saved(); setCustomWater(""); } }} style={{ height: 56, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", marginTop: 16, opacity: customWater ? 1 : 0.5 }}>
+            <TextInput value={customWater} onChangeText={setCustomWater} keyboardType="number-pad" placeholder={isArabic ? "كمية مخصصة (مل)" : "Custom (ml)"} placeholderTextColor={colors.inkMuted48} style={{ height: 56, backgroundColor: colors.canvas, borderRadius: 14, paddingHorizontal: 16, borderWidth: 1, borderColor: colors.hairline, fontSize: 15, color: colors.ink, textAlign: isArabic ? "right" : "left" }} />
+            <Pressable disabled={!customWater} onPress={() => { if (customWater && !isNaN(parseInt(customWater))) { setUser({ ...user, dailyWaterTarget: parseInt(customWater) } as any); setWaterTargetSheet(false); saved(); setCustomWater(""); } }} style={{ height: 52, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", marginTop: 16, opacity: customWater ? 1 : 0.5 }}>
               <AppText style={{ color: "#fff", fontSize: 15, fontWeight: "600", fontFamily: ff(isArabic, 600) }}>{isArabic ? "حفظ" : "Save"}</AppText>
             </Pressable>
           </View>
@@ -450,7 +450,7 @@ export default function PlanSettings() {
                 <AppText style={{ fontSize: 13, color: colors.inkMuted48, lineHeight: 19, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}>{pendingChange.kind === "nutrition" ? (isArabic ? "لو غيرت ده، الكوتش هيعيد بناء أهداف التغذية وخطة الوجبات. الوجبات اللي سجلتها مش هتتأثر." : "Changing this will rebuild your nutrition targets and meal plan. Your logged meals won't be affected.") : isArabic ? "لو غيرت ده، الكوتش هيعيد بناء باقي الأسبوع بناءً على الإعدادات الجديدة. التمارين اللي خلصتها مش هتتغير." : "Changing this will rebuild the rest of your week based on the new settings. Your completed workouts won't be affected."}</AppText>
               </View>
             </View>
-            <View style={{ backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, padding: 12 }}>
+            <View style={{ backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 12 }}>
               <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, marginBottom: 4, textTransform: isArabic ? "none" : "uppercase", letterSpacing: isArabic ? 0 : 1, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic, 600) }}>{isArabic ? "التغيير" : "Change"}</AppText>
               <AppText style={{ fontSize: 13, color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}>{String(pendingChange.oldValue)} → <AppText style={{ fontWeight: "700" }}>{String(pendingChange.newValue)}</AppText></AppText>
             </View>

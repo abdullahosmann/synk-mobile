@@ -3006,7 +3006,7 @@ export default function ActiveWorkout() {
                   backgroundColor: colors.canvas,
                   borderWidth: 1,
                   borderColor: colors.hairline,
-                  borderRadius: 16,
+                  borderRadius: 14,
                   padding: 16,
                   alignItems: "center",
                   justifyContent: "center",
@@ -3027,7 +3027,7 @@ export default function ActiveWorkout() {
                     backgroundColor: colors.canvas,
                     borderWidth: 1,
                     borderColor: colors.hairline,
-                    borderRadius: 16,
+                    borderRadius: 14,
                     padding: 16,
                   }}
                 >
@@ -3098,7 +3098,7 @@ export default function ActiveWorkout() {
                   style={{
                     backgroundColor: colors.canvasParchment,
                     padding: 16,
-                    borderRadius: 16,
+                    borderRadius: 14,
                     borderWidth: 1,
                     borderColor: colors.hairline,
                     alignItems: "center",
