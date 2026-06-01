@@ -18,4 +18,17 @@ Branch `dev`. Front-end only. Tags: `[FIXED+VERIFIED]` = changed + ran + screens
 - **m6** CoachChat Android keyboard — repro steps documented, not changed.
 
 ## Phase 2 — Nutrition coherence
-Not started. Awaiting the **2.0 design checkpoint** approval before implementing F1/F2/F3.
+
+### 2.0 design checkpoint — ✅ APPROVED
+Goal: give the nutrition plan the same first-class lifecycle the workout plan has (`plan-details` / `plan/week/[n]` / PreSession adapt / PlanSettings rebuild-confirmation). Approved decisions:
+- **Targets editor (F1):** *structured* editor (steppers for calories + macro grams, chips for diet style & meals/day) — deterministic, driven by the existing generator. **Not** a free-text "tell coach".
+- **Nutrition Plan detail screen (F1):** *full standalone screen* — new `app/nutrition-plan.tsx` (1:1 mirror of `app/plan-details.tsx`: coach summary, 2×2 metadata grid, meal-structure section, "Edit targets" + "Edit Plan Settings" CTAs), reached from a new **"Nutrition Plan"** card on the Me tab (beside "Workout Plan") **and** from the coach-plan card's "Adjust plan" button.
+- **Plan history (F1):** *included* — write each rebuild to `synk:nutritionPlanHistory`, render it on the detail screen mirroring the workout plan-history list.
+
+Implementation order **F2 → F1 → F3**, one commit per finding.
+
+| Item | Status | Commit | Screenshot | Notes |
+|------|--------|--------|------------|-------|
+| **F2** "Use this plan today" was toast-only no-op | _in progress_ | — | — | Log `nutritionPlan.suggestedMeals` (per `mealStructure`) into `todaysLogs` via `addMeal`, mapping label→slot id against `MEAL_SLOTS`; guard double-logging; then toast. |
+| **F1** nutrition plan not manageable (stub "adjust", no detail screen, no editor) | not started | — | — | Detail screen + structured targets editor (replaces stub at Nutrition.tsx:1730) + plan-history. |
+| **F3** dietStyle/mealsPerDay/weight/goal don't regenerate targets | not started | — | — | Extract `generateNutritionPlan` → `src/lib/nutritionPlan.ts`; recompute behind a nutrition rebuild-confirmation mirroring the workout `pendingChange`. |

@@ -62,7 +62,7 @@ import CoachAvatar from "../components/CoachAvatar";
 import BottomSheet from "../components/BottomSheet";
 import { useToast } from "../components/ToastProvider";
 import { useAppContext } from "../AppContext";
-import type { FoodItem, LoggedFood, TodaysLogs, Recipe } from "../types";
+import type { FoodItem, LoggedFood, TodaysLogs, Recipe, SuggestedMeal, CoachNutritionPlan } from "../types";
 import { computePlanPreview } from "../lib/planUtils";
 import { getItem, setItem } from "../lib/storage";
 import { useColors, useTheme } from "../theme/ThemeProvider";
@@ -892,6 +892,67 @@ export default function Nutrition() {
     flashToast("add");
   };
 
+  // F2 — "Use this plan today": append the plan's suggested meals to the active
+  // day's diary (mapping each mealStructure label to a valid diary slot id),
+  // guarding against double-logging via the isCoachSuggested flag.
+  const handleUsePlanToday = () => {
+    const plan = user.nutritionPlan as CoachNutritionPlan | undefined;
+    if (!plan) return;
+
+    if (todaysLogs.foods.some((f) => (f as LoggedFood).isCoachSuggested)) {
+      showGlobalToast(isArabic ? "خطة المدرب مضافة بالفعل لهذا اليوم" : "Coach plan already added to this day", "info");
+      return;
+    }
+
+    const validIds = MEAL_SLOTS.map((s) => s.id);
+    const firstSlot = (MEAL_SLOTS[0]?.id || "breakfast") as LoggedFood["slot"];
+    const labelToSlotId = (label: string): LoggedFood["slot"] => {
+      const l = label.toLowerCase();
+      if (l.includes("breakfast")) return validIds.includes("breakfast") ? "breakfast" : firstSlot;
+      if (l.includes("lunch")) return validIds.includes("lunch") ? "lunch" : (slotForHour(12, user.mealsPerDay ?? 4) as LoggedFood["slot"]);
+      if (l.includes("dinner")) return validIds.includes("dinner") ? "dinner" : firstSlot;
+      if (l.includes("pre-workout") || l.includes("morning")) return validIds.includes("snack1") ? "snack1" : validIds.includes("snack") ? "snack" : firstSlot;
+      if (l.includes("evening") || l.includes("afternoon")) return validIds.includes("snack2") ? "snack2" : validIds.includes("snack") ? "snack" : validIds.includes("dinner") ? "dinner" : firstSlot;
+      if (l.includes("snack")) return validIds.includes("snack") ? "snack" : validIds.includes("snack1") ? "snack1" : firstSlot;
+      return firstSlot;
+    };
+
+    const nowIso = activeDateString !== todayString ? activeDate.toISOString() : new Date().toISOString();
+    const timeStr = new Date(nowIso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const stamp = Date.now();
+
+    const newFoods: LoggedFood[] = [];
+    (plan.mealStructure || []).forEach((label, li) => {
+      const meals = (plan.suggestedMeals?.[label] || []) as SuggestedMeal[];
+      meals.forEach((m, mi) => {
+        newFoods.push({
+          id: `${stamp}-${li}-${mi}`,
+          name: m.name,
+          calories: Math.round(m.calories),
+          protein: Math.round(m.protein),
+          carbs: Math.round(m.carbs),
+          fat: Math.round(m.fat),
+          portion: isArabic ? "حصة واحدة" : "1 serving",
+          time: timeStr,
+          loggedAt: nowIso,
+          slot: labelToSlotId(label),
+          isCoachSuggested: true,
+        });
+      });
+    });
+
+    if (newFoods.length === 0) {
+      showGlobalToast(isArabic ? "مفيش وجبات مقترحة في الخطة" : "No suggested meals in this plan", "info");
+      return;
+    }
+
+    setTodaysLogs((prev) => ({ ...prev, foods: [...prev.foods, ...newFoods] }));
+    showGlobalToast(
+      isArabic ? `تمت إضافة ${newFoods.length} وجبة من خطة المدرب` : `Added ${newFoods.length} meals from your coach plan`,
+      "success",
+    );
+  };
+
   const aiSuggestions = useMemo<{ id: string; text: string }[]>(() => {
     const s: { id: string; text: string }[] = [];
     if (totals.protein < targets.protein * 0.6) {
@@ -991,7 +1052,7 @@ export default function Nutrition() {
           ))}
         </View>
         <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 8 }}>
-          <Pressable onPress={() => showGlobalToast(isArabic ? "تم إضافة خطة المدرب" : "Coach plan added to today", "success")} style={{ flex: 1, height: 44, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
+          <Pressable onPress={handleUsePlanToday} style={{ flex: 1, height: 44, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
             <AppText style={{ color: "#fff", fontSize: 14, fontWeight: "600", textAlign: "center", fontFamily: ff(isArabic, 600) }}>{isArabic ? "استخدم هذه الخطة اليوم" : "Use this plan today"}</AppText>
           </Pressable>
           <Pressable onPress={() => setShowAdjustPlanSheet(true)} style={{ flex: 1, height: 44, borderRadius: 9999, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
