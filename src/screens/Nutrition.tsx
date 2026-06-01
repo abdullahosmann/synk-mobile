@@ -660,7 +660,7 @@ export default function Nutrition() {
     protein: user.proteinTarget || plan.protein,
     carbs: user.carbsTarget || plan.carbs,
     fat: user.fatTarget || plan.fat,
-    water: 2500,
+    water: user.dailyWaterTarget || 2000,
   };
 
   const totals = useMemo(() => {
@@ -1307,22 +1307,22 @@ export default function Nutrition() {
     if (!nutritionCards.hydration) return null;
     return (
       <View key="hydration" style={{ ...card, padding: 24 }}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" }}>
-          <View>
-            {sectionLabel("HYDRATION", colors.primary)}
-            <View style={{ flexDirection: "row", alignItems: "baseline", gap: 6, marginTop: 6 }}>
+        <View style={{ flexDirection: isArabic ? "row-reverse" : "row", justifyContent: "space-between", alignItems: "flex-end" }}>
+          <View style={{ alignItems: isArabic ? "flex-end" : "flex-start" }}>
+            {sectionLabel(isArabic ? "الترطيب" : "HYDRATION", colors.primary)}
+            <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "baseline", gap: 6, marginTop: 6 }}>
               <AppText style={{ fontSize: 22, fontWeight: "600", color: colors.ink }}>{waterIntake.toLocaleString()}</AppText>
-              <AppText style={{ fontSize: 15, color: colors.inkMuted48 }}>/ {targets.water} ML</AppText>
+              <AppText style={{ fontSize: 15, color: colors.inkMuted48 }}>/ {targets.water.toLocaleString()} {isArabic ? "مل" : "ML"}</AppText>
             </View>
           </View>
           <Pressable onPress={() => setWaterIntake(0)}>
-            <AppText style={{ fontSize: 11, color: colors.inkMuted48, textTransform: "uppercase", letterSpacing: 0.5 }}>Reset</AppText>
+            <AppText style={{ fontSize: 11, color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: isArabic ? 0 : 0.5, fontFamily: ff(isArabic) }}>{isArabic ? "إعادة" : "Reset"}</AppText>
           </Pressable>
         </View>
-        <View style={{ height: 1, width: "100%", backgroundColor: colors.hairline, borderRadius: 9999, overflow: "hidden", marginVertical: 16 }}>
-          <View style={{ height: "100%", backgroundColor: colors.primary, width: `${Math.min(100, (waterIntake / Math.max(1, targets.water)) * 100)}%` }} />
+        <View style={{ height: 6, width: "100%", backgroundColor: colors.hairline, borderRadius: 9999, overflow: "hidden", marginVertical: 16 }}>
+          <View style={{ height: "100%", backgroundColor: colors.primary, width: `${Math.min(100, (waterIntake / Math.max(1, targets.water)) * 100)}%`, borderRadius: 9999 }} />
         </View>
-        <View style={{ flexDirection: "row", gap: 8, marginBottom: 12 }}>
+        <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 8, marginBottom: 12 }}>
           {waterPearlBtn("−", () => {
             const now = Date.now();
             if (now - lastTapRef.current < 300) return;
@@ -1345,7 +1345,7 @@ export default function Nutrition() {
           })}
         </View>
         {sectionLabel(isArabic ? "إضافة سريعة" : "QUICK ADD")}
-        <View style={{ flexDirection: "row", gap: 8, marginTop: 8 }}>
+        <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 8, marginTop: 8 }}>
           {[100, 500, 1000].map((amount) =>
             waterPearlBtn(`+${amount}ml`, () => {
               const now = Date.now();
