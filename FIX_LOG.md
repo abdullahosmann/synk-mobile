@@ -62,4 +62,13 @@ Implementation order **F2 → F1 → F3**, one commit per finding.
 | **m2** toast not RTL-aware | `[FIXED+CODE-ONLY]` | `3ac324b` | — | `ToastProvider` row reverses + padding swaps + text right-aligns (Cairo) when `isArabic`. (Transient; verified by inspection.) |
 | **m1b** muscle-group tags English under Arabic | `[FIXED+VERIFIED]` | `8de1c7d` | `m1b_muscle_tags_ar.png` | New `src/lib/muscleLabels.ts` (key→Arabic); history list + workout-detail tags localize. Sim-verified: AR history shows الصدر/الترايسبس/الأكتاف/الظهر/… |
 
-**Remaining (not started), per UIUX_AUDIT.md:** F8 (deferred), B4 per-screen icon-button sweep, M1 (list virtualization), RTL minors m1 (history calendar) / m3 (multi-workout day), polish P1–P5. Android build still blocked (no toolchain).
+## Phase 6 — calendar RTL + theming polish
+
+| Item | Status | Commit | Screenshot | Notes |
+|------|--------|--------|------------|-------|
+| **m1** history calendar not RTL/localized | `[FIXED+CODE-ONLY]` | `f4593b0` | — | Weekday initials localized (ح ن ث ر خ ج س) + header and day-grid `flexDirection` mirror for Arabic. (Verified by inspection — the calendar sub-view needs an in-app toggle tap that was too small a target to drive reliably; RTL rendering on the same screen is confirmed via m1b.) |
+| **m3** multi-workout day collapses to one | `[FIXED+CODE-ONLY]` | `f4593b0` | — | `calMonthWorkouts.find` → `.filter`; renders up to 3 dots so multiple same-day sessions are visible (tap still opens the first — a full day-picker is a larger follow-up). |
+| **P2** splash flashes white in dark mode | `[FIXED+CODE-ONLY]` | `228e4a4` | — | Pre-hydration splash View bg now follows `useColorScheme()` (dark → `#0B0D10`, light → white) instead of hardcoded white. |
+| **P3** CoachAvatar grayscale no-op | `[FIXED+CODE-ONLY]` | `711dadb` | — | Replaced `tintColor:undefined` with an opacity dim proportional to the grayscale amount (expo-image has no grayscale filter) so idle coaches look muted, approximating web. |
+
+**Remaining (not started), per UIUX_AUDIT.md:** F8 (deferred), B4 per-screen icon-button sweep, M1 (list virtualization — biggest/riskiest), P1 (dark-mode primary tints — 64 `rgba(0,102,204,*)` literals across 28 files; replace with `withAlpha(colors.primary, …)`), P4 (dead voice-log states — harmless until a real recognizer), P5 (dynamic-type overflow). Android build still blocked (no toolchain).

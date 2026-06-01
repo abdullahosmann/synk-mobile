@@ -37,7 +37,21 @@ Implementing a **scoped subset** of `UIUX_AUDIT.md` (full audit + screenshots in
 - **m2** (`3ac324b`): toast is RTL-aware (row/padding/text mirror for Arabic).
 - **m1b** (`8de1c7d`): `src/lib/muscleLabels.ts` localizes muscle tags; AR history sim-verified.
 
-**Next (not started), per UIUX_AUDIT.md:** **F8 deferred at user request**. Remaining: B4 per-screen icon-button sweep, M1 (list virtualization), RTL minors m1 (history calendar grid) / m3 (multi-workout day), polish P1–P5. Android build still blocked (no toolchain).
+**Phase 6 — calendar RTL + theming polish: ✅ DONE** (all code-only — straightforward, tsc-clean):
+- **m1** (`f4593b0`): history calendar weekday header localized + grid/header mirrored for Arabic.
+- **m3** (`f4593b0`): multi-workout days use `.filter` + up to 3 dots (was `.find` → 1 dot).
+- **P2** (`228e4a4`): splash fallback follows `useColorScheme()` (no white flash in dark).
+- **P3** (`711dadb`): CoachAvatar grayscale prop now dims opacity (was a no-op).
+
+### 👉 NEXT SESSION — where to pick up
+The targeted fix pass has cleared **all blockers (B1–B4), all Major findings (M1 is the only one left), every F-series item except the deferred F8, and most minors/polish.** What remains (all in `UIUX_AUDIT.md`, none started):
+- **M1 — list virtualization** (the biggest + riskiest remaining): convert `.map()`-in-`ScrollView` lists (history, community feed, Nutrition logs, exercise history) to `FlatList`. Touches many screens — do one list per commit, watch the css-interop Pressable gotcha.
+- **P1 — dark-mode primary tints**: 64 `rgba(0,102,204,*)` literals across 28 files → replace with `withAlpha(colors.primary, …)` (helper already used in Nutrition.tsx). Mechanical but broad; sim-verify in forced dark.
+- **B4 per-screen icon-button sweep**: shared primitives are done (`f33c821`); inline icon-only `Pressable`s in individual screens (back chevrons, close X, mic, send) still need `accessibilityLabel`.
+- **F8 (deferred by user — keep for later)**, **P4** (dead voice-log states — harmless), **P5** (dynamic-type overflow caps).
+- **Android build** — still blocked (no SDK/emulator in this env).
+
+All work is on branch `dev`, committed, `npx tsc --noEmit` clean. Full per-finding detail + commit hashes are in `FIX_LOG.md` (Phases 1–6). Sim verification uses the deep-link + Quartz-tap method documented above (mind the moving Simulator window + the Metro "No script URL" recovery).
 
 **Sim note:** Metro is flaky — if you get a "No script URL" red screen, Metro died (`curl -s localhost:8081/status` → 000); restart with `WATCHMAN_DISABLE=1 npx expo start --dev-client`, fully build the bundle (`curl -s "http://localhost:8081/node_modules/expo-router/entry.bundle?platform=ios&dev=true" -o /dev/null` — wait for ~16MB), then terminate+launch. The Simulator window hops between displays (main `1020,52` size `492,930` → `screencapture -R` gives **2× px**; external `2804,52` size `628,995` → **1× px**) — re-query `AXPosition/AXSize` and check the capture's pixel dims before mapping clicks.
 
