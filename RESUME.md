@@ -10,7 +10,10 @@ All 5 phases implemented + verified (decisions: auto-balance / soft-warn / propa
 - **Coherence numbers fixed** (`78a5c63`/`d565bd2`/`82a6a61`): Me progress card + workout count now derive from `getAllWorkouts` (match Analytics/History); plan-details metadata derives from settings; WeekEditor date range matches its rows.
 - **Nutrition editing is coherent** (`bea8cfa`): macros auto-balance from calories+diet (read-only); soft-warn on goal conflict; explanation reflects diet style; "Use this plan today" toggles/undoes.
 - **Polish** (`cedf97f`/`d38fd2b`): food-row kcal/badge collision, TopBar real avatar, pluralization, past-day hydration, silenced the benign Reanimated warning banner.
-Full per-finding detail + the 3 resolved decisions + deferrals are in **`mobile/UX_REVIEW_2.md`**. **Remaining (optional/deferred):** I2 double-tap nav guard (systemic), V3/V4 minor visuals, A3/A8/A9 + the onboarding "filtering injuries" loading copy (backend/coach engine).
+Full per-finding detail + the 3 resolved decisions + deferrals are in **`mobile/UX_REVIEW_2.md`**.
+
+## 🎨 PENDING APPROVAL: Design-system consistency audit — see `mobile/DESIGN_SYSTEM_AUDIT.md`
+Visual-language drift quantified: card radius split 10 vs 14 (~100 wrong), off-scale radii (12/16/18/20), control heights scattered (44/48/56), padding drift, and the small uppercase "eyebrow" label hand-written ~63× (shared `Card` primitive exists but is bypassed). Phased fix plan + 3 open decisions in the doc. **Awaiting approval + decisions before editing.** **Remaining (optional/deferred):** I2 double-tap nav guard (systemic), V3/V4 minor visuals, A3/A8/A9 + the onboarding "filtering injuries" loading copy (backend/coach engine).
 
 ## 🔧 Targeted UI/UX fix pass (Phases 1–9 ✅ done — see FIX_LOG.md)
 
