@@ -33,7 +33,7 @@ import { AppText } from "../src/components/ui/Typography";
 import BottomSheet from "../src/components/BottomSheet";
 import CoachAvatar from "../src/components/CoachAvatar";
 import EmptyState from "../src/components/EmptyState";
-import { pushNutritionHistory, readNutritionHistory } from "../src/lib/nutritionPlan";
+import { pushNutritionHistory, readNutritionHistory, computeMacros, estimateMaintenance } from "../src/lib/nutritionPlan";
 import type { CoachNutritionPlan, SuggestedMeal } from "../src/types";
 
 function fontFamily(isArabic: boolean, weight: 400 | 600 = 400) {
@@ -85,19 +85,17 @@ export default function NutritionPlanDetails() {
 
   const [editOpen, setEditOpen] = useState(false);
   const [calInput, setCalInput] = useState("");
-  const [protInput, setProtInput] = useState("");
-  const [carbInput, setCarbInput] = useState("");
-  const [fatInput, setFatInput] = useState("");
   const [dietInput, setDietInput] = useState<string>(user.dietStyle || "balanced");
   const [mealsInput, setMealsInput] = useState<number>(user.mealsPerDay || 4);
 
   const history: NutritionPlanHistoryEntry[] = readNutritionHistory();
 
+  // N1 — macros are derived from the calorie target + diet style (auto-balanced),
+  // so the editor can never save a calorie/macro combo that contradicts itself.
+  const editorMacros = computeMacros(user.currentWeight, dietInput, Math.max(0, Math.round(Number(calInput) || 0)));
+
   const openEditor = () => {
     setCalInput(String(user.calorieTarget || plan?.dailyCalories || 0));
-    setProtInput(String(user.proteinTarget || plan?.proteinTarget || 0));
-    setCarbInput(String(user.carbsTarget || plan?.carbsTarget || 0));
-    setFatInput(String(user.fatTarget || plan?.fatsTarget || 0));
     setDietInput(user.dietStyle || "balanced");
     setMealsInput(user.mealsPerDay || 4);
     setEditOpen(true);
@@ -105,25 +103,34 @@ export default function NutritionPlanDetails() {
 
   const saveTargets = () => {
     const cal = Math.max(0, Math.round(Number(calInput) || 0));
-    const prot = Math.max(0, Math.round(Number(protInput) || 0));
-    const carb = Math.max(0, Math.round(Number(carbInput) || 0));
-    const fat = Math.max(0, Math.round(Number(fatInput) || 0));
+    const m = computeMacros(user.currentWeight, dietInput, cal);
     const ms = mealStructureFor(mealsInput);
     setUser({
       ...user,
       dietStyle: dietInput as any,
       mealsPerDay: mealsInput,
       calorieTarget: cal,
-      proteinTarget: prot,
-      carbsTarget: carb,
-      fatTarget: fat,
+      proteinTarget: m.protein,
+      carbsTarget: m.carbs,
+      fatTarget: m.fats,
       nutritionPlan: plan
-        ? { ...plan, dailyCalories: cal, proteinTarget: prot, carbsTarget: carb, fatsTarget: fat, mealStructure: ms }
+        ? { ...plan, dailyCalories: cal, proteinTarget: m.protein, carbsTarget: m.carbs, fatsTarget: m.fats, mealStructure: ms }
         : plan,
     } as any);
-    pushNutritionHistory(`Targets edited manually — ${cal} kcal, ${prot}P/${carb}C/${fat}F.`, `تعديل يدوي للأهداف — ${cal} سعرة، ${prot}ب/${carb}ك/${fat}د.`);
+    pushNutritionHistory(`Targets edited manually — ${cal} kcal, ${m.protein}P/${m.carbs}C/${m.fats}F.`, `تعديل يدوي للأهداف — ${cal} سعرة، ${m.protein}ب/${m.carbs}ك/${m.fats}د.`);
     setEditOpen(false);
-    showToast(isArabic ? "تم تحديث أهداف التغذية" : "Nutrition targets updated", "success");
+
+    // N2 — soft-warn (don't block) when the calorie target contradicts the goal.
+    const maint = estimateMaintenance(user);
+    const goalLose = user.goals?.includes("lose-body-fat") || user.goal === "lose-weight" || (user.goal as any) === "weight-loss";
+    const goalGain = user.goals?.includes("gain-muscle") || user.goals?.includes("build-strength") || user.goal === "build-muscle" || (user.goal as any) === "weight-gain" || (user.goal as any) === "muscle-gain";
+    if (goalLose && cal >= maint) {
+      showToast(isArabic ? "تنبيه: هدفك خسارة وزن لكن السعرات أعلى من مستوى الثبات." : "Heads up: your goal is fat loss, but this is at/above maintenance.", "info");
+    } else if (goalGain && cal <= maint) {
+      showToast(isArabic ? "تنبيه: هدفك زيادة لكن السعرات أقل من مستوى الثبات." : "Heads up: your goal is muscle gain, but this is at/below maintenance.", "info");
+    } else {
+      showToast(isArabic ? "تم تحديث أهداف التغذية" : "Nutrition targets updated", "success");
+    }
   };
 
   const sectionLabel = (text: string) => (
@@ -358,12 +365,22 @@ export default function NutritionPlanDetails() {
           </View>
 
           <View>
-            {sectionLabel(isArabic ? "الماكروز (جرام)" : "MACROS (GRAMS)")}
+            {sectionLabel(isArabic ? "الماكروز (محسوبة تلقائياً)" : "MACROS (AUTO-BALANCED)")}
             <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 8, marginTop: 8 }}>
-              <TextInput value={protInput} onChangeText={setProtInput} keyboardType="numeric" placeholder={isArabic ? "بروتين" : "Prot"} placeholderTextColor={colors.inkMuted48} style={inputPill} />
-              <TextInput value={carbInput} onChangeText={setCarbInput} keyboardType="numeric" placeholder={isArabic ? "كارب" : "Carbs"} placeholderTextColor={colors.inkMuted48} style={inputPill} />
-              <TextInput value={fatInput} onChangeText={setFatInput} keyboardType="numeric" placeholder={isArabic ? "دهون" : "Fats"} placeholderTextColor={colors.inkMuted48} style={inputPill} />
+              {[
+                { l: isArabic ? "بروتين" : "Prot", v: editorMacros.protein },
+                { l: isArabic ? "كارب" : "Carbs", v: editorMacros.carbs },
+                { l: isArabic ? "دهون" : "Fats", v: editorMacros.fats },
+              ].map((m, i) => (
+                <View key={i} style={{ flex: 1, height: 48, borderWidth: 1, borderColor: colors.hairline, borderRadius: 12, backgroundColor: colors.canvas, alignItems: "center", justifyContent: "center" }}>
+                  <AppText style={{ fontSize: 16, fontWeight: "600", color: colors.ink }}>{m.v}g</AppText>
+                  <AppText style={{ fontSize: 10, color: colors.inkMuted48, fontFamily: fontFamily(isArabic) }}>{m.l}</AppText>
+                </View>
+              ))}
             </View>
+            <AppText style={{ fontSize: 11, color: colors.inkMuted48, marginTop: 6, textAlign: isArabic ? "right" : "left", fontFamily: fontFamily(isArabic) }}>
+              {isArabic ? "تتحسب من سعراتك وأسلوب أكلك." : "Derived from your calories and diet style."}
+            </AppText>
           </View>
 
           <View>

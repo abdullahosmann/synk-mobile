@@ -900,8 +900,11 @@ export default function Nutrition() {
     const plan = user.nutritionPlan as CoachNutritionPlan | undefined;
     if (!plan) return;
 
+    // N4 — toggle: if the coach plan is already logged for this day, tapping
+    // again removes it (undo) instead of dead-ending on "already added".
     if (todaysLogs.foods.some((f) => (f as LoggedFood).isCoachSuggested)) {
-      showGlobalToast(isArabic ? "خطة المدرب مضافة بالفعل لهذا اليوم" : "Coach plan already added to this day", "info");
+      setTodaysLogs((prev) => ({ ...prev, foods: prev.foods.filter((f) => !(f as LoggedFood).isCoachSuggested) }));
+      showGlobalToast(isArabic ? "تمت إزالة خطة المدرب من اليوم" : "Removed the coach plan from this day", "info");
       return;
     }
 

@@ -23,6 +23,27 @@ const MACRO_PROFILE: Record<string, { protein: number; fat: number }> = {
   vegan: { protein: 1.8, fat: 0.9 },
 };
 
+/** Maintenance calories (Mifflin-St Jeor × activity), shared so the editor can
+ *  warn when a manual calorie target contradicts the goal. */
+export function estimateMaintenance(user: Pick<UserProfile, "gender" | "currentWeight" | "height" | "age" | "activityLevel" | "daysPerWeek">): number {
+  let bmr = 10 * user.currentWeight + 6.25 * user.height - 5 * user.age + (user.gender === "male" ? 5 : -161);
+  let multiplier = 1.2;
+  if (user.activityLevel === "moderately-active") multiplier = 1.55;
+  if (user.activityLevel === "very-active") multiplier = 1.725;
+  if ((user.daysPerWeek || 0) >= 4) multiplier += 0.1;
+  return Math.round(bmr * multiplier);
+}
+
+/** Derive protein/carbs/fats (grams) from calories + diet style + bodyweight,
+ *  so the editor can keep macros consistent with the calorie target (P3 N1). */
+export function computeMacros(weightKg: number, dietStyle: string | undefined, calories: number): { protein: number; carbs: number; fats: number } {
+  const profile = MACRO_PROFILE[dietStyle || "balanced"] || MACRO_PROFILE.balanced;
+  const protein = Math.round(weightKg * profile.protein);
+  const fats = Math.round(weightKg * profile.fat);
+  const carbs = Math.max(0, Math.round((calories - protein * 4 - fats * 9) / 4));
+  return { protein, carbs, fats };
+}
+
 export function mealStructureFor(mealsPerDay: number): string[] {
   if (mealsPerDay === 3) return ["Breakfast", "Lunch", "Dinner"];
   if (mealsPerDay >= 5) return ["Breakfast", "Lunch", "Dinner", "Pre-workout Snack", "Evening Snack"];
@@ -80,11 +101,19 @@ export function generateNutritionPlan(user: UserProfile): CoachNutritionPlan {
       : `We've set your calories to maintenance to build healthy habits, stay consistent, and fuel your lifestyle around your workouts.`;
   }
 
-  const profile = MACRO_PROFILE[user.dietStyle || "balanced"] || MACRO_PROFILE.balanced;
-  const proteinTarget = Math.round(user.currentWeight * profile.protein);
-  const fatsTarget = Math.round(user.currentWeight * profile.fat);
-  const carbsCals = Math.max(0, targetCals - proteinTarget * 4 - fatsTarget * 9);
-  const carbsTarget = Math.round(carbsCals / 4);
+  const { protein: proteinTarget, carbs: carbsTarget, fats: fatsTarget } = computeMacros(user.currentWeight, user.dietStyle, targetCals);
+
+  // N3 — reflect the diet style in the coach copy so it isn't generic.
+  const dietClause: Record<string, { en: string; ar: string }> = {
+    "high-protein": { en: " Macros lean toward protein.", ar: " والماكروز مركزة على البروتين." },
+    "low-carb": { en: " Carbs are kept lower with more fats.", ar: " مع تقليل الكربوهيدرات وزيادة الدهون." },
+    keto: { en: " Carbs are minimal and fats high (keto).", ar: " الكربوهيدرات قليلة جداً والدهون عالية (كيتو)." },
+    mediterranean: { en: " Built around a Mediterranean style.", ar: " على النمط المتوسطي." },
+    vegetarian: { en: " Adjusted for a vegetarian diet.", ar: " معدّلة لنظام نباتي." },
+    vegan: { en: " Adjusted for a vegan diet.", ar: " معدّلة لنظام نباتي صرف." },
+  };
+  const dc = user.dietStyle ? dietClause[user.dietStyle] : undefined;
+  if (dc) coachExplanation += ar ? dc.ar : dc.en;
 
   const mealStructure = mealStructureFor(user.mealsPerDay);
 
