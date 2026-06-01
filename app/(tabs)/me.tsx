@@ -27,7 +27,7 @@ import { useColors } from "../../src/theme/ThemeProvider";
 import { withAlpha } from "../../src/theme/tint";
 import { AppText, SectionTitle } from "../../src/components/ui/Typography";
 import { Btn } from "../../src/components/ui/Btn";
-import { getItem } from "../../src/lib/storage";
+import { getAllWorkouts } from "../../src/lib/historyQueries";
 
 function PressableScale({ children, onPress, style }: any) {
   const s = useSharedValue(1);
@@ -55,43 +55,16 @@ export default function Profile() {
   const initials =
     (user?.name || (isArabic ? "المستخدم" : "User")).split(" ").map((n) => n[0]).filter(Boolean).join("").toUpperCase().slice(0, 2) || "?";
 
-  // Derive workouts + minutes from logged sets, mirroring web's useMemo.
+  // C2 — derive workouts + minutes from the same source as Analytics/History
+  // (getAllWorkouts) so the profile strip can't disagree with them (was reading
+  // synk:historicalSets, which is empty while getAllWorkouts has the history).
   const { derivedWorkouts, derivedMinutes } = useMemo(() => {
-    try {
-      const historyRaw = getItem("synk:historicalSets");
-      if (!historyRaw || historyRaw === "{}") return { derivedWorkouts: 0, derivedMinutes: 0 };
-      const history = JSON.parse(historyRaw);
-      const allSets = Object.values(history).flat() as { completedAt: string }[];
-      if (!allSets.length) return { derivedWorkouts: 0, derivedMinutes: 0 };
-
-      const setsByDate = new Map<string, Date[]>();
-      allSets.forEach((set) => {
-        if (!set.completedAt) return;
-        const d = new Date(set.completedAt);
-        if (isNaN(d.getTime())) return;
-        const dateStr = d.toISOString().split("T")[0];
-        if (!setsByDate.has(dateStr)) setsByDate.set(dateStr, []);
-        setsByDate.get(dateStr)!.push(d);
-      });
-
-      let totalMinutes = 0;
-      setsByDate.forEach((dates) => {
-        if (dates.length < 2) {
-          totalMinutes += 45;
-          return;
-        }
-        dates.sort((a, b) => a.getTime() - b.getTime());
-        const durationMs = dates[dates.length - 1].getTime() - dates[0].getTime();
-        let mins = Math.floor(durationMs / 60000);
-        if (mins < 15) mins = 45;
-        totalMinutes += mins;
-      });
-
-      return { derivedWorkouts: setsByDate.size, derivedMinutes: totalMinutes };
-    } catch {
-      return { derivedWorkouts: 0, derivedMinutes: 0 };
-    }
-  }, []);
+    const all = getAllWorkouts(user);
+    return {
+      derivedWorkouts: all.length,
+      derivedMinutes: all.reduce((s, w) => s + (w.durationMin || 0), 0),
+    };
+  }, [user]);
 
   const planName = useMemo(() => {
     const splitMap: Record<string, { en: string; ar: string }> = {
@@ -122,8 +95,30 @@ export default function Profile() {
     { icon: Dumbbell, label: isArabic ? "تمارين" : "Workouts", value: String(derivedWorkouts) },
   ];
 
-  const chartData = [60, 80, 40, 90, 70, 100, 85];
-  const chartBars = isArabic ? [...chartData].reverse() : chartData;
+  // C1 — derive the progress card from real history (same source as the
+  // dashboard analytics card) instead of hardcoded demo numbers, so it matches
+  // the streak strip above and the Analytics screen.
+  const progressStats = useMemo(() => {
+    const all = getAllWorkouts(user);
+    const dayMs = 86400000;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayMs = today.getTime();
+    const bars = Array.from({ length: 7 }).map((_, i) => {
+      const start = todayMs - (6 - i) * dayMs;
+      return all.filter((w) => { const t = new Date(w.date).getTime(); return t >= start && t < start + dayMs; }).reduce((s, w) => s + w.totalVolumeKg, 0);
+    });
+    const maxBar = Math.max(1, ...bars);
+    const barHeights = bars.map((v) => (v > 0 ? Math.max(8, Math.round((v / maxBar) * 100)) : 0));
+    const weekAgo = todayMs - 7 * dayMs;
+    const prevStart = todayMs - 14 * dayMs;
+    const volThis = all.filter((w) => new Date(w.date).getTime() >= weekAgo).reduce((s, w) => s + w.totalVolumeKg, 0);
+    const volPrev = all.filter((w) => { const t = new Date(w.date).getTime(); return t >= prevStart && t < weekAgo; }).reduce((s, w) => s + w.totalVolumeKg, 0);
+    const volDelta = volPrev > 0 ? Math.round(((volThis - volPrev) / volPrev) * 100) : null;
+    const prsThisWeek = all.filter((w) => w.isPR && new Date(w.date).getTime() >= weekAgo).length;
+    return { barHeights, volDelta, prsThisWeek };
+  }, [user]);
+  const chartBars = isArabic ? [...progressStats.barHeights].reverse() : progressStats.barHeights;
 
   const pickPhoto = async (mode: "camera" | "library") => {
     setPhotoSheetOpen(false);
@@ -254,9 +249,9 @@ export default function Profile() {
             </View>
             <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
               {[
-                { l: isArabic ? "السلسلة الأسبوعية" : "Weekly streak", v: isArabic ? "5 أيام" : "5 days", c: colors.ink },
-                { l: isArabic ? "الحجم" : "Volume", v: "+12%", c: colors.semanticGreen },
-                { l: isArabic ? "أرقام قياسية" : "PRs", v: isArabic ? "3 الأسبوع ده" : "3 this week", c: colors.ink },
+                { l: isArabic ? "السلسلة الأسبوعية" : "Weekly streak", v: isArabic ? `${trainingStreak} ${trainingStreak === 1 ? "يوم" : "أيام"}` : `${trainingStreak} ${trainingStreak === 1 ? "day" : "days"}`, c: colors.ink },
+                { l: isArabic ? "الحجم" : "Volume", v: progressStats.volDelta == null ? "—" : `${progressStats.volDelta >= 0 ? "+" : ""}${progressStats.volDelta}%`, c: progressStats.volDelta != null && progressStats.volDelta < 0 ? colors.semanticRed : colors.semanticGreen },
+                { l: isArabic ? "أرقام قياسية" : "PRs", v: isArabic ? `${progressStats.prsThisWeek} الأسبوع ده` : `${progressStats.prsThisWeek} this week`, c: colors.ink },
               ].map((m, i) => (
                 <React.Fragment key={i}>
                   {i > 0 && <View style={{ width: 1, height: 32, backgroundColor: colors.hairline }} />}
