@@ -1,6 +1,6 @@
 import "../global.css";
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import { useColorScheme, View } from "react-native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -46,14 +46,17 @@ export default function RootLayout() {
   }, []);
 
   const ready = storageReady && fontsLoaded;
+  const scheme = useColorScheme();
 
   useEffect(() => {
     if (ready) SplashScreen.hideAsync().catch(() => {});
   }, [ready]);
 
   if (!ready) {
-    // Keep native splash up until storage + fonts are ready.
-    return <View style={{ flex: 1, backgroundColor: "#ffffff" }} />;
+    // Keep native splash up until storage + fonts are ready. Match the OS color
+    // scheme so dark-mode users don't get a white flash (P2). (The saved app
+    // theme isn't hydrated yet here, so the OS scheme is the best pre-paint cue.)
+    return <View style={{ flex: 1, backgroundColor: scheme === "dark" ? "#0B0D10" : "#ffffff" }} />;
   }
 
   return (
