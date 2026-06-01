@@ -12,6 +12,7 @@ import { Activity, Award, Target, BarChart3, ArrowRight } from "lucide-react-nat
 import TopBar from "../../src/components/TopBar";
 import EmptyState from "../../src/components/EmptyState";
 import WeightTrendChart from "../../src/components/WeightTrendChart";
+import { getAllWorkouts } from "../../src/lib/historyQueries";
 import { useAppContext } from "../../src/AppContext";
 import { useColors } from "../../src/theme/ThemeProvider";
 import { AppText, StatValueSm, Title } from "../../src/components/ui/Typography";
@@ -36,7 +37,26 @@ export default function Analytics() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const isArabic = user.language === "ar";
-  const hasData = todaysLogs.foods.length > 0;
+
+  // Gate on real historical presence — not just whether food was logged *today*
+  // (a user with months of history must not see the empty state). All derived
+  // from the same sources the rest of the app uses; metrics with no source are
+  // hidden rather than faked (M3/F6).
+  const allWorkouts = getAllWorkouts(user);
+  const weightLog = user.weightLog ?? [];
+  const hasData = allWorkouts.length > 0 || weightLog.length > 0 || todaysLogs.foods.length > 0;
+
+  const totalWorkouts = allWorkouts.length;
+  const weekAgo = Date.now() - 7 * 86400000;
+  const workoutsThisWeek = allWorkouts.filter((w) => new Date(w.date).getTime() >= weekAgo).length;
+
+  const startWeight = weightLog.length > 0 ? weightLog[0].weightKg : null;
+  const latestWeight = weightLog.length > 0 ? weightLog[weightLog.length - 1].weightKg : null;
+  const targetWeight = user.targetWeight ?? null;
+  const weightPct =
+    startWeight != null && latestWeight != null && targetWeight != null && startWeight !== targetWeight
+      ? Math.round(Math.min(100, Math.max(0, ((latestWeight - startWeight) / (targetWeight - startWeight)) * 100)))
+      : null;
 
   const card = {
     backgroundColor: colors.canvas,
@@ -91,8 +111,8 @@ export default function Analytics() {
               <WeightTrendChart height={180} />
             </View>
             <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 12 }}>
-              {statTile(Activity, "2,450", isArabic ? "متوسط الخطوات" : "Avg Steps")}
-              {statTile(Award, "12", isArabic ? "التمارين" : "Workouts")}
+              {statTile(Award, String(totalWorkouts), isArabic ? "التمارين" : "Workouts")}
+              {statTile(Activity, String(workoutsThisWeek), isArabic ? "هذا الأسبوع" : "This week")}
             </View>
             <View style={[card, { padding: 24, gap: 24 }]}>
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", justifyContent: "space-between", alignItems: "center" }}>
@@ -100,8 +120,13 @@ export default function Analytics() {
                 <Target size={18} color={colors.primary} strokeWidth={2.5} />
               </View>
               <View style={{ gap: 24 }}>
-                {goalRow(isArabic ? "إنقاص الوزن" : "Weight Loss", 65)}
-                {goalRow(isArabic ? "القوة" : "Strength", 40)}
+                {weightPct != null ? (
+                  goalRow(isArabic ? "هدف الوزن" : "Weight goal", weightPct)
+                ) : (
+                  <AppText style={{ fontSize: 13, color: colors.inkMuted48, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+                    {isArabic ? "سجّل وزنك عشان نتابع تقدمك نحو هدفك." : "Log your weight to track progress toward your goal."}
+                  </AppText>
+                )}
               </View>
               <Btn variant="secondary" fullWidth onPress={() => router.push("/history")}>
                 <AppText variant="body-strong" style={{ color: colors.ink, textTransform: isArabic ? "none" : "uppercase" }}>

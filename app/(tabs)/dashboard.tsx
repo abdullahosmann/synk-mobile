@@ -65,6 +65,7 @@ import { Btn } from "../../src/components/ui/Btn";
 import { getItem, setItem } from "../../src/lib/storage";
 import { computePlanPreview } from "../../src/lib/planUtils";
 import { getWorkoutForDate } from "../../src/lib/workoutSelection";
+import { getAllWorkouts } from "../../src/lib/historyQueries";
 import { getCoachLineForDay } from "../../src/lib/coachLines";
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -244,6 +245,38 @@ export default function Dashboard() {
   const isTodaySelected = selectedDate.getTime() === todayZero.getTime();
   const isPastSelected = selectedDate < todayZero;
   const isFutureSelected = selectedDate > todayZero;
+
+  // Real derived analytics (from the same workout source the History screen
+  // uses) so the dashboard analytics/recovery cards reflect actual state
+  // instead of hardcoded demo numbers (M3/F6).
+  const analyticsStats = useMemo(() => {
+    const all = getAllWorkouts(user);
+    const dayMs = 86400000;
+    const todayMs = todayZero.getTime();
+    const bars = Array.from({ length: 7 }).map((_, i) => {
+      const start = todayMs - (6 - i) * dayMs;
+      return all
+        .filter((w) => {
+          const t = new Date(w.date).getTime();
+          return t >= start && t < start + dayMs;
+        })
+        .reduce((s, w) => s + w.totalVolumeKg, 0);
+    });
+    const maxBar = Math.max(1, ...bars);
+    const barHeights = bars.map((v) => (v > 0 ? Math.max(8, Math.round((v / maxBar) * 100)) : 0));
+    const weekAgo = todayMs - 7 * dayMs;
+    const prevStart = todayMs - 14 * dayMs;
+    const volThis = all.filter((w) => new Date(w.date).getTime() >= weekAgo).reduce((s, w) => s + w.totalVolumeKg, 0);
+    const volPrev = all
+      .filter((w) => {
+        const t = new Date(w.date).getTime();
+        return t >= prevStart && t < weekAgo;
+      })
+      .reduce((s, w) => s + w.totalVolumeKg, 0);
+    const volDelta = volPrev > 0 ? Math.round(((volThis - volPrev) / volPrev) * 100) : null;
+    const prsThisWeek = all.filter((w) => w.isPR && new Date(w.date).getTime() >= weekAgo).length;
+    return { barHeights, volDelta, prsThisWeek };
+  }, [user, todayZero]);
 
   const selectedDayEn = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][selectedDate.getDay()];
   const selectedDayAr = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"][selectedDate.getDay()];
@@ -710,11 +743,12 @@ export default function Dashboard() {
             }
 
             if (key === "recovery") {
+              const mr = user.muscleRecovery || ({} as Record<string, number>);
               const recoveryData = [
-                { nameEn: "Chest", nameAr: "الصدر", value: 85 },
-                { nameEn: "Back", nameAr: "الظهر", value: 60 },
-                { nameEn: "Legs", nameAr: "استشفاء الأرجل", value: 30 },
-                { nameEn: "Shoulders", nameAr: "الأكتاف", value: 95 },
+                { nameEn: "Chest", nameAr: "الصدر", value: mr.chest ?? 100 },
+                { nameEn: "Back", nameAr: "الظهر", value: mr.back ?? 100 },
+                { nameEn: "Legs", nameAr: "استشفاء الأرجل", value: Math.round(((mr.quadriceps ?? 100) + (mr.hamstrings ?? 100)) / 2) },
+                { nameEn: "Shoulders", nameAr: "الأكتاف", value: mr.shoulders ?? 100 },
               ];
               return (
                 <Pressable key={key} onPress={() => router.push("/muscle-recovery")} style={[cardStyle, { padding: 20 }]}>
@@ -752,7 +786,7 @@ export default function Dashboard() {
             }
 
             if (key === "analytics") {
-              const chartBars = [60, 80, 40, 90, 70, 100, 85];
+              const chartBars = analyticsStats.barHeights;
               return (
                 <Pressable key={key} onPress={() => router.push("/analytics")} style={[cardStyle, { padding: 16 }]}>
                   <View style={{ alignItems: isArabic ? "flex-end" : "flex-start" }}>
@@ -772,7 +806,7 @@ export default function Dashboard() {
                         <AppText style={{ fontSize: 11, color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, marginBottom: 4, fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
                           {isArabic ? "السلسلة الأسبوعية" : "Weekly streak"}
                         </AppText>
-                        <AppText variant="caption-strong" style={{ color: colors.ink }}>{isArabic ? "5 أيام" : "5 days"}</AppText>
+                        <AppText variant="caption-strong" style={{ color: colors.ink }}>{trainingStreak} {isArabic ? "يوم" : trainingStreak === 1 ? "day" : "days"}</AppText>
                       </View>
                       <View style={{ width: 1, height: 32, backgroundColor: colors.hairline, marginHorizontal: 4 }} />
                       <View style={{ alignItems: isArabic ? "flex-end" : "flex-start" }}>
@@ -780,8 +814,23 @@ export default function Dashboard() {
                           {isArabic ? "الحجم" : "Volume"}
                         </AppText>
                         <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 2 }}>
-                          <TrendingUp size={14} color={colors.semanticGreen} />
-                          <AppText variant="caption-strong" style={{ color: colors.semanticGreen }}>+12%</AppText>
+                          {analyticsStats.volDelta == null ? (
+                            <>
+                              <Minus size={14} color={colors.inkMuted48} />
+                              <AppText variant="caption-strong" style={{ color: colors.inkMuted48 }}>—</AppText>
+                            </>
+                          ) : (
+                            <>
+                              {analyticsStats.volDelta >= 0 ? (
+                                <TrendingUp size={14} color={colors.semanticGreen} />
+                              ) : (
+                                <TrendingDown size={14} color={colors.semanticRed} />
+                              )}
+                              <AppText variant="caption-strong" style={{ color: analyticsStats.volDelta >= 0 ? colors.semanticGreen : colors.semanticRed }}>
+                                {analyticsStats.volDelta >= 0 ? "+" : ""}{analyticsStats.volDelta}%
+                              </AppText>
+                            </>
+                          )}
                         </View>
                       </View>
                       <View style={{ width: 1, height: 32, backgroundColor: colors.hairline, marginHorizontal: 4 }} />
@@ -789,7 +838,7 @@ export default function Dashboard() {
                         <AppText style={{ fontSize: 11, color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, marginBottom: 4, fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
                           {isArabic ? "أرقام قياسية" : "PRs"}
                         </AppText>
-                        <AppText variant="caption-strong" style={{ color: colors.ink }}>{isArabic ? "3 الأسبوع ده" : "3 this week"}</AppText>
+                        <AppText variant="caption-strong" style={{ color: colors.ink }}>{analyticsStats.prsThisWeek} {isArabic ? "الأسبوع ده" : "this week"}</AppText>
                       </View>
                     </View>
                   </View>
