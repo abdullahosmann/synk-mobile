@@ -26,7 +26,15 @@ Implementing a **scoped subset** of `UIUX_AUDIT.md` (full audit + screenshots in
 - **F4** (`14dcd6d`): dashboard Hydration card dropped the 💧 icon and now renders a compact version of the Nutrition hydration section (label + intake/target + bar + quick-add), reads `dailyWaterTarget`, quick-add aligned to 100/500/1000.
 - **F5** (`bea7f8c`): new `src/components/DateNavigator.tsx` (the `‹ TODAY / Wed, Jun 4 ›` stepper) now used by both the Workout (Fitness → Workout) header (replacing the week strip) and the Nutrition daily header. (Dashboard week strip left as-is — optional in the audit.)
 
-**Next (not started), per UIUX_AUDIT.md:** F8 (onboarding plan-preview "tweak"/"edit anytime" copy), B4 (a11y labels — systemic), M1 (list virtualization), M2 (dashboard past-day hollow), M5 (Avatar fallback), M6 (permission dead-ends), M7 (history filter empty state), RTL minors m1/m1b/m2/m3, polish P1–P5. Android build still blocked (no toolchain).
+**Phase 4 — assorted Major/Minor fixes: ✅ DONE** (M2 sim-verified; M5/M6/M7 code-only — tsc-clean, runtime needs a broken URL / OS denial / filter-tap to exercise):
+- **M2** (`cd6da1f`): dashboard past/future days read `synk:logs:<date>` (the Nutrition stepper's key) so the calorie ring/macros show real archived data, not a hollow zero. Sim-verified (past day → 850 kcal + macros + "Add missed meal").
+- **M5** (`da296da`): generic `Avatar` falls back to initials on image `onError` (+ loading placeholder), mirroring CoachAvatar.
+- **M6** (`be93452`): new `src/lib/permissions.ts` `showPermissionDeniedAlert()` (persistent alert + `Linking.openSettings`) replaces the dead-end toasts in photos / me-avatar / settings-notifications.
+- **M7** (`ad05e64`): history list shows a filtered-empty EmptyState when a filter matches nothing.
+
+**Next (not started), per UIUX_AUDIT.md:** **F8 deferred at user request** (onboarding plan-preview "tweak"/"edit anytime" copy — keep for later). Remaining: B4 (a11y labels — systemic), M1 (list virtualization), RTL minors m1/m1b/m2/m3, polish P1–P5. Android build still blocked (no toolchain).
+
+**Sim note:** Metro is flaky — if you get a "No script URL" red screen, Metro died (`curl -s localhost:8081/status` → 000); restart with `WATCHMAN_DISABLE=1 npx expo start --dev-client`, fully build the bundle (`curl -s "http://localhost:8081/node_modules/expo-router/entry.bundle?platform=ios&dev=true" -o /dev/null` — wait for ~16MB), then terminate+launch. The Simulator window hops between displays (main `1020,52` size `492,930` → `screencapture -R` gives **2× px**; external `2804,52` size `628,995` → **1× px**) — re-query `AXPosition/AXSize` and check the capture's pixel dims before mapping clicks.
 
 **Verification setup (no in-app tap driver in this env):** booted sim `62D22CD2-ABAD-47C1-91FC-C21FA3527F0C`, app id `app.synk.mobile`. Drive via deep links (`xcrun simctl openurl <UDID> "synk://<route>"`) + `xcrun simctl io <UDID> screenshot`. Toggle EN/AR + light/dark by editing AsyncStorage then relaunching: file `…/Application Support/app.synk.mobile/RCTAsyncLocalStorage_V1/` — set `language` in the user blob (the file containing `currentWeight`) and `theme`/`synk:language` in `manifest.json`. New route files need a full terminate+launch to register. **Sim left in EN-light.**
 

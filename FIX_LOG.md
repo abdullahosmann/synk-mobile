@@ -43,4 +43,15 @@ Implementation order **F2 → F1 → F3**, one commit per finding.
 | **F4** dashboard Hydration card diverges from Nutrition + ignores water target | `[FIXED+VERIFIED]` | `14dcd6d` | `F4_dashboard_hydration_ar.png` | Dropped the 💧 emoji/title/subtitle design; the card is now a compact version of the Nutrition hydration section (HYDRATION label + intake/target readout + 6px progress bar + quick-add). Reads `user.dailyWaterTarget`; quick-add aligned to 100/500/1000 (was 250/500/1000). Sim-verified in AR. |
 | **F5** Workout vs Nutrition date headers differ | `[FIXED+VERIFIED]` | `bea7f8c` | `F5_workout_datenav.png` | Extracted `src/components/DateNavigator.tsx` (localized, RTL-mirrored "‹ TODAY / Wed, Jun 4 ›" stepper); WorkoutTab now uses it in place of the 7-day week strip, and Nutrition's inline daily stepper now uses it too. Sim-verified: Fitness → Workout shows the same stepper as Nutrition. (Did **not** also swap the dashboard week strip — the audit's "ideally on the dashboard too" is optional and the dashboard's strip drives more states; left as-is.) |
 
-**Remaining (not started), per UIUX_AUDIT.md:** F8 (onboarding plan-preview "tweak"/"edit anytime" copy), B4 (a11y labels — systemic), M1 (list virtualization), M2 (dashboard past-day hollow), M5 (Avatar fallback), M6 (permission dead-ends), M7 (history filter empty state), and RTL minors m1/m1b/m2/m3, plus polish P1–P5. Android build still blocked (no toolchain).
+## Phase 4 — assorted Major/Minor fixes
+
+| Item | Status | Commit | Screenshot | Notes |
+|------|--------|--------|------------|-------|
+| **M2** dashboard past-day view hollow (data never loaded) | `[FIXED+VERIFIED]` | `cd6da1f` | `M2_pastday_real_data.png` | `consumed` now reads `synk:logs:<selectedDate>` (the key the Nutrition stepper writes) for non-today days via a `selectedDayFoods` memo, instead of summing only when today. Sim-verified: selecting a past day shows its real archived total (850 kcal, macros 25/60/12, ring filled, "Add missed meal") not a hollow zero. |
+| **M5** generic Avatar has no broken-image fallback | `[FIXED+CODE-ONLY]` | `da296da` | — | `hasError` flag (reset on `photoUrl` change) falls back to the initials circle on `onError`, mirroring CoachAvatar; parchment placeholder + fade while loading. tsc-clean; runtime needs a broken remote URL to exercise. |
+| **M6** permission denial dead-ends (toast-and-stop) | `[FIXED+CODE-ONLY]` | `be93452` | — | New `src/lib/permissions.ts` `showPermissionDeniedAlert()` → persistent native alert + "Open Settings" (`Linking.openSettings`). Wired into photos, me-tab avatar, settings notifications toggle (replaces the transient toasts). tsc-clean; runtime needs an actual OS denial. |
+| **M7** history filter has no "no results" state | `[FIXED+CODE-ONLY]` | `ad05e64` | — | List view now renders an EmptyState ("No workouts match this filter…") when `listByMonth` is empty but history exists. tsc-clean; runtime needs a filter-chip tap that matches none. |
+
+**Deferred at user request:** **F8** (onboarding plan-preview "tweak"/"edit anytime" copy) — keep for later.
+
+**Remaining (not started), per UIUX_AUDIT.md:** F8 (deferred), B4 (a11y labels — systemic), M1 (list virtualization), RTL minors m1/m1b/m2/m3, polish P1–P5. Android build still blocked (no toolchain).
