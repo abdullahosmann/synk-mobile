@@ -1907,7 +1907,7 @@ export default function Nutrition() {
                       </View>
                       <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
                         <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.primary }}>{Math.round(it.food.calories * it.multiplier)} kcal</AppText>
-                        <Pressable onPress={() => setCustomMealBuilder((p) => ({ ...p, items: p.items.filter((_, i) => i !== idx) }))}>
+                        <Pressable onPress={() => setCustomMealBuilder((p) => ({ ...p, items: p.items.filter((_, i) => i !== idx) }))} accessibilityRole="button" accessibilityLabel={isArabic ? "حذف" : "Remove"}>
                           <X size={16} color={colors.inkMuted48} />
                         </Pressable>
                       </View>
