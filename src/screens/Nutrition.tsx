@@ -60,6 +60,7 @@ import {
 import CoachIcon from "../components/CoachIcon";
 import CoachAvatar from "../components/CoachAvatar";
 import BottomSheet from "../components/BottomSheet";
+import DateNavigator from "../components/DateNavigator";
 import { useToast } from "../components/ToastProvider";
 import { useAppContext } from "../AppContext";
 import type { FoodItem, LoggedFood, TodaysLogs, Recipe, SuggestedMeal, CoachNutritionPlan } from "../types";
@@ -1408,17 +1409,7 @@ export default function Nutrition() {
         </View>
 
         {viewMode === "daily" && (
-          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%", paddingHorizontal: 8 }}>
-            <Pressable onPress={() => setActiveDate(addDays(activeDate, -1))} style={{ width: 40, height: 40, alignItems: "center", justifyContent: "center" }}>
-              {isArabic ? <ChevronRight size={24} color={colors.ink} /> : <ChevronLeft size={24} color={colors.ink} />}
-            </Pressable>
-            <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, textTransform: "uppercase", letterSpacing: 0.5 }} numberOfLines={1}>
-              {activeDateString === todayString ? (isArabic ? "اليوم" : "TODAY") : activeDate.toLocaleDateString(isArabic ? "ar-EG" : "en-US", { weekday: "short", month: "short", day: "numeric" })}
-            </AppText>
-            <Pressable onPress={() => setActiveDate(addDays(activeDate, 1))} style={{ width: 40, height: 40, alignItems: "center", justifyContent: "center" }}>
-              {isArabic ? <ChevronLeft size={24} color={colors.ink} /> : <ChevronRight size={24} color={colors.ink} />}
-            </Pressable>
-          </View>
+          <DateNavigator date={activeDate} onChange={setActiveDate} isArabic={isArabic} />
         )}
 
         {viewMode === "weekly" && (

@@ -12,6 +12,7 @@ import { getWorkoutForDate } from "../lib/workoutSelection";
 import { useColors, useTheme } from "../theme/ThemeProvider";
 import { AppText, SectionTitle } from "../components/ui/Typography";
 import { Btn } from "../components/ui/Btn";
+import DateNavigator from "../components/DateNavigator";
 
 export default function WorkoutTab() {
   const router = useRouter();
@@ -27,17 +28,6 @@ export default function WorkoutTab() {
   }, []);
   const isTodaySelected = selectedDate.getTime() === todayZero.getTime();
 
-  const weekDays = React.useMemo(
-    () => Array.from({ length: 7 }).map((_, i) => {
-      const d = new Date(todayZero);
-      d.setDate(todayZero.getDate() - 3 + i);
-      return d;
-    }),
-    [todayZero],
-  );
-  const dayLettersEn = ["S", "M", "T", "W", "T", "F", "S"];
-  const dayLettersAr = ["ح", "ن", "ث", "ر", "خ", "ج", "س"];
-
   const todaysWorkout = getWorkoutForDate(user, selectedDate);
   const isRestDay = isTodaySelected && todaysWorkout.isRestDay;
 
@@ -45,28 +35,9 @@ export default function WorkoutTab() {
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 160 }}>
-      {/* Week strip */}
-      <View style={{ flexDirection: isArabic ? "row-reverse" : "row", justifyContent: "space-between", marginBottom: 24 }}>
-        {weekDays.map((d, i) => {
-          const isToday = d.getTime() === todayZero.getTime();
-          const sel = d.getTime() === selectedDate.getTime();
-          return (
-            <Pressable key={i} onPress={() => setSelectedDate(d)} style={{ flex: 1, alignItems: "center", gap: 6 }}>
-              {isToday ? (
-                <AppText style={{ fontSize: 10, fontWeight: "600", letterSpacing: 0.5, textTransform: isArabic ? "none" : "uppercase", color: sel ? colors.primary : colors.ink }}>
-                  {isArabic ? "اليوم" : "TODAY"}
-                </AppText>
-              ) : (
-                <AppText style={{ fontSize: 13, color: sel ? colors.primary : colors.inkMuted48, fontWeight: sel ? "600" : "400" }}>
-                  {isArabic ? dayLettersAr[d.getDay()] : dayLettersEn[d.getDay()]}
-                </AppText>
-              )}
-              <View style={{ width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: sel || isToday ? colors.primary : "transparent", backgroundColor: sel ? colors.primary : "transparent" }}>
-                <AppText style={{ fontSize: 15, fontWeight: sel ? "600" : "400", color: sel ? "#fff" : colors.ink }}>{d.getDate()}</AppText>
-              </View>
-            </Pressable>
-          );
-        })}
+      {/* Date navigator (shared with the Nutrition page — audit F5) */}
+      <View style={{ marginBottom: 24 }}>
+        <DateNavigator date={selectedDate} onChange={(d) => { const z = new Date(d); z.setHours(0, 0, 0, 0); setSelectedDate(z); }} isArabic={isArabic} />
       </View>
 
       {/* Today's workout card */}
