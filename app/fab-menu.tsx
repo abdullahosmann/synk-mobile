@@ -85,7 +85,7 @@ export default function FABRadialMenu() {
             const tint = action.accent ? colors.primary : INK;
             return (
               <Animated.View key={action.id} entering={FadeInDown.delay(i * 40)} style={{ width: "40%", alignItems: "center" }}>
-                <Pressable onPress={action.onPress} style={{ alignItems: "center", width: 80 }}>
+                <Pressable onPress={action.onPress} accessibilityRole="button" accessibilityLabel={action.label} style={{ alignItems: "center", width: 80 }}>
                   <View style={{ width: 72, height: 72, borderRadius: 14, backgroundColor: "#fff", alignItems: "center", justifyContent: "center" }}>
                     <Icon size={24} strokeWidth={2} color={tint} />
                   </View>

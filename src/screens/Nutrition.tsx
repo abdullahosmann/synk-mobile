@@ -22,6 +22,7 @@
  */
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import {
+  FlatList,
   Modal,
   Pressable,
   ScrollView,
@@ -1385,6 +1386,41 @@ export default function Nutrition() {
     </View>
   );
 
+  // M1 — one search-result row (used by the virtualized FlatList below).
+  const renderFoodRow = (food: UIDisplayFood) => (
+    <Pressable onPress={() => setSelectedFood(food)} accessibilityRole="button" accessibilityLabel={`${isArabic && (food as any).nameAr ? (food as any).nameAr : food.name}, ${food.calories} ${isArabic ? "سعرة" : "kcal"}`} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, paddingVertical: 12, paddingHorizontal: 16, flexDirection: isArabic ? "row-reverse" : "row", justifyContent: "space-between", alignItems: "center" }}>
+      <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start", paddingRight: isArabic ? 0 : 16, paddingLeft: isArabic ? 16 : 0 }}>
+        <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
+          <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink }} numberOfLines={1}>
+            {isArabic && (food as any).nameAr ? (food as any).nameAr : food.name}
+          </AppText>
+          {(food as any).region === "egypt" && (
+            <View style={{ backgroundColor: withAlpha(colors.primary, 0.1), paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
+              <AppText style={{ fontSize: 10, fontWeight: "600", color: colors.primary }}>{isArabic ? "مصري" : "EG"}</AppText>
+            </View>
+          )}
+          {food.verified ? (
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 2, backgroundColor: withAlpha(colors.primary, 0.1), paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
+              <CheckCircle2 size={10} strokeWidth={3} color={colors.primary} />
+              <AppText style={{ fontSize: 10, fontWeight: "600", color: colors.primary, textTransform: "uppercase" }}>Verified</AppText>
+            </View>
+          ) : food.isCustom ? (
+            <View style={{ backgroundColor: subtle, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
+              <AppText style={{ fontSize: 10, fontWeight: "600", color: colors.inkMuted48, textTransform: "uppercase" }}>Custom</AppText>
+            </View>
+          ) : null}
+        </View>
+        <AppText style={{ fontSize: 11, fontWeight: "500", color: colors.inkMuted48, textTransform: "uppercase", marginTop: 2 }}>{food.brand || food.portion}</AppText>
+      </View>
+      <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
+        <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.primary, textTransform: "uppercase" }}>{food.calories} kcal</AppText>
+        <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: subtle, alignItems: "center", justifyContent: "center" }}>
+          <Plus size={16} strokeWidth={2.5} color={colors.ink} />
+        </View>
+      </View>
+    </Pressable>
+  );
+
   // =====================================================================
   // Render
   // =====================================================================
@@ -1524,58 +1560,36 @@ export default function Nutrition() {
             </View>
           </View>
 
-          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 24, gap: 12 }}>
-            <View style={{ flexDirection: isArabic ? "row-reverse" : "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 4 }}>
-              {sectionLabel(searchQuery ? (isArabic ? "نتائج البحث" : "SEARCH RESULTS") : isArabic ? "أطعمة حديثة" : "RECENT FOODS")}
-              {!searchQuery && (
-                <Pressable onPress={() => setHistorySort((s) => (s === "recent" ? "frequent" : s === "frequent" ? "alphabetical" : "recent"))}>
-                  <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: "uppercase" }}>
-                    {historySort === "recent" ? (isArabic ? "الأحدث" : "MOST RECENT") : historySort === "frequent" ? (isArabic ? "الأكثر تكراراً" : "MOST FREQUENT") : isArabic ? "أبجدياً" : "ALPHABETICAL"}
-                  </AppText>
-                </Pressable>
-              )}
-            </View>
-
-            {searchQuery && displayFoods.length === 0 ? (
-              <View style={{ paddingVertical: 48, alignItems: "center", gap: 24 }}>
-                <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.inkMuted48 }}>No results for "{searchQuery}"</AppText>
+          <FlatList
+            data={displayFoods}
+            keyExtractor={(item, i) => `${item.name}-${i}`}
+            renderItem={({ item }) => renderFoodRow(item)}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 24, gap: 12 }}
+            initialNumToRender={12}
+            windowSize={11}
+            removeClippedSubviews
+            ListHeaderComponent={
+              <View style={{ flexDirection: isArabic ? "row-reverse" : "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 4, marginBottom: 12 }}>
+                {sectionLabel(searchQuery ? (isArabic ? "نتائج البحث" : "SEARCH RESULTS") : isArabic ? "أطعمة حديثة" : "RECENT FOODS")}
+                {!searchQuery && (
+                  <Pressable onPress={() => setHistorySort((s) => (s === "recent" ? "frequent" : s === "frequent" ? "alphabetical" : "recent"))}>
+                    <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: "uppercase" }}>
+                      {historySort === "recent" ? (isArabic ? "الأحدث" : "MOST RECENT") : historySort === "frequent" ? (isArabic ? "الأكثر تكراراً" : "MOST FREQUENT") : isArabic ? "أبجدياً" : "ALPHABETICAL"}
+                    </AppText>
+                  </Pressable>
+                )}
               </View>
-            ) : (
-              displayFoods.map((food, i) => (
-                <Pressable key={i} onPress={() => setSelectedFood(food)} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, paddingVertical: 12, paddingHorizontal: 16, flexDirection: isArabic ? "row-reverse" : "row", justifyContent: "space-between", alignItems: "center" }}>
-                  <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start", paddingRight: isArabic ? 0 : 16, paddingLeft: isArabic ? 16 : 0 }}>
-                    <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
-                      <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink }} numberOfLines={1}>
-                        {isArabic && (food as any).nameAr ? (food as any).nameAr : food.name}
-                      </AppText>
-                      {(food as any).region === "egypt" && (
-                        <View style={{ backgroundColor: withAlpha(colors.primary, 0.1), paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
-                          <AppText style={{ fontSize: 10, fontWeight: "600", color: colors.primary }}>{isArabic ? "مصري" : "EG"}</AppText>
-                        </View>
-                      )}
-                      {food.verified ? (
-                        <View style={{ flexDirection: "row", alignItems: "center", gap: 2, backgroundColor: withAlpha(colors.primary, 0.1), paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
-                          <CheckCircle2 size={10} strokeWidth={3} color={colors.primary} />
-                          <AppText style={{ fontSize: 10, fontWeight: "600", color: colors.primary, textTransform: "uppercase" }}>Verified</AppText>
-                        </View>
-                      ) : food.isCustom ? (
-                        <View style={{ backgroundColor: subtle, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
-                          <AppText style={{ fontSize: 10, fontWeight: "600", color: colors.inkMuted48, textTransform: "uppercase" }}>Custom</AppText>
-                        </View>
-                      ) : null}
-                    </View>
-                    <AppText style={{ fontSize: 11, fontWeight: "500", color: colors.inkMuted48, textTransform: "uppercase", marginTop: 2 }}>{food.brand || food.portion}</AppText>
-                  </View>
-                  <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
-                    <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.primary, textTransform: "uppercase" }}>{food.calories} kcal</AppText>
-                    <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: subtle, alignItems: "center", justifyContent: "center" }}>
-                      <Plus size={16} strokeWidth={2.5} color={colors.ink} />
-                    </View>
-                  </View>
-                </Pressable>
-              ))
-            )}
-          </ScrollView>
+            }
+            ListEmptyComponent={
+              searchQuery ? (
+                <View style={{ paddingVertical: 48, alignItems: "center", gap: 24 }}>
+                  <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.inkMuted48 }}>No results for "{searchQuery}"</AppText>
+                </View>
+              ) : null
+            }
+          />
         </View>
       </Modal>
 
