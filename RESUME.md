@@ -2,6 +2,24 @@
 
 Handoff doc for continuing the web→React Native migration in a fresh session.
 
+---
+
+## 🔧 ACTIVE: Targeted UI/UX fix pass (in progress)
+
+Implementing a **scoped subset** of `UIUX_AUDIT.md` (full audit + screenshots in `screenshots/`). Tracking in `FIX_LOG.md`; Android-runtime items deferred in `DEVICE_CONFIRM.md`. Branch `dev`, one commit per finding.
+
+**Phase 1 — ship blockers: ✅ DONE & sim-verified** (commits `28bfdb9` B1, `31c7065` B2, `d23ab66` B3, `347951a` M3/F6):
+- **B1** dashboard nutrition/hydration cards → `/fitness?tab=nutrition` (were dead `/nutrition`).
+- **B2** added `app/coach-swap.tsx` (re-exports CoachSelection; swap mode works).
+- **B3** added `app/+not-found.tsx` (localized) + `src/components/ErrorBoundary.tsx` above `<Stack>`.
+- **M3/F6** Analytics gate + tiles/goals and the dashboard analytics/recovery cards now derive from real sources (`getAllWorkouts`, `user.weightLog`, `streaks`, `user.muscleRecovery`); unsourced metrics removed. `npx tsc --noEmit` clean for touched files.
+
+**Phase 2 — nutrition coherence (F1/F2/F3): ⏸ NOT STARTED.** Per the fix-pass prompt, **Step 2.0 is a design checkpoint** — propose (in prose, no code) the nutrition-plan equivalents of the workout lifecycle (`app/plan-details.tsx`, `app/plan/week/[weekNumber].tsx`, the PreSession adapt sheet, the PlanSettings rebuild-confirmation) and **wait for user approval** before building. Then: **F2** (Nutrition.tsx:994 "Use this plan today" is a no-op → actually log `suggestedMeals`), **F1** (replace the "coming soon" Adjust-plan stub at Nutrition.tsx:1730 + add a reachable Nutrition Plan detail screen), **F3** (recompute `nutritionPlan` when dietStyle/mealsPerDay/weight/goal change, behind a rebuild-confirmation).
+
+**Verification setup (no in-app tap driver in this env):** booted sim `62D22CD2-ABAD-47C1-91FC-C21FA3527F0C`, app id `app.synk.mobile`. Drive via deep links (`xcrun simctl openurl <UDID> "synk://<route>"`) + `xcrun simctl io <UDID> screenshot`. Toggle EN/AR + light/dark by editing AsyncStorage then relaunching: file `…/Application Support/app.synk.mobile/RCTAsyncLocalStorage_V1/` — set `language` in the user blob (the file containing `currentWeight`) and `theme`/`synk:language` in `manifest.json`. New route files need a full terminate+launch to register. **Sim left in EN-light.**
+
+---
+
 ## TL;DR for the next session
 
 1. Read this file + `../MIGRATION_MAP.md` (the full Phase-0 audit: routes, tokens, state, web-API replacements).
