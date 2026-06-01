@@ -2,7 +2,7 @@
  * Avatar — RN port of src/components/Avatar.tsx.
  * Photo (expo-image) or initials on a primary circle, optional ring.
  */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Image } from "expo-image";
 import { useColors } from "../theme/ThemeProvider";
@@ -31,19 +31,24 @@ const Avatar: React.FC<AvatarProps> = ({
   ring = false,
 }) => {
   const colors = useColors();
+  const [hasError, setHasError] = useState(false);
+  // reset the error flag if the URL changes (e.g. user updates their photo)
+  useEffect(() => setHasError(false), [photoUrl]);
   const ringStyle = ring
     ? { borderWidth: 2, borderColor: "rgba(0,102,204,0.2)" }
     : {};
 
-  if (photoUrl) {
+  if (photoUrl && !hasError) {
     return (
       <Image
         source={{ uri: photoUrl }}
         style={[
-          { width: size, height: size, borderRadius: 9999 },
+          { width: size, height: size, borderRadius: 9999, backgroundColor: colors.canvasParchment },
           ringStyle,
         ]}
         contentFit="cover"
+        transition={150}
+        onError={() => setHasError(true)}
       />
     );
   }
