@@ -128,6 +128,10 @@ export default function WeekEditor() {
     { date: getSimulatedDateStr(6), dayEn: "SUN", dayAr: "أح", baseWorkout: "Rest day", dur: 0, sets: 0, isToday: false, isDone: false, isRest: true },
   ];
 
+  // C4 — header range computed from the actual day rows (was hardcoded "May 26 – June 1").
+  const fmtDay = (iso: string) => new Date(iso).toLocaleDateString(isArabic ? "ar-EG" : "en-US", { day: "numeric", month: "short" });
+  const weekRangeLabel = `${fmtDay(weekDays[0].date)} – ${fmtDay(weekDays[weekDays.length - 1].date)}`;
+
   const cardBase = {
     backgroundColor: colors.canvas,
     borderRadius: 14,
@@ -160,7 +164,7 @@ export default function WeekEditor() {
               {isArabic ? `الأسبوع ${num}` : `Week ${num}`}
             </AppText>
             <AppText style={{ fontSize: 12, color: colors.inkMuted48, fontFamily: fontFamily(isArabic) }}>
-              {isArabic ? "٢٦ مايو - ١ يونيو" : "May 26 – June 1"}
+              {weekRangeLabel}
             </AppText>
           </View>
           <View style={{ width: 44 }} />
