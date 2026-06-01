@@ -6,6 +6,7 @@
 import React from "react";
 import { Text, TextProps, StyleSheet } from "react-native";
 import { useIsArabic } from "../../lib/i18n";
+import { useColors } from "../../theme/ThemeProvider";
 import { cn } from "../../lib/cn";
 
 type Variant =
@@ -135,6 +136,36 @@ export const StatValue: React.FC<Omit<AppTextProps, "variant">> = (p) => (
 export const StatValueSm: React.FC<Omit<AppTextProps, "variant">> = (p) => (
   <AppText variant="stat-value-sm" {...p} />
 );
+
+// The recurring small uppercase "eyebrow" label (was hand-written ~63× with
+// drifting letterSpacing/color). Standardized: 11px / 600 / letterSpacing 1 /
+// uppercase (LTR only), tone primary | muted.
+export const SectionLabel: React.FC<Omit<AppTextProps, "variant"> & { tone?: "primary" | "muted" }> = ({
+  tone = "primary",
+  style,
+  children,
+  ...rest
+}) => {
+  const colors = useColors();
+  const isArabic = useIsArabic();
+  return (
+    <AppText
+      variant="fine-print"
+      style={[
+        {
+          fontWeight: "600",
+          color: tone === "primary" ? colors.primary : colors.inkMuted48,
+          textTransform: isArabic ? "none" : "uppercase",
+          letterSpacing: isArabic ? 0 : 1,
+        },
+        style,
+      ]}
+      {...rest}
+    >
+      {children}
+    </AppText>
+  );
+};
 
 // Re-export a stylesheet-free no-op to keep imports tidy if needed.
 export const typographyStyles = StyleSheet.create({});

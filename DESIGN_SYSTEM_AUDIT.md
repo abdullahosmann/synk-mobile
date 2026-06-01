@@ -52,7 +52,15 @@ Cards → `p-4` (16) unless intentionally spacious (then 20/24 consistently); re
 ### Phase D5 — Spacing rhythm pass (D-7, optional)
 Nudge gaps/margins onto a 4-pt rhythm where it's cheap; lowest priority.
 
-## Open decisions (block the sweep)
+## Decisions — ✅ RESOLVED (user-approved)
+1. **Card radius:** 2-tier — outer/content cards **14 (lg)**, inner tiles/chips/inputs **10 (md)**; map off-scale (12/16/18/20…) to the nearest token; pills stay 9999; icon circles stay (size/2).
+2. **Control height:** strict **44** for buttons/inputs/rows; one **large = 52** for hero/onboarding CTAs; remove scattered 48/56; small icon circles (40/36/32) unchanged.
+3. **Depth:** normalize values in place + add shared primitives (`radii`/`controlHeight` tokens, `<SectionLabel>`, extend `Card`) and adopt where cheap. **No blanket sed** — radii/heights are context-dependent (icon circles, inputs vs buttons); normalize per-surface, highest-traffic screens first, verified in light + dark.
+
+## Progress log
+- **D1 (centralize vocabulary)** — in progress.
+
+## Open decisions (block the sweep) — superseded by the RESOLVED block above
 1. **Card radius target:** (a) unify ALL cards to **14** (source of truth; slightly rounder than the ~100 currently at 10); (b) keep a **2-tier** system — outer cards **14**, inner tiles/chips **10** — and just kill the off-scale values. *(Recommend b — most natural.)*
 2. **Control height:** (a) strict **44** everywhere + one **large 52** for hero CTAs; (b) leave prominent CTAs at 48/56 but make them consistent per role. *(Recommend a.)*
 3. **Refactor depth:** (a) **normalize values in place** (fix radii/heights/padding to tokens, introduce primitives for new code) — lower risk, faster; (b) **full primitive refactor** (rewrite every surface to `<Card>`/`<SectionLabel>`) — cleaner long-term, higher churn/risk. *(Recommend a now; b incrementally later.)*
