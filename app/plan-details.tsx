@@ -107,7 +107,7 @@ export default function PlanDetails() {
     if (status === "ongoing") {
       return (
         <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
-          <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: fontFamily(isArabic, 600) }}>
+          <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: fontFamily(isArabic, 600) }}>
             {isArabic ? "تعديل" : "Edit"}
           </AppText>
           <ChevronRight size={18} color={colors.inkMuted48} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
@@ -119,7 +119,7 @@ export default function PlanDetails() {
     }
     return (
       <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
-        <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: fontFamily(isArabic, 600) }}>
+        <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: fontFamily(isArabic, 600) }}>
           {isArabic ? "تعديل" : "Edit"}
         </AppText>
         <ChevronRight size={18} color={colors.inkMuted48} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
@@ -195,7 +195,7 @@ export default function PlanDetails() {
                 <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
                   <Icon size={24} color={colors.primary} />
                 </View>
-                <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: fontFamily(isArabic, 600) }}>
+                <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: fontFamily(isArabic, 600) }}>
                   {item.label}
                 </AppText>
                 <AppText style={{ fontSize: 22, fontWeight: "600", color: colors.ink, marginTop: 2, fontFamily: fontFamily(isArabic, 600) }}>
@@ -348,7 +348,7 @@ export default function PlanDetails() {
                   <View style={{ flex: 1, gap: 4, alignItems: isArabic ? "flex-end" : "flex-start" }}>
                     <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
                       <CoachAvatar coachId={user.coach || "khaled"} size={24} grayscale={0} />
-                      <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: fontFamily(isArabic, 600) }}>
+                      <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: fontFamily(isArabic, 600) }}>
                         {isArabic ? "تعديل ذكي" : "SMART ADAPTATION"}
                       </AppText>
                     </View>

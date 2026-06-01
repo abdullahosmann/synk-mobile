@@ -477,7 +477,7 @@ export default function Dashboard() {
                 <Activity size={20} color="#fff" />
               </View>
               <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start" }}>
-                <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.semanticGreen, marginBottom: 2, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.semanticGreen, marginBottom: 2, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
                   {isArabic ? "في تمرين شغّال" : "Workout in progress"}
                 </AppText>
                 <AppText variant="body-strong" style={{ color: colors.ink }}>{isArabic ? "ارجع كمّل" : "Tap to resume"}</AppText>
@@ -494,7 +494,7 @@ export default function Dashboard() {
               </Pressable>
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, marginBottom: 12 }}>
                 <CoachAvatar coachId={user.coach || "khaled"} size={48} verified />
-                <AppText style={{ color: colors.primary, fontSize: 11, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                <AppText style={{ color: colors.primary, fontSize: 11, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
                   {isArabic ? "أهلاً" : "WELCOME"}
                 </AppText>
               </View>
@@ -510,7 +510,7 @@ export default function Dashboard() {
           {/* Missed workout card */}
           {showMissed && !showWelcome && isTodaySelected && (
             <Animated.View entering={FadeInDown} style={[cardStyle, { padding: 20 }]}>
-              <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, marginBottom: 12, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+              <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, marginBottom: 12, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
                 {isArabic ? `${coachName} بيقول` : `${coachName.toUpperCase()} SAYS`}
               </AppText>
               <AppText variant="body" style={{ color: colors.ink, lineHeight: 22, marginBottom: 20, textAlign: isArabic ? "right" : "left" }}>
@@ -568,7 +568,7 @@ export default function Dashboard() {
               </View>
               {pendingAdaptations.length > 1 && (
                 <Pressable onPress={() => { archiveAdaptation(pendingAdaptations[0], "dismissed"); setPendingAdaptations(pendingAdaptations.slice(1)); }} style={{ marginTop: 16 }}>
-                  <AppText style={{ fontSize: 11, fontWeight: "600", color: "rgba(255,255,255,0.4)", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, textAlign: "center", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                  <AppText style={{ fontSize: 11, fontWeight: "600", color: "rgba(255,255,255,0.4)", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, textAlign: "center", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
                     {isArabic ? `+${pendingAdaptations.length - 1} المزيد` : `+${pendingAdaptations.length - 1} MORE`}
                   </AppText>
                 </Pressable>
@@ -604,7 +604,7 @@ export default function Dashboard() {
                         <View>
                           <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8, marginBottom: 8 }}>
                             <Coffee size={20} color={colors.primary} />
-                            <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                            <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
                               {isArabic ? "يوم راحة" : "REST DAY"}
                             </AppText>
                           </View>
@@ -639,7 +639,7 @@ export default function Dashboard() {
                   ) : isFutureSelected ? (
                     <View style={[cardStyle, { padding: 20 }]}>
                       <View style={{ alignSelf: isArabic ? "flex-end" : "flex-start", backgroundColor: withAlpha(colors.primary, 0.1), paddingHorizontal: 12, paddingVertical: 4, borderRadius: 9999, marginBottom: 12 }}>
-                        <AppText style={{ color: colors.primary, fontSize: 11, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                        <AppText style={{ color: colors.primary, fontSize: 11, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
                           {isArabic ? "تمرين مخطط" : "PLANNED WORKOUT"}
                         </AppText>
                       </View>
@@ -655,7 +655,7 @@ export default function Dashboard() {
                       <Image source={{ uri: todaysWorkout.image }} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
                       <View style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0, backgroundColor: "rgba(0,0,0,0.4)", justifyContent: "flex-end", padding: 20, alignItems: isArabic ? "flex-end" : "flex-start" }}>
                         <View style={{ backgroundColor: colors.primary, paddingHorizontal: 12, paddingVertical: 2, borderRadius: 9999, marginBottom: 4 }}>
-                          <AppText style={{ color: "#fff", fontSize: 11, fontWeight: "600", textTransform: "uppercase", letterSpacing: 0.5 }}>
+                          <AppText style={{ color: "#fff", fontSize: 11, fontWeight: "600", textTransform: "uppercase", letterSpacing: 1 }}>
                             {isArabic ? todaysWorkout.arabicDayLabel : todaysWorkout.dayLabel}
                           </AppText>
                         </View>
@@ -793,7 +793,7 @@ export default function Dashboard() {
               return (
                 <Pressable key={key} onPress={() => router.push("/muscle-recovery")} style={[cardStyle, { padding: 20 }]}>
                   <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-                    <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                    <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
                       {isArabic ? "الاستشفاء" : "RECOVERY"}
                     </AppText>
                     <ChevronRight size={16} strokeWidth={2.5} color={colors.hairline} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
@@ -830,7 +830,7 @@ export default function Dashboard() {
               return (
                 <Pressable key={key} onPress={() => router.push("/analytics")} style={[cardStyle, { padding: 16 }]}>
                   <View style={{ alignItems: isArabic ? "flex-end" : "flex-start" }}>
-                    <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, marginBottom: 2, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                    <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, marginBottom: 2, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
                       {isArabic ? "تقدمك" : "YOUR PROGRESS"}
                     </AppText>
                     <AppText style={{ fontSize: 13, color: colors.inkMuted48, marginBottom: 12, fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
@@ -897,7 +897,7 @@ export default function Dashboard() {
                 <Pressable key={key} onPress={() => router.push("/community")} style={[cardStyle, { padding: 20 }]}>
                   <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 6, marginBottom: 12 }}>
                     <Trophy size={16} color={colors.primary} />
-                    <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                    <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
                       {isArabic ? "تحدي نشط" : "ACTIVE CHALLENGE"}
                     </AppText>
                   </View>
@@ -936,7 +936,7 @@ export default function Dashboard() {
               return (
                 <Pressable key={key} onPress={() => router.push("/community")} style={[cardStyle, { padding: 20 }]}>
                   <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-                    <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                    <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
                       {isArabic ? "المُتصدّرين" : "LEADERBOARD"}
                     </AppText>
                     <AppText style={{ fontSize: 12, color: colors.inkMuted48, fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>

@@ -129,7 +129,7 @@ export default function MuscleDetail() {
               </View>
             </View>
             <View style={{ paddingHorizontal: 16, paddingVertical: 6, borderRadius: 9999, backgroundColor: recoveryBadge.bg }}>
-              <AppText style={{ fontSize: 11, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, color: recoveryBadge.fg, fontFamily: ff(isArabic, 600) }}>{recoveryBadge.label}</AppText>
+              <AppText style={{ fontSize: 11, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, color: recoveryBadge.fg, fontFamily: ff(isArabic, 600) }}>{recoveryBadge.label}</AppText>
             </View>
           </View>
           <View style={{ height: 6, width: "100%", backgroundColor: colors.hairline, borderRadius: 9999, overflow: "hidden" }}>

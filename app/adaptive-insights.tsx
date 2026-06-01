@@ -371,7 +371,7 @@ export default function AdaptiveInsights() {
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-start", gap: 16 }}>
                 <CoachAvatar coachId={adaptation.coachId} size={48} grayscale={0} />
                 <View style={{ flex: 1, paddingTop: 4, alignItems: isArabic ? "flex-end" : "flex-start" }}>
-                  <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, marginBottom: 8, fontFamily: fontFamily(isArabic, 600) }}>
+                  <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, marginBottom: 8, fontFamily: fontFamily(isArabic, 600) }}>
                     {isArabic ? `المدرب ${coachName} يقول:` : `Coach ${coachName} says:`}
                   </AppText>
                   <View

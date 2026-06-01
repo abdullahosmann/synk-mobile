@@ -151,7 +151,7 @@ export default function MorningCheckIn() {
                 </Pressable>
                 <View style={{ alignItems: "center" }}>
                   <AppText style={{ fontSize: 60, fontWeight: "600", color: colors.ink, fontVariant: ["tabular-nums"], lineHeight: 64, fontFamily: ff(isArabic, 600) }}>{hoursSlept}</AppText>
-                  <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, textTransform: "uppercase", letterSpacing: 1.5, marginTop: 8, fontFamily: ff(isArabic, 600) }}>{isArabic ? "ساعة" : "HOURS"}</AppText>
+                  <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, textTransform: "uppercase", letterSpacing: 1, marginTop: 8, fontFamily: ff(isArabic, 600) }}>{isArabic ? "ساعة" : "HOURS"}</AppText>
                 </View>
                 <Pressable onPress={() => setHoursSlept((p) => Math.min(12, p + 0.5))} style={{ width: 56, height: 52, borderRadius: 9999, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
                   <Plus size={24} color={colors.ink} />

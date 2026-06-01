@@ -173,7 +173,7 @@ export default function MuscleRecovery() {
                   <AppText style={{ fontSize: 48, fontWeight: "600", color: colors.ink, letterSpacing: -0.5, fontVariant: ["tabular-nums"], fontFamily: ff(isArabic, 600) }}>{averageRecovery}%</AppText>
                 </View>
                 <View style={{ marginBottom: 8, paddingHorizontal: 16, paddingVertical: 6, borderRadius: 9999, backgroundColor: readinessBadge.bg }}>
-                  <AppText style={{ fontSize: 11, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, color: readinessBadge.fg, fontFamily: ff(isArabic, 600) }}>{readinessBadge.label}</AppText>
+                  <AppText style={{ fontSize: 11, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, color: readinessBadge.fg, fontFamily: ff(isArabic, 600) }}>{readinessBadge.label}</AppText>
                 </View>
               </View>
               <View style={{ gap: 12 }}>
