@@ -56,7 +56,7 @@ export default function AIPermissions() {
     <View style={{ flex: 1, backgroundColor: colors.canvasParchment }}>
       {/* Header */}
       <View style={{ paddingTop: insets.top + 8, paddingBottom: 16, paddingHorizontal: 24, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", backgroundColor: colors.canvasParchment, zIndex: 50 }}>
-        <Pressable onPress={() => router.back()} style={{ width: 40, height: 40, alignItems: "center", justifyContent: "center" }}>
+        <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={{ width: 40, height: 40, alignItems: "center", justifyContent: "center" }}>
           <ChevronLeft size={28} color={colors.ink} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
         </Pressable>
         <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.ink, textTransform: isArabic ? "none" : "uppercase", letterSpacing: isArabic ? 0 : 0.5, fontFamily: ff(isArabic, 600) }}>{isArabic ? "المدرب الذكي" : "AI COACH"}</AppText>

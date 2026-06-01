@@ -188,7 +188,7 @@ export default function VoiceLog() {
         <AppText style={{ fontSize: 15, color: colors.inkMuted48, marginBottom: 40, lineHeight: 22, textAlign: "center", fontFamily: ff(isArabic) }}>
           {isArabic ? "نحتاج الوصول للميكروفون لتحويل صوتك إلى بيانات. يرجى تفعيل الإذن من إعدادات جهازك." : "We need microphone access to turn your voice into data. Please enable permissions in your device settings."}
         </AppText>
-        <Pressable onPress={() => router.back()} style={{ width: "100%", maxWidth: 320, height: 56, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
+        <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={{ width: "100%", maxWidth: 320, height: 56, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
           <AppText style={{ color: "#fff", fontSize: 17, fontWeight: "600" }}>{isArabic ? "العودة" : "Go Back"}</AppText>
         </Pressable>
       </View>
@@ -199,7 +199,7 @@ export default function VoiceLog() {
     <View style={{ flex: 1, backgroundColor: colors.canvasParchment }}>
       {/* Header (close) */}
       <View style={{ position: "absolute", top: insets.top + 8, right: 24, zIndex: 50 }}>
-        <Pressable onPress={() => router.back()} style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+        <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
           <X size={24} strokeWidth={2.5} color={colors.ink} />
         </Pressable>
       </View>
@@ -231,7 +231,7 @@ export default function VoiceLog() {
               style={[{ position: "absolute", width: 124, height: 124, borderRadius: 62, borderWidth: 3, borderColor: colors.primary, borderTopColor: "transparent" }, ringSpinStyle]}
             />
           )}
-          <Pressable onPressIn={handleStartRecording} onPressOut={handleStopRecording}>
+          <Pressable onPressIn={handleStartRecording} onPressOut={handleStopRecording} accessibilityRole="button" accessibilityLabel={isArabic ? "اضغط مع الاستمرار للتسجيل" : "Hold to record"}>
             <Animated.View style={[{ width: 100, height: 100, borderRadius: 50, alignItems: "center", justifyContent: "center", backgroundColor: phase === "recording" ? RED : colors.primary }, micStyle]}>
               {phase === "processing" ? (
                 <Animated.View style={iconSpinStyle}>

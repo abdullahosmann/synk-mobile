@@ -150,7 +150,7 @@ export default function WeekEditor() {
           }}
         >
           <Pressable
-            onPress={() => router.back()}
+            onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"}
             style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}
           >
             <ChevronLeft size={24} color={colors.ink} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />

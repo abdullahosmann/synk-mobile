@@ -101,7 +101,7 @@ export default function MuscleDetail() {
     <View style={{ flex: 1, backgroundColor: colors.canvasParchment }}>
       {/* Header */}
       <View style={{ paddingTop: insets.top + 8, paddingBottom: 8, paddingHorizontal: 24, flexDirection: "row", alignItems: "center", justifyContent: "space-between", backgroundColor: colors.canvasParchment, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
-        <Pressable onPress={() => router.back()} style={{ width: 44, height: 44, borderRadius: 9999, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+        <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={{ width: 44, height: 44, borderRadius: 9999, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
           <ChevronLeft size={24} strokeWidth={2.5} color={colors.ink} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
         </Pressable>
         <AppText style={{ position: "absolute", left: 0, right: 0, top: insets.top + 18, textAlign: "center", fontSize: 17, fontWeight: "600", letterSpacing: 0.5, textTransform: isArabic ? "none" : "uppercase", color: colors.primary, fontFamily: ff(isArabic, 600) }}>{isArabic ? name.ar : name.en}</AppText>

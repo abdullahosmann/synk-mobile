@@ -228,7 +228,7 @@ export default function PlanSettings() {
     <View style={{ flex: 1, backgroundColor: colors.canvasParchment }}>
       {/* Header */}
       <View style={{ paddingTop: insets.top + 8, paddingBottom: 12, paddingHorizontal: 24, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", backgroundColor: colors.canvasParchment, borderBottomWidth: 1, borderBottomColor: colors.hairline, zIndex: 50 }}>
-        <Pressable onPress={() => router.back()} style={{ width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
+        <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={{ width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" }}>
           <ArrowLeft size={24} color={colors.ink} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
         </Pressable>
         <AppText style={{ flex: 1, textAlign: "center", fontSize: 15, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: ff(isArabic, 600) }}>{isArabic ? "إعدادات الخطة" : "PLAN SETTINGS"}</AppText>

@@ -148,7 +148,7 @@ export default function NutritionPlanDetails() {
       }}
     >
       <Pressable
-        onPress={() => router.back()}
+        onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"}
         style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}
       >
         <ArrowLeft size={20} strokeWidth={2.5} color={colors.ink} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />

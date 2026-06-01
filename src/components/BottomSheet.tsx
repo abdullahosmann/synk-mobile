@@ -198,7 +198,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
           >
             {title}
           </AppText>
-          <Pressable onPress={close} hitSlop={8}>
+          <Pressable onPress={close} hitSlop={8} accessibilityRole="button" accessibilityLabel={displayDoneLabel}>
             <AppText
               variant="title"
               className="text-primary dark:text-primary-dark"

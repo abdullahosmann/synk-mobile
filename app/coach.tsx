@@ -94,7 +94,7 @@ export default function CoachChat() {
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.canvas }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
       {/* Header */}
       <View style={{ paddingTop: insets.top + 8, paddingHorizontal: 16, paddingBottom: 12, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, backgroundColor: colors.canvas, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
-        <Pressable onPress={() => router.back()} style={{ width: 40, height: 40, alignItems: "center", justifyContent: "center" }}>
+        <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={{ width: 40, height: 40, alignItems: "center", justifyContent: "center" }}>
           <ArrowLeft size={22} color={colors.ink} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
         </Pressable>
         <View style={{ flex: 1, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
@@ -165,7 +165,7 @@ export default function CoachChat() {
                 placeholderTextColor={colors.inkMuted48}
                 style={{ flex: 1, height: 44, borderRadius: 9999, backgroundColor: tile1, borderWidth: 1, borderColor: colors.hairline, paddingHorizontal: 16, fontSize: 14, color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}
               />
-              <Pressable onPress={() => send()} disabled={!input.trim()} style={{ width: 44, height: 44, borderRadius: 9999, alignItems: "center", justifyContent: "center", backgroundColor: input.trim() ? colors.primary : disabledBg }}>
+              <Pressable onPress={() => send()} disabled={!input.trim()} accessibilityRole="button" accessibilityLabel={isArabic ? "إرسال" : "Send"} style={{ width: 44, height: 44, borderRadius: 9999, alignItems: "center", justifyContent: "center", backgroundColor: input.trim() ? colors.primary : disabledBg }}>
                 <Send size={18} color={input.trim() ? "#ffffff" : colors.inkMuted48} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
               </Pressable>
             </>

@@ -134,6 +134,8 @@ export default function Paywall() {
       >
         <Pressable
           onPress={() => router.push("/dashboard")}
+          accessibilityRole="button"
+          accessibilityLabel={isArabic ? "إغلاق" : "Close"}
           style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}
         >
           <X size={20} strokeWidth={2.5} color={colors.ink} />

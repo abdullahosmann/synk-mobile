@@ -153,7 +153,7 @@ const ImportRoutine: React.FC<{ encoded?: string }> = ({ encoded }) => {
         }}
       >
         <Pressable
-          onPress={() => router.back()}
+          onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"}
           style={{ width: 40, height: 40, alignItems: "center", justifyContent: "center" }}
         >
           <ArrowLeft size={22} color={colors.ink} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />

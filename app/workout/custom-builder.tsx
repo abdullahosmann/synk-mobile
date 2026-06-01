@@ -232,7 +232,7 @@ export default function CustomSessionBuilder() {
         }}
       >
         <Pressable
-          onPress={() => router.back()}
+          onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"}
           style={{
             width: 40,
             height: 40,

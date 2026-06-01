@@ -194,7 +194,7 @@ export default function ExerciseProgression() {
         }}
       >
         <Pressable
-          onPress={() => router.back()}
+          onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"}
           style={{
             width: 44,
             height: 44,

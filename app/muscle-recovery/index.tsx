@@ -104,7 +104,7 @@ export default function MuscleRecovery() {
             <X size={20} color={colors.ink} strokeWidth={2.5} />
           </Pressable>
         ) : (
-          <Pressable onPress={() => router.back()} style={{ width: 44, height: 44, borderRadius: 9999, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+          <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={{ width: 44, height: 44, borderRadius: 9999, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
             <ChevronLeft size={24} color={colors.ink} strokeWidth={2.5} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
           </Pressable>
         )}

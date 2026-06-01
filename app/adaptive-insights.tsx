@@ -278,7 +278,7 @@ export default function AdaptiveInsights() {
       >
         <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16, flex: 1 }}>
           <Pressable
-            onPress={() => router.back()}
+            onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"}
             style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}
           >
             <ArrowLeft size={22} color={colors.ink} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />

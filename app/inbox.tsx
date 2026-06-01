@@ -75,7 +75,7 @@ export default function Inbox() {
           borderBottomColor: colors.hairline,
         }}
       >
-        <Pressable onPress={() => router.back()} style={{ width: 36, height: 36, borderRadius: 9999, backgroundColor: backChipBg, alignItems: "center", justifyContent: "center" }}>
+        <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={{ width: 36, height: 36, borderRadius: 9999, backgroundColor: backChipBg, alignItems: "center", justifyContent: "center" }}>
           <ArrowLeft size={20} color={colors.ink} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
         </Pressable>
         <AppText style={{ fontSize: 16, fontWeight: "600", letterSpacing: -0.3, color: colors.ink, fontFamily: ff(isArabic, 600) }}>

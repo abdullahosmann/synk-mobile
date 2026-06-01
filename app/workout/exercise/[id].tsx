@@ -187,7 +187,7 @@ export default function PreSessionExerciseDetail() {
           zIndex: 50,
         }}
       >
-        <Pressable onPress={() => router.back()} style={circleBtn}>
+        <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={circleBtn}>
           <ArrowLeft size={18} color={colors.ink} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
         </Pressable>
         <AppText

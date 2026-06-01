@@ -414,7 +414,7 @@ export default function PreSession() {
                 {isArabic ? "تمرين اليوم" : "TODAY'S WORKOUT"}
               </AppText>
             </View>
-            <Pressable onPress={() => router.back()} style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center" }}>
+            <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center" }}>
               <X size={20} color="#fff" />
             </Pressable>
           </View>

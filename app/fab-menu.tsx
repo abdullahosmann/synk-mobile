@@ -66,11 +66,11 @@ export default function FABRadialMenu() {
   ].filter((a) => !a.hidden);
 
   return (
-    <Pressable onPress={() => router.back()} style={{ flex: 1, backgroundColor: BACKDROP, alignItems: "center", justifyContent: "center" }}>
+    <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={{ flex: 1, backgroundColor: BACKDROP, alignItems: "center", justifyContent: "center" }}>
       {/* Close */}
       <Animated.View entering={ZoomIn} style={{ position: "absolute", top: insets.top + 12, right: 24 }}>
         <Pressable
-          onPress={() => router.back()}
+          onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"}
           style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: "rgba(210,210,215,0.64)", alignItems: "center", justifyContent: "center" }}
         >
           <X size={24} strokeWidth={2.5} color="#fff" />
