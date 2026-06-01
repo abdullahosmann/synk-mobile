@@ -20,6 +20,7 @@ import {
 import { ThemeProvider, useTheme } from "../src/theme/ThemeProvider";
 import { AppProvider } from "../src/AppContext";
 import { ToastProvider } from "../src/components/ToastProvider";
+import { ErrorBoundary } from "../src/components/ErrorBoundary";
 import { hydrateStorage } from "../src/lib/storage";
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -62,7 +63,9 @@ export default function RootLayout() {
           <AppProvider>
             <ToastProvider>
               <ThemedStatusBar />
-              <Stack screenOptions={{ headerShown: false }} />
+              <ErrorBoundary>
+                <Stack screenOptions={{ headerShown: false }} />
+              </ErrorBoundary>
             </ToastProvider>
           </AppProvider>
         </ThemeProvider>
