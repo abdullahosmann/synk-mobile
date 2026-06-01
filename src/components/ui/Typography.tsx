@@ -47,6 +47,25 @@ const VARIANTS: Record<
   "fine-print": { fontSize: 11, letterSpacing: -0.1, weight: 400 },
 };
 
+// P5 — cap Dynamic-Type scaling so large OS font sizes don't overflow the many
+// fixed-height pills/rows/stat lines. Display/stat variants (big text in tight
+// containers) get a tighter cap; body/caption text is allowed to grow more for
+// readability. Callers can still override via the maxFontSizeMultiplier prop.
+const MAX_MULT: Record<Variant, number> = {
+  "screen-title": 1.3,
+  "section-title": 1.3,
+  title: 1.4,
+  "title-2": 1.3,
+  "hero-title": 1.3,
+  body: 1.6,
+  "body-strong": 1.5,
+  caption: 1.6,
+  "caption-strong": 1.5,
+  "stat-value": 1.3,
+  "stat-value-sm": 1.3,
+  "fine-print": 1.5,
+};
+
 export const AppText: React.FC<AppTextProps> = ({
   variant = "body",
   className,
@@ -89,6 +108,7 @@ export const AppText: React.FC<AppTextProps> = ({
         },
         style,
       ]}
+      maxFontSizeMultiplier={MAX_MULT[variant]}
       {...rest}
     >
       {children}
