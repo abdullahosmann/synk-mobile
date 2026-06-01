@@ -11,6 +11,7 @@ import { Bell, Check } from "lucide-react-native";
 import { useAppContext } from "../../src/AppContext";
 import OnboardingLayout from "../../src/components/OnboardingLayout";
 import { useColors } from "../../src/theme/ThemeProvider";
+import { withAlpha } from "../../src/theme/tint";
 import { AppText } from "../../src/components/ui/Typography";
 import { Btn } from "../../src/components/ui/Btn";
 
@@ -62,7 +63,7 @@ export default function NotificationsOptIn() {
       }
     >
       <View style={{ alignItems: "center" }}>
-        <View style={{ width: 120, height: 120, borderRadius: 60, backgroundColor: "rgba(0,102,204,0.08)", alignItems: "center", justifyContent: "center", marginTop: 24, marginBottom: 40 }}>
+        <View style={{ width: 120, height: 120, borderRadius: 60, backgroundColor: withAlpha(colors.primary, 0.08), alignItems: "center", justifyContent: "center", marginTop: 24, marginBottom: 40 }}>
           <Bell size={56} color={colors.primary} />
         </View>
         <View style={{ width: "100%", gap: 16, paddingHorizontal: 8 }}>

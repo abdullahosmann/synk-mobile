@@ -16,6 +16,7 @@ import CoachAvatar from "../../src/components/CoachAvatar";
 import { GoalV2, TrainingLocationV2, AICoachMode } from "../../src/types";
 import { setItem } from "../../src/lib/storage";
 import { useColors } from "../../src/theme/ThemeProvider";
+import { withAlpha } from "../../src/theme/tint";
 import { AppText } from "../../src/components/ui/Typography";
 import { Btn } from "../../src/components/ui/Btn";
 
@@ -116,7 +117,7 @@ export default function PlanPreview() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: insets.bottom + 160 }}>
         {/* Eyebrow */}
         <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8, marginBottom: 16 }}>
-          <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
+          <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}>
             <Sparkles size={14} color={colors.primary} />
           </View>
           <AppText style={{ fontSize: 13, fontWeight: "600", letterSpacing: isArabic ? 0 : 0.5, color: colors.primary, textTransform: isArabic ? "none" : "uppercase", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>

@@ -57,6 +57,7 @@ import {
 import { useAppContext } from "../../src/AppContext";
 import { useToast } from "../../src/components/ToastProvider";
 import { useColors, useTheme } from "../../src/theme/ThemeProvider";
+import { withAlpha } from "../../src/theme/tint";
 import CoachAvatar from "../../src/components/CoachAvatar";
 import BottomSheet from "../../src/components/BottomSheet";
 import { Toggle } from "../../src/components/ui/Toggle";
@@ -406,7 +407,7 @@ export default function Dashboard() {
 
           {/* Past / future contextual message */}
           {!isTodaySelected && (
-            <Animated.View entering={FadeInDown} style={{ marginBottom: 24, backgroundColor: "rgba(0,102,204,0.1)", borderWidth: 1, borderColor: "rgba(0,102,204,0.2)", borderRadius: 14, padding: 12, gap: 4 }}>
+            <Animated.View entering={FadeInDown} style={{ marginBottom: 24, backgroundColor: withAlpha(colors.primary, 0.1), borderWidth: 1, borderColor: withAlpha(colors.primary, 0.2), borderRadius: 14, padding: 12, gap: 4 }}>
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
                 <Activity size={16} color={colors.primary} />
                 <AppText style={{ fontSize: 14, fontWeight: "600", color: colors.primary, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
@@ -415,7 +416,7 @@ export default function Dashboard() {
                     : isArabic ? `عرض ${dayNameFull}` : `Viewing ${dayNameFull}`}
                 </AppText>
               </View>
-              <AppText style={{ fontSize: 13, color: "rgba(0,102,204,0.8)", marginLeft: isArabic ? 0 : 24, marginRight: isArabic ? 24 : 0, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
+              <AppText style={{ fontSize: 13, color: withAlpha(colors.primary, 0.8), marginLeft: isArabic ? 0 : 24, marginRight: isArabic ? 24 : 0, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>
                 {isFutureSelected
                   ? isArabic ? "خطط لوجباتك وتمارينك مسبقاً." : "Plan your meals and workouts ahead."
                   : isArabic ? "يمكنك إضافة أي شيء فاتك." : "You can add anything you missed."}
@@ -459,7 +460,7 @@ export default function Dashboard() {
 
           {/* Welcome card */}
           {showWelcome && isTodaySelected && (
-            <Animated.View entering={FadeInDown} style={{ backgroundColor: "rgba(0,102,204,0.05)", borderWidth: 1, borderColor: "rgba(0,102,204,0.2)", borderRadius: 14, padding: 20 }}>
+            <Animated.View entering={FadeInDown} style={{ backgroundColor: withAlpha(colors.primary, 0.05), borderWidth: 1, borderColor: withAlpha(colors.primary, 0.2), borderRadius: 14, padding: 20 }}>
               <Pressable onPress={() => { setShowWelcome(false); setItem("synk:welcomeShown", "true"); }} style={{ position: "absolute", top: 12, right: isArabic ? undefined : 12, left: isArabic ? 12 : undefined, padding: 6, zIndex: 1 }}>
                 <X size={16} color={colors.inkMuted48} />
               </Pressable>
@@ -505,7 +506,7 @@ export default function Dashboard() {
             <Animated.View entering={FadeInDown}>
               <Pressable onPress={() => router.push("/morning-checkin")} style={[cardStyle, { padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }]}>
                 <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16 }}>
-                  <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
+                  <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}>
                     <MessageCircle size={18} color={colors.primary} />
                   </View>
                   <AppText variant="title" style={{ color: colors.ink }}>{isArabic ? "سجل حضورك لليوم" : "Check in for today"}</AppText>
@@ -581,7 +582,7 @@ export default function Dashboard() {
                           </View>
                           <AppText variant="title-2" style={{ textTransform: isArabic ? "none" : "uppercase" }}>{isArabic ? "استشفاء نشط" : "ACTIVE RECOVERY"}</AppText>
                         </View>
-                        <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(0,102,204,0.05)", alignItems: "center", justifyContent: "center" }}>
+                        <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: withAlpha(colors.primary, 0.05), alignItems: "center", justifyContent: "center" }}>
                           <Activity size={24} color={colors.primary} />
                         </View>
                       </View>
@@ -609,7 +610,7 @@ export default function Dashboard() {
                     </View>
                   ) : isFutureSelected ? (
                     <View style={[cardStyle, { padding: 20 }]}>
-                      <View style={{ alignSelf: isArabic ? "flex-end" : "flex-start", backgroundColor: "rgba(0,102,204,0.1)", paddingHorizontal: 12, paddingVertical: 4, borderRadius: 9999, marginBottom: 12 }}>
+                      <View style={{ alignSelf: isArabic ? "flex-end" : "flex-start", backgroundColor: withAlpha(colors.primary, 0.1), paddingHorizontal: 12, paddingVertical: 4, borderRadius: 9999, marginBottom: 12 }}>
                         <AppText style={{ color: colors.primary, fontSize: 11, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
                           {isArabic ? "تمرين مخطط" : "PLANNED WORKOUT"}
                         </AppText>
@@ -657,7 +658,7 @@ export default function Dashboard() {
                 <Pressable key={key} onPress={() => router.push("/fitness?tab=nutrition&openSearch=1")} style={[cardStyle, { padding: 24, alignItems: "center" }]}>
                   {isFutureSelected && (
                     <View style={{ width: "100%", alignItems: "center", marginBottom: 16 }}>
-                      <View style={{ backgroundColor: "rgba(0,102,204,0.1)", paddingHorizontal: 12, paddingVertical: 4, borderRadius: 9999 }}>
+                      <View style={{ backgroundColor: withAlpha(colors.primary, 0.1), paddingHorizontal: 12, paddingVertical: 4, borderRadius: 9999 }}>
                         <AppText style={{ color: colors.primary, fontSize: 12, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
                           {isArabic ? "وجبات مخططة" : "PLANNED MEALS"}
                         </AppText>
@@ -697,7 +698,7 @@ export default function Dashboard() {
                     {macros.map((m, i) => (
                       <View key={i} style={{ flex: 1, alignItems: "center" }}>
                         <AppText style={{ fontSize: 10, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, marginBottom: 6, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{m.label}</AppText>
-                        <View style={{ height: 2, width: "100%", backgroundColor: "rgba(0,102,204,0.1)", borderRadius: 9999, overflow: "hidden", marginBottom: 8 }}>
+                        <View style={{ height: 2, width: "100%", backgroundColor: withAlpha(colors.primary, 0.1), borderRadius: 9999, overflow: "hidden", marginBottom: 8 }}>
                           <View style={{ height: "100%", width: `${Math.min(100, (m.c / Math.max(1, m.t)) * 100)}%`, backgroundColor: colors.primary }} />
                         </View>
                         <AppText style={{ fontSize: 17, fontWeight: "600", color: colors.ink }}>{Math.round(m.c)}g</AppText>
@@ -919,7 +920,7 @@ export default function Dashboard() {
                   </View>
                   <View style={{ gap: 4 }}>
                     {topUsers.map((lbUser) => (
-                      <View key={lbUser.rank} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, padding: 8, borderRadius: 10, backgroundColor: lbUser.isMe ? "rgba(0,102,204,0.05)" : "transparent" }}>
+                      <View key={lbUser.rank} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, padding: 8, borderRadius: 10, backgroundColor: lbUser.isMe ? withAlpha(colors.primary, 0.05) : "transparent" }}>
                         <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.inkMuted48, width: 16, textAlign: "center" }}>{lbUser.rank}</AppText>
                         <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: "#3b82f6", alignItems: "center", justifyContent: "center" }}>
                           <AppText style={{ fontSize: 11, fontWeight: "700", color: "#fff" }}>{lbUser.initial}</AppText>
@@ -958,7 +959,7 @@ export default function Dashboard() {
                     </View>
                   </View>
                   <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 12 }}>
-                    <Pressable onPress={() => router.push("/coach")} style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 16, paddingHorizontal: 8, borderRadius: 12, backgroundColor: "rgba(0,102,204,0.05)", borderWidth: 1, borderColor: "rgba(0,102,204,0.1)" }}>
+                    <Pressable onPress={() => router.push("/coach")} style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 16, paddingHorizontal: 8, borderRadius: 12, backgroundColor: withAlpha(colors.primary, 0.05), borderWidth: 1, borderColor: withAlpha(colors.primary, 0.1) }}>
                       <MessageCircle size={24} color={colors.primary} />
                       <AppText style={{ fontSize: 14, fontWeight: "600", color: colors.primary, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "رسالة نصية" : "Message"}</AppText>
                     </Pressable>

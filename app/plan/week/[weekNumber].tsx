@@ -18,6 +18,7 @@ import { Check, ChevronLeft, ChevronRight, Mic, Sparkles } from "lucide-react-na
 import { useAppContext } from "../../../src/AppContext";
 import { useToast } from "../../../src/components/ToastProvider";
 import { useColors, useTheme } from "../../../src/theme/ThemeProvider";
+import { withAlpha } from "../../../src/theme/tint";
 import { AppText } from "../../../src/components/ui/Typography";
 import CoachAvatar from "../../../src/components/CoachAvatar";
 import { interpretWeekMessage } from "../../../src/lib/weekInterpreter";
@@ -208,7 +209,7 @@ export default function WeekEditor() {
               <View style={{ position: "absolute", bottom: 10, [isArabic ? "left" : "right"]: 10 }}>
                 <Pressable
                   onPress={() => router.push("/voice-log")}
-                  style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}
+                  style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}
                 >
                   <Mic size={18} color={colors.primary} />
                 </Pressable>

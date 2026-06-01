@@ -31,6 +31,7 @@ import { BodySVG } from "../../src/components/BodySVG";
 import BottomSheet from "../../src/components/BottomSheet";
 import RoutineReplacementSheet, { ReplacementChoice } from "../../src/components/RoutineReplacementSheet";
 import { useColors } from "../../src/theme/ThemeProvider";
+import { withAlpha } from "../../src/theme/tint";
 import { AppText } from "../../src/components/ui/Typography";
 import { Toggle } from "../../src/components/ui/Toggle";
 import { AppleBackdrop } from "../../src/components/ui/AppleBackdrop";
@@ -405,7 +406,7 @@ export default function PreSession() {
     <View style={{ flex: 1, backgroundColor: colors.canvasParchment }}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 160 }}>
         {/* Gradient header */}
-        <LinearGradient colors={[colors.primary, "rgba(0,102,204,0.7)"]} style={{ paddingTop: insets.top + 12, paddingBottom: 24, paddingHorizontal: 20 }}>
+        <LinearGradient colors={[colors.primary, withAlpha(colors.primary, 0.7)]} style={{ paddingTop: insets.top + 12, paddingBottom: 24, paddingHorizontal: 20 }}>
           <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", marginBottom: 32 }}>
             <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 6, backgroundColor: colors.canvas, paddingHorizontal: 12, paddingVertical: 4, borderRadius: 9999 }}>
               <Sparkles size={14} color={colors.primary} />
@@ -449,7 +450,7 @@ export default function PreSession() {
                 <View style={{ gap: 4, marginTop: 4 }}>
                   {tweakCoachMessages[appliedTweakReason][isArabic ? "ar" : "en"].map((msg, i) => (
                     <View key={i} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-start", gap: 8 }}>
-                      <View style={{ width: 5, height: 5, borderRadius: 2.5, backgroundColor: "rgba(0,102,204,0.6)", marginTop: 7 }} />
+                      <View style={{ width: 5, height: 5, borderRadius: 2.5, backgroundColor: withAlpha(colors.primary, 0.6), marginTop: 7 }} />
                       <AppText variant="caption" className="text-ink-muted-48 dark:text-ink-dark-muted-48" style={{ flex: 1, lineHeight: 19, textAlign: isArabic ? "right" : "left" }}>{msg}</AppText>
                     </View>
                   ))}
@@ -492,7 +493,7 @@ export default function PreSession() {
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                 <AppText variant="title" style={{ color: colors.ink }}>{isArabic ? `${exercises.length} تمارين` : `${exercises.length} exercises`}</AppText>
                 <Pressable onPress={() => router.push("/workout/builder")} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 6 }}>
-                  <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
+                  <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}>
                     <Plus size={14} color={colors.primary} />
                   </View>
                   <AppText variant="body-strong" style={{ color: colors.primary }}>{isArabic ? "أضف" : "Add"}</AppText>
@@ -594,7 +595,7 @@ export default function PreSession() {
             { icon: LinkIcon, title: isArabic ? "نسخ الرابط" : "Copy link", sub: sharePackage.url, onPress: () => { Clipboard.setString(sharePackage.url); showToast(isArabic ? "الرابط اتنسخ" : "Link copied", "success"); } },
           ] as const).map((opt) => (
             <Pressable key={opt.title} onPress={opt.onPress} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
-              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}>
                 <opt.icon size={20} color={colors.primary} />
               </View>
               <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start" }}>
@@ -698,7 +699,7 @@ export default function PreSession() {
               { icon: Bookmark, title: isArabic ? "استخدم روتين محفوظ" : "Use a saved routine", sub: isArabic ? "شغّل واحد من روتيناتك بدلًا" : "Run one of your saved routines instead", onPress: () => setAdaptStep("savedRoutines") },
             ] as const).map((opt) => (
               <Pressable key={opt.title} onPress={opt.onPress} style={{ borderWidth: 1, borderColor: colors.hairline, backgroundColor: colors.canvas, borderRadius: 14, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16 }}>
-                <View style={{ width: 48, height: 48, borderRadius: 14, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
+                <View style={{ width: 48, height: 48, borderRadius: 14, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}>
                   <opt.icon size={22} color={colors.primary} />
                 </View>
                 <View style={{ flex: 1 }}>
@@ -721,7 +722,7 @@ export default function PreSession() {
             </View>
 
             {adaptHint && (
-              <View style={{ padding: 16, backgroundColor: "rgba(0,102,204,0.1)", borderWidth: 1, borderColor: "rgba(0,102,204,0.2)", borderRadius: 12 }}>
+              <View style={{ padding: 16, backgroundColor: withAlpha(colors.primary, 0.1), borderWidth: 1, borderColor: withAlpha(colors.primary, 0.2), borderRadius: 12 }}>
                 <AppText style={{ fontSize: 14, color: colors.primary, lineHeight: 20, textAlign: isArabic ? "right" : "left", fontFamily: fontFamily(isArabic, 600) }}>{adaptHint}</AppText>
               </View>
             )}
@@ -778,7 +779,7 @@ export default function PreSession() {
             ) : (
               user.customWorkouts.map((routine) => (
                 <Pressable key={routine.id} onPress={() => { setAdaptStep(null); setTimeout(() => setReplacementSheetRoutine(routine), 280); }} style={{ backgroundColor: colors.canvas, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16 }}>
-                  <View style={{ width: 48, height: 48, borderRadius: 12, backgroundColor: "rgba(0,102,204,0.05)", alignItems: "center", justifyContent: "center" }}>
+                  <View style={{ width: 48, height: 48, borderRadius: 12, backgroundColor: withAlpha(colors.primary, 0.05), alignItems: "center", justifyContent: "center" }}>
                     <Dumbbell size={22} color={colors.primary} />
                   </View>
                   <View style={{ flex: 1 }}>

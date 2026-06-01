@@ -30,6 +30,7 @@ import {
   getAllExercisesForUser,
 } from "../../src/lib/historyQueries";
 import { useColors } from "../../src/theme/ThemeProvider";
+import { withAlpha } from "../../src/theme/tint";
 import { AppText } from "../../src/components/ui/Typography";
 
 const AMBER = "#f59e0b";
@@ -675,7 +676,7 @@ export default function ExerciseProgression() {
                         <View
                           style={{
                             height: "100%",
-                            backgroundColor: "rgba(0,102,204,0.4)",
+                            backgroundColor: withAlpha(colors.primary, 0.4),
                             borderRadius: 9999,
                             width: `${effortW}%`,
                           }}

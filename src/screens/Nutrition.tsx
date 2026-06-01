@@ -1940,7 +1940,7 @@ export default function Nutrition() {
                     </View>
                     <Pressable
                       onPress={() => { setCustomMealBuilder((p) => ({ ...p, items: [...p.items, { food: f, multiplier: 1, portionStr: f.portion }] })); setMealItemSearchMode(false); setMealSearchQuery(""); }}
-                      style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}
+                      style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}
                     >
                       <Plus size={16} color={colors.primary} />
                     </Pressable>

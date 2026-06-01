@@ -10,6 +10,7 @@ import OnboardingLayout from "../../src/components/OnboardingLayout";
 import { useAppContext } from "../../src/AppContext";
 import { useToast } from "../../src/components/ToastProvider";
 import { useColors } from "../../src/theme/ThemeProvider";
+import { withAlpha } from "../../src/theme/tint";
 import { AppText } from "../../src/components/ui/Typography";
 import { ContinueButton } from "../../src/components/ui/ContinueButton";
 
@@ -145,7 +146,7 @@ export default function HealthDiet() {
                     {isArabic ? opt.ar : opt.en}
                   </AppText>
                   {implied && (
-                    <View style={{ backgroundColor: "rgba(0,102,204,0.1)", paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
+                    <View style={{ backgroundColor: withAlpha(colors.primary, 0.1), paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
                       <AppText style={{ fontSize: 9, fontWeight: "700", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5 }}>
                         {isArabic ? "مشمول" : "Inc."}
                       </AppText>

@@ -21,6 +21,7 @@ import { ArrowRight, Dumbbell, Utensils } from "lucide-react-native";
 import { useAppContext } from "../src/AppContext";
 import { getItem } from "../src/lib/storage";
 import { useColors } from "../src/theme/ThemeProvider";
+import { withAlpha } from "../src/theme/tint";
 import { AppText, HeroTitle } from "../src/components/ui/Typography";
 import { Btn } from "../src/components/ui/Btn";
 import { productShadow } from "../src/components/ui/AppleBackdrop";
@@ -126,8 +127,8 @@ export default function Welcome() {
             marginBottom: 16,
           }}
         >
-          <SpinningRing size={160} duration={12000} color="rgba(0,102,204,0.1)" />
-          <SpinningRing size={128} duration={8000} reverse color="rgba(0,102,204,0.2)" />
+          <SpinningRing size={160} duration={12000} color={withAlpha(colors.primary, 0.1)} />
+          <SpinningRing size={128} duration={8000} reverse color={withAlpha(colors.primary, 0.2)} />
 
           {/* Coach cluster */}
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>

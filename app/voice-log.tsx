@@ -32,6 +32,7 @@ import { useAppContext } from "../src/AppContext";
 import CoachAvatar from "../src/components/CoachAvatar";
 import { useToast } from "../src/components/ToastProvider";
 import { useColors } from "../src/theme/ThemeProvider";
+import { withAlpha } from "../src/theme/tint";
 import { AppText } from "../src/components/ui/Typography";
 
 type VoicePhase = "idle" | "recording" | "processing" | "confirm" | "error";
@@ -289,7 +290,7 @@ export default function VoiceLog() {
           <View style={{ backgroundColor: colors.canvasParchment, borderRadius: 24, padding: 20, marginBottom: 32, borderWidth: 1, borderColor: colors.hairline }}>
             <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
-                <View style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
+                <View style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}>
                   <Utensils size={20} color={colors.primary} />
                 </View>
                 <View style={{ alignItems: isArabic ? "flex-end" : "flex-start" }}>

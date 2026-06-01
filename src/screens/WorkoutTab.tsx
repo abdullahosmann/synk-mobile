@@ -10,6 +10,7 @@ import { Coffee, Play, Dumbbell, ChevronRight, Plus, Download } from "lucide-rea
 import { useAppContext } from "../AppContext";
 import { getWorkoutForDate } from "../lib/workoutSelection";
 import { useColors, useTheme } from "../theme/ThemeProvider";
+import { withAlpha } from "../theme/tint";
 import { AppText, SectionTitle } from "../components/ui/Typography";
 import { Btn } from "../components/ui/Btn";
 import DateNavigator from "../components/DateNavigator";
@@ -43,7 +44,7 @@ export default function WorkoutTab() {
       {/* Today's workout card */}
       {isRestDay ? (
         <View style={[cardStyle, { padding: 32, alignItems: "center", gap: 16 }]}>
-          <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: "rgba(0,102,204,0.05)", alignItems: "center", justifyContent: "center" }}>
+          <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: withAlpha(colors.primary, 0.05), alignItems: "center", justifyContent: "center" }}>
             <Coffee size={32} color={colors.primary} />
           </View>
           <View style={{ alignItems: "center", gap: 4 }}>

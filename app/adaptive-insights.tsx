@@ -31,6 +31,7 @@ import {
 import { useAppContext } from "../src/AppContext";
 import { useToast } from "../src/components/ToastProvider";
 import { useColors } from "../src/theme/ThemeProvider";
+import { withAlpha } from "../src/theme/tint";
 import { AppText } from "../src/components/ui/Typography";
 import CoachAvatar from "../src/components/CoachAvatar";
 import EmptyState from "../src/components/EmptyState";
@@ -213,7 +214,7 @@ export default function AdaptiveInsights() {
         backgroundColor: isOriginal ? colors.canvasParchment : colors.canvas,
         opacity: isOriginal ? 0.6 : 1,
         borderWidth: 1,
-        borderColor: isOriginal ? colors.hairline : "rgba(0,102,204,0.2)",
+        borderColor: isOriginal ? colors.hairline : withAlpha(colors.primary, 0.2),
         borderRadius: 14,
         padding: 24,
         height: 160,
@@ -395,7 +396,7 @@ export default function AdaptiveInsights() {
           </>
         ) : (
           <View style={{ marginBottom: 40, alignItems: "center", justifyContent: "center", padding: 32, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 16 }}>
-            <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+            <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
               <Sparkles size={24} color={colors.primary} />
             </View>
             <AppText style={{ fontSize: 17, fontWeight: "600", color: colors.ink, marginBottom: 8, textAlign: "center", fontFamily: fontFamily(isArabic, 600) }}>

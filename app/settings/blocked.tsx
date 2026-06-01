@@ -19,6 +19,7 @@ import BottomSheet from "../../src/components/BottomSheet";
 import Avatar from "../../src/components/Avatar";
 import EmptyState from "../../src/components/EmptyState";
 import { useColors } from "../../src/theme/ThemeProvider";
+import { withAlpha } from "../../src/theme/tint";
 import { AppText } from "../../src/components/ui/Typography";
 
 type Blocked = { id: string; name: string; arabicName: string; handle: string; initials: string };
@@ -89,7 +90,7 @@ export default function BlockedAccounts() {
       {/* Unblock confirmation */}
       <BottomSheet isOpen={confirmTarget !== null} onClose={() => setConfirmTarget(null)} title={isArabic ? "إلغاء حظر المستخدم" : "Unblock user"}>
         <View style={{ alignItems: "center", paddingVertical: 8 }}>
-          <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+          <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
             <UserX size={24} color={colors.primary} />
           </View>
           <AppText style={{ fontSize: 17, fontWeight: "600", color: colors.ink, textAlign: "center", marginBottom: 8, fontFamily: ff(isArabic, 600) }}>{isArabic ? `إلغاء حظر ${confirmTarget?.arabicName}؟` : `Unblock ${confirmTarget?.name}?`}</AppText>

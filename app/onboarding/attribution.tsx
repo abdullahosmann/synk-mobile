@@ -10,6 +10,7 @@ import { Camera, Music, Users, Dumbbell, Search, HelpCircle } from "lucide-react
 import { useAppContext } from "../../src/AppContext";
 import OnboardingLayout from "../../src/components/OnboardingLayout";
 import { useColors } from "../../src/theme/ThemeProvider";
+import { withAlpha } from "../../src/theme/tint";
 import { AppText } from "../../src/components/ui/Typography";
 import { ContinueButton } from "../../src/components/ui/ContinueButton";
 
@@ -71,7 +72,7 @@ export default function Attribution() {
                   borderRadius: 20,
                   alignItems: "center",
                   justifyContent: "center",
-                  backgroundColor: sel ? "rgba(0,102,204,0.1)" : colors.surfacePearl,
+                  backgroundColor: sel ? withAlpha(colors.primary, 0.1) : colors.surfacePearl,
                 }}
               >
                 <Icon size={20} strokeWidth={2} color={sel ? colors.primary : colors.inkMuted48} />

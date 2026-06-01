@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ArrowLeft, Inbox, Sparkles } from "lucide-react-native";
 import { useAppContext } from "../../src/AppContext";
 import { useColors, useTheme } from "../../src/theme/ThemeProvider";
+import { withAlpha } from "../../src/theme/tint";
 import { AppText } from "../../src/components/ui/Typography";
 import EmptyState from "../../src/components/EmptyState";
 import { Adaptation } from "../../src/types";
@@ -54,7 +55,7 @@ export default function AdaptationHistory() {
   ];
 
   const getStatusTag = (status?: Adaptation["status"]): { label: string; bg: string; color: string } | null => {
-    if (status === "pending") return { label: isArabic ? "جديدة" : "New", bg: "rgba(0,102,204,0.15)", color: colors.primary };
+    if (status === "pending") return { label: isArabic ? "جديدة" : "New", bg: withAlpha(colors.primary, 0.15), color: colors.primary };
     if (status === "viewed") return { label: isArabic ? "مشوفة" : "Viewed", bg: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.08)", color: colors.inkMuted48 };
     if (status === "dismissed") return { label: isArabic ? "متجاهلة" : "Dismissed", bg: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", color: colors.inkMuted48 };
     return null;
@@ -169,7 +170,7 @@ export default function AdaptationHistory() {
                   }}
                 >
                   <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-start", gap: 12 }}>
-                    <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(0,102,204,0.15)", alignItems: "center", justifyContent: "center" }}>
+                    <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: withAlpha(colors.primary, 0.15), alignItems: "center", justifyContent: "center" }}>
                       <Sparkles size={18} color={colors.primary} />
                     </View>
                     <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start" }}>

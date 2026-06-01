@@ -26,6 +26,7 @@ import { computeGoalEndDate } from "../../src/lib/planUtils";
 import { generateNutritionPlan, pushNutritionHistory } from "../../src/lib/nutritionPlan";
 import { Toggle } from "../../src/components/ui/Toggle";
 import { useColors } from "../../src/theme/ThemeProvider";
+import { withAlpha } from "../../src/theme/tint";
 import { AppText } from "../../src/components/ui/Typography";
 
 type Opt = { id: string; labelEn: string; labelAr: string; descEn?: string; descAr?: string };
@@ -202,7 +203,7 @@ export default function PlanSettings() {
     <Pressable
       key={key ?? label}
       onPress={onPress}
-      style={{ width: "100%", minHeight: 56, paddingVertical: desc ? 14 : 0, paddingHorizontal: 20, borderRadius: 10, borderWidth: 1, justifyContent: "center", alignItems: desc ? (isArabic ? "flex-end" : "flex-start") : "stretch", backgroundColor: selected ? "rgba(0,102,204,0.2)" : colors.canvasParchment, borderColor: selected ? colors.primary : colors.hairline }}
+      style={{ width: "100%", minHeight: 56, paddingVertical: desc ? 14 : 0, paddingHorizontal: 20, borderRadius: 10, borderWidth: 1, justifyContent: "center", alignItems: desc ? (isArabic ? "flex-end" : "flex-start") : "stretch", backgroundColor: selected ? withAlpha(colors.primary, 0.2) : colors.canvasParchment, borderColor: selected ? colors.primary : colors.hairline }}
     >
       <View style={{ height: desc ? undefined : 56, justifyContent: "center", alignItems: desc ? undefined : isArabic ? "flex-end" : "flex-start", width: "100%" }}>
         <AppText style={{ fontSize: 15, fontWeight: "600", color: selected ? colors.primary : colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic, 600) }}>{label}</AppText>

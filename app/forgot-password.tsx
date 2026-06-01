@@ -10,6 +10,7 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 import { ArrowLeft, CheckCircle, AlertCircle } from "lucide-react-native";
 import { useAppContext } from "../src/AppContext";
 import { useColors } from "../src/theme/ThemeProvider";
+import { withAlpha } from "../src/theme/tint";
 import { AppText, HeroTitle, ScreenTitle } from "../src/components/ui/Typography";
 import { Btn } from "../src/components/ui/Btn";
 
@@ -93,7 +94,7 @@ export default function ForgotPassword() {
           </Animated.View>
         ) : (
           <Animated.View entering={FadeInDown} style={{ alignItems: "center", paddingTop: 32 }}>
-            <View style={{ width: 80, height: 80, borderRadius: 40, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center", marginBottom: 32 }}>
+            <View style={{ width: 80, height: 80, borderRadius: 40, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center", marginBottom: 32 }}>
               <CheckCircle size={40} color={colors.primary} />
             </View>
             <ScreenTitle style={{ textTransform: isArabic ? "none" : "uppercase", marginBottom: 16, textAlign: "center" }}>

@@ -17,6 +17,7 @@ import { Check, Sparkles, Star, X } from "lucide-react-native";
 import { useAppContext } from "../src/AppContext";
 import { useToast } from "../src/components/ToastProvider";
 import { useColors, useTheme } from "../src/theme/ThemeProvider";
+import { withAlpha } from "../src/theme/tint";
 import { AppText } from "../src/components/ui/Typography";
 
 function fontFamily(isArabic: boolean, weight: 400 | 600 = 400) {
@@ -204,7 +205,7 @@ export default function Paywall() {
                 </AppText>
                 {priceBlock("pro")}
               </View>
-              <View style={{ backgroundColor: "rgba(0,102,204,0.1)", paddingHorizontal: 12, paddingVertical: 6, borderRadius: 9999, borderWidth: 1, borderColor: "rgba(0,102,204,0.2)" }}>
+              <View style={{ backgroundColor: withAlpha(colors.primary, 0.1), paddingHorizontal: 12, paddingVertical: 6, borderRadius: 9999, borderWidth: 1, borderColor: withAlpha(colors.primary, 0.2) }}>
                 <AppText style={{ fontSize: 9, fontWeight: "600", color: colors.primary, textTransform: "uppercase", letterSpacing: 1.5, fontFamily: "Inter_600SemiBold" }}>
                   FOUNDING
                 </AppText>
@@ -261,7 +262,7 @@ export default function Paywall() {
               <View style={{ gap: 16, alignItems: isArabic ? "flex-end" : "flex-start" }}>
                 {eliteFeatures.map((feat, i) => (
                   <View key={i} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-start", gap: 12 }}>
-                    <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(0,102,204,0.2)", alignItems: "center", justifyContent: "center", marginTop: 1 }}>
+                    <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: withAlpha(colors.primary, 0.2), alignItems: "center", justifyContent: "center", marginTop: 1 }}>
                       <Check size={12} strokeWidth={3} color={colors.primary} />
                     </View>
                     <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start" }}>

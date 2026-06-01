@@ -22,6 +22,7 @@ import { useToast } from "../../src/components/ToastProvider";
 import Avatar from "../../src/components/Avatar";
 import { ShareCardRenderer, ShareCardPayload } from "../../src/components/ShareCardRenderer";
 import { useColors, useTheme } from "../../src/theme/ThemeProvider";
+import { withAlpha } from "../../src/theme/tint";
 import { AppText, ScreenTitle } from "../../src/components/ui/Typography";
 import { Btn } from "../../src/components/ui/Btn";
 
@@ -113,7 +114,7 @@ export default function Community() {
           <ScreenTitle>{isArabic ? "المجتمع" : "Community"}</ScreenTitle>
         </View>
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, marginTop: -40 }}>
-          <View style={{ width: 80, height: 80, borderRadius: 40, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
+          <View style={{ width: 80, height: 80, borderRadius: 40, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
             <Users size={36} color={colors.primary} />
           </View>
           <AppText variant="section-title" style={{ marginBottom: 12, textAlign: "center" }}>
@@ -136,7 +137,7 @@ export default function Community() {
   // ---- Unlocked feed ----
   const typeMeta = (t: FeedType) =>
     t === "pr"
-      ? { Icon: Trophy, label: isArabic ? "رقم قياسي" : "New PR", ring: "rgba(0,102,204,0.4)" }
+      ? { Icon: Trophy, label: isArabic ? "رقم قياسي" : "New PR", ring: withAlpha(colors.primary, 0.4) }
       : t === "streak"
         ? { Icon: Flame, label: isArabic ? "سلسلة" : "Streak", ring: "rgba(251,191,36,0.4)" }
         : { Icon: Dumbbell, label: isArabic ? "تمرين" : "Workout", ring: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.05)" };
@@ -210,7 +211,7 @@ export default function Community() {
                 </AppText>
 
                 {item.type === "workout" && (
-                  <Pressable onPress={() => showToast(isArabic ? "تمت الإضافة لروتيناتي" : "Added to My Routines", "success")} style={{ height: 40, marginTop: 12, borderRadius: 8, backgroundColor: "rgba(0,102,204,0.1)", flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                  <Pressable onPress={() => showToast(isArabic ? "تمت الإضافة لروتيناتي" : "Added to My Routines", "success")} style={{ height: 40, marginTop: 12, borderRadius: 8, backgroundColor: withAlpha(colors.primary, 0.1), flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
                     <Plus size={16} color={colors.primary} />
                     <AppText variant="caption-strong" style={{ color: colors.primary }}>{isArabic ? "جرب التمرين ده" : "Try this workout"}</AppText>
                   </Pressable>
@@ -232,7 +233,7 @@ export default function Community() {
         {segment === "circles" && (
           <View style={{ paddingTop: 4 }}>
             <Pressable onPress={() => router.push("/circles/create")} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
-              <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
+              <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}>
                 <Plus size={24} color={colors.primary} />
               </View>
               <View style={{ flex: 1 }}>
@@ -249,7 +250,7 @@ export default function Community() {
         {segment === "challenges" && (
           <View style={{ paddingTop: 4 }}>
             <Pressable onPress={() => router.push("/challenges")} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
-              <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
+              <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}>
                 <Trophy size={24} color={colors.primary} />
               </View>
               <View style={{ flex: 1 }}>

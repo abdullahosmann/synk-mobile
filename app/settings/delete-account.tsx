@@ -18,6 +18,7 @@ import { useAppContext } from "../../src/AppContext";
 import { useToast } from "../../src/components/ToastProvider";
 import BottomSheet from "../../src/components/BottomSheet";
 import { useColors } from "../../src/theme/ThemeProvider";
+import { withAlpha } from "../../src/theme/tint";
 import { AppText } from "../../src/components/ui/Typography";
 
 function ff(isArabic: boolean, weight: 400 | 500 | 600 | 700 = 400) {
@@ -61,7 +62,7 @@ export default function DeleteAccount() {
 
   const altRow = (emoji: string, label: string, onPress: () => void) => (
     <Pressable onPress={onPress} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
-      <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
+      <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}>
         <AppText style={{ fontSize: 16, color: colors.primary }}>{emoji}</AppText>
       </View>
       <AppText style={{ flex: 1, fontSize: 13, color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}>{label}</AppText>
@@ -95,7 +96,7 @@ export default function DeleteAccount() {
             {reasons.map((r) => {
               const selected = reason === r.id;
               return (
-                <Pressable key={r.id} onPress={() => setReason(r.id)} style={{ padding: 16, borderRadius: 12, borderWidth: 1, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", backgroundColor: selected ? "rgba(0,102,204,0.05)" : colors.canvas, borderColor: selected ? colors.primary : colors.hairline }}>
+                <Pressable key={r.id} onPress={() => setReason(r.id)} style={{ padding: 16, borderRadius: 12, borderWidth: 1, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", backgroundColor: selected ? withAlpha(colors.primary, 0.05) : colors.canvas, borderColor: selected ? colors.primary : colors.hairline }}>
                   <AppText style={{ fontSize: 14, fontWeight: "500", color: selected ? colors.primary : colors.ink, fontFamily: ff(isArabic, 500) }}>{isArabic ? r.labelAr : r.labelEn}</AppText>
                   {selected && <Check size={18} color={colors.primary} />}
                 </Pressable>

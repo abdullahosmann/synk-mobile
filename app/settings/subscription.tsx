@@ -22,6 +22,7 @@ import { useAppContext } from "../../src/AppContext";
 import { useToast } from "../../src/components/ToastProvider";
 import BottomSheet from "../../src/components/BottomSheet";
 import { useColors } from "../../src/theme/ThemeProvider";
+import { withAlpha } from "../../src/theme/tint";
 import { AppText } from "../../src/components/ui/Typography";
 
 function ff(isArabic: boolean, weight: 400 | 600 | 700 = 400) {
@@ -103,7 +104,7 @@ export default function Subscription() {
     const selected = selectedPlan === plan;
     const p = planPricing[plan];
     return (
-      <Pressable onPress={() => setSelectedPlan(plan)} style={{ borderRadius: 16, borderWidth: 2, padding: 16, borderColor: selected ? colors.primary : colors.hairline, backgroundColor: selected ? "rgba(0,102,204,0.05)" : "transparent" }}>
+      <Pressable onPress={() => setSelectedPlan(plan)} style={{ borderRadius: 16, borderWidth: 2, padding: 16, borderColor: selected ? colors.primary : colors.hairline, backgroundColor: selected ? withAlpha(colors.primary, 0.05) : "transparent" }}>
         {badge && selected && (
           <View style={{ position: "absolute", top: -10, right: isArabic ? undefined : 16, left: isArabic ? 16 : undefined, backgroundColor: colors.primary, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 9999 }}>
             <AppText style={{ color: "#fff", fontSize: 10, fontWeight: "700", textTransform: "uppercase", letterSpacing: 0.5 }}>{badge}</AppText>
@@ -140,7 +141,7 @@ export default function Subscription() {
         <View style={{ gap: 12, marginBottom: 32 }}>
           {features.map((f, i) => (
             <View key={i} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
-              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}>
                 <f.Icon size={20} color={colors.primary} />
               </View>
               <AppText style={{ flex: 1, fontSize: 15, color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}>{isArabic ? f.ar : f.en}</AppText>

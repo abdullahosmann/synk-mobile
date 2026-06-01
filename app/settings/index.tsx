@@ -43,6 +43,7 @@ import type { ConnectedIntegration } from "../../src/types";
 import { COACHES } from "../../src/constants";
 import { getItem, setItem, clear as clearStorage, KEY_LANGUAGE, KEY_THEME } from "../../src/lib/storage";
 import { useColors } from "../../src/theme/ThemeProvider";
+import { withAlpha } from "../../src/theme/tint";
 import { AppText } from "../../src/components/ui/Typography";
 
 const ALL_COUNTRIES: any[] = [
@@ -267,7 +268,7 @@ export default function Settings() {
           </View>
           <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
             {item.time && (
-              <Pressable onPress={() => item.onTimeClick?.()} style={{ backgroundColor: "rgba(0,102,204,0.1)", paddingHorizontal: 12, paddingVertical: 6, borderRadius: 9999 }}>
+              <Pressable onPress={() => item.onTimeClick?.()} style={{ backgroundColor: withAlpha(colors.primary, 0.1), paddingHorizontal: 12, paddingVertical: 6, borderRadius: 9999 }}>
                 <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.primary }}>{item.time}</AppText>
               </Pressable>
             )}
@@ -292,7 +293,7 @@ export default function Settings() {
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
                 {item.value && <AppText style={{ fontSize: 14, color: colors.inkMuted48, fontFamily: ff(isArabic) }}>{item.value}</AppText>}
                 {item.icon && (
-                  <View style={{ width: 24, height: 24, borderRadius: 6, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
+                  <View style={{ width: 24, height: 24, borderRadius: 6, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}>
                     <Sparkles size={14} color={colors.primary} fill={colors.primary} />
                   </View>
                 )}
@@ -501,7 +502,7 @@ export default function Settings() {
           {[1500, 2000, 2500, 3000, 3500].map((amount) => {
             const active = user.dailyWaterTarget === amount;
             return (
-              <Pressable key={amount} onPress={() => { setUser({ ...user, dailyWaterTarget: amount }); setWaterTargetSheet(false); }} style={{ height: 56, borderRadius: 10, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", paddingHorizontal: 20, borderWidth: 1, backgroundColor: active ? "rgba(0,102,204,0.2)" : colors.canvasParchment, borderColor: active ? colors.primary : colors.hairline }}>
+              <Pressable key={amount} onPress={() => { setUser({ ...user, dailyWaterTarget: amount }); setWaterTargetSheet(false); }} style={{ height: 56, borderRadius: 10, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", paddingHorizontal: 20, borderWidth: 1, backgroundColor: active ? withAlpha(colors.primary, 0.2) : colors.canvasParchment, borderColor: active ? colors.primary : colors.hairline }}>
                 <AppText style={{ fontSize: 15, fontWeight: "600", color: active ? colors.primary : colors.ink, fontFamily: ff(isArabic, 600) }}>{isArabic ? `${amount} مل` : `${amount} ml`}</AppText>
               </Pressable>
             );

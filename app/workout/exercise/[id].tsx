@@ -30,6 +30,7 @@ import { useToast } from "../../../src/components/ToastProvider";
 import CoachAvatar from "../../../src/components/CoachAvatar";
 import { EXERCISE_LIBRARY } from "../../../src/data/exercises";
 import { useColors } from "../../../src/theme/ThemeProvider";
+import { withAlpha } from "../../../src/theme/tint";
 import { AppText } from "../../../src/components/ui/Typography";
 
 function fontFamily(isArabic: boolean, weight: 400 | 600 = 400) {
@@ -159,7 +160,7 @@ export default function PreSessionExerciseDetail() {
           width: 24,
           height: 24,
           borderRadius: 12,
-          backgroundColor: "rgba(0,102,204,0.1)",
+          backgroundColor: withAlpha(colors.primary, 0.1),
           alignItems: "center",
           justifyContent: "center",
         }}
@@ -490,7 +491,7 @@ export default function PreSessionExerciseDetail() {
 
         {/* Coach Q&A */}
         <View style={{ marginHorizontal: 20, marginBottom: 48 }}>
-          <View style={{ backgroundColor: "rgba(0,102,204,0.05)", borderRadius: 14, padding: 20, gap: 12 }}>
+          <View style={{ backgroundColor: withAlpha(colors.primary, 0.05), borderRadius: 14, padding: 20, gap: 12 }}>
             <View
               style={{
                 flexDirection: isArabic ? "row-reverse" : "row",
@@ -561,7 +562,7 @@ export default function PreSessionExerciseDetail() {
                   width: 24,
                   height: 24,
                   borderRadius: 12,
-                  backgroundColor: "rgba(0,102,204,0.1)",
+                  backgroundColor: withAlpha(colors.primary, 0.1),
                   alignItems: "center",
                   justifyContent: "center",
                 }}

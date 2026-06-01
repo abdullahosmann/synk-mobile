@@ -11,6 +11,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Star, Check } from "lucide-react-native";
 import { useAppContext } from "../../src/AppContext";
 import { useColors } from "../../src/theme/ThemeProvider";
+import { withAlpha } from "../../src/theme/tint";
 import { AppText } from "../../src/components/ui/Typography";
 import { Btn } from "../../src/components/ui/Btn";
 import { AppleBackdrop } from "../../src/components/ui/AppleBackdrop";
@@ -171,7 +172,7 @@ export default function Paywall() {
           <View style={{ gap: 12 }}>
             {features.map((f, i) => (
               <View key={i} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-start", gap: 12 }}>
-                <View style={{ marginTop: 2, backgroundColor: "rgba(0,102,204,0.1)", borderRadius: 9999, padding: 2 }}>
+                <View style={{ marginTop: 2, backgroundColor: withAlpha(colors.primary, 0.1), borderRadius: 9999, padding: 2 }}>
                   <Check size={14} color={colors.primary} />
                 </View>
                 <AppText variant="body" style={{ color: colors.ink, flex: 1, lineHeight: 20, textAlign: isArabic ? "right" : "left" }}>

@@ -24,6 +24,7 @@ import CoachAvatar from "../../src/components/CoachAvatar";
 import WeightLogSheet from "../../src/components/WeightLogSheet";
 import WeightTrendChart from "../../src/components/WeightTrendChart";
 import { useColors } from "../../src/theme/ThemeProvider";
+import { withAlpha } from "../../src/theme/tint";
 import { AppText, SectionTitle } from "../../src/components/ui/Typography";
 import { Btn } from "../../src/components/ui/Btn";
 import { getItem } from "../../src/lib/storage";
@@ -151,7 +152,7 @@ export default function Profile() {
   const rowCard = (Icon: any, title: string, subtitle: string, onPress: () => void) => (
     <PressableScale onPress={onPress} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
       <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, flex: 1 }}>
-        <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(0,102,204,0.1)", alignItems: "center", justifyContent: "center" }}>
+        <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}>
           <Icon size={20} color={colors.primary} />
         </View>
         <View style={{ flex: 1 }}>

@@ -21,6 +21,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Bookmark, Calendar, RefreshCw, X } from "lucide-react-native";
 import { useAppContext } from "../AppContext";
 import { useColors, useTheme } from "../theme/ThemeProvider";
+import { withAlpha } from "../theme/tint";
 import { AppText } from "./ui/Typography";
 
 export type ReplacementChoice = "just-today" | "replace-today" | "save-as-default";
@@ -200,7 +201,7 @@ const RoutineReplacementSheet: React.FC<RoutineReplacementSheetProps> = ({
               style={{
                 backgroundColor: colors.canvasParchment,
                 borderWidth: 1,
-                borderColor: opt.accent ? "rgba(0,102,204,0.3)" : colors.hairline,
+                borderColor: opt.accent ? withAlpha(colors.primary, 0.3) : colors.hairline,
                 borderRadius: 14,
                 padding: 16,
               }}
@@ -213,7 +214,7 @@ const RoutineReplacementSheet: React.FC<RoutineReplacementSheetProps> = ({
                     borderRadius: 20,
                     alignItems: "center",
                     justifyContent: "center",
-                    backgroundColor: opt.accent ? "rgba(0,102,204,0.15)" : isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.05)",
+                    backgroundColor: opt.accent ? withAlpha(colors.primary, 0.15) : isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.05)",
                   }}
                 >
                   {opt.icon}

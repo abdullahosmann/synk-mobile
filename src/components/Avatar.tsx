@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Image } from "expo-image";
 import { useColors } from "../theme/ThemeProvider";
+import { withAlpha } from "../theme/tint";
 import { AppText } from "./ui/Typography";
 
 interface AvatarProps {
@@ -35,7 +36,7 @@ const Avatar: React.FC<AvatarProps> = ({
   // reset the error flag if the URL changes (e.g. user updates their photo)
   useEffect(() => setHasError(false), [photoUrl]);
   const ringStyle = ring
-    ? { borderWidth: 2, borderColor: "rgba(0,102,204,0.2)" }
+    ? { borderWidth: 2, borderColor: withAlpha(colors.primary, 0.2) }
     : {};
 
   if (photoUrl && !hasError) {
