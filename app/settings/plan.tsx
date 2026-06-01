@@ -251,7 +251,7 @@ export default function PlanSettings() {
           {sectionTitle(isArabic ? "إعدادات التمرين" : "Workout Parameters")}
           <View style={card}>
             <Row label={isArabic ? "مستوى اللياقة" : "Fitness level"} value={getFitnessLevelValue()} onPress={() => setFitnessLevelSheet(true)} />
-            <Row label={isArabic ? "القيود الصحية" : "Health restrictions"} value={!user?.injuries || user.injuries.length === 0 ? (isArabic ? "لا يوجد" : "None") : `${user.injuries.length} ${isArabic ? "إصابات" : "items"}`} onPress={() => { setTempInjuries((user?.injuries as any) || []); setRestrictionsSheet(true); }} />
+            <Row label={isArabic ? "القيود الصحية" : "Health restrictions"} value={!user?.injuries || user.injuries.length === 0 ? (isArabic ? "لا يوجد" : "None") : isArabic ? `${user.injuries.length} ${user.injuries.length === 1 ? "إصابة" : "إصابات"}` : `${user.injuries.length} ${user.injuries.length === 1 ? "item" : "items"}`} onPress={() => { setTempInjuries((user?.injuries as any) || []); setRestrictionsSheet(true); }} />
             <Row label={isArabic ? "أيام التمرين أسبوعياً" : "Days per week"} value={isArabic ? `${user?.daysPerWeek} أيام` : `${user?.daysPerWeek} days`} onPress={() => setDaysPerWeekSheet(true)} />
             <Row label={isArabic ? "الوقت المفضل" : "Preferred time"} value={getPreferredTimeValue()} onPress={() => setPreferredTimeSheet(true)} />
             <Row label={isArabic ? "مدة التمرين" : "Workout duration"} value={isArabic ? `${user?.workoutDuration} دقيقة` : `${user?.workoutDuration} min`} onPress={() => setWorkoutDurationSheet(true)} />

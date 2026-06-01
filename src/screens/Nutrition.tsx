@@ -1393,8 +1393,8 @@ export default function Nutrition() {
   const renderFoodRow = (food: UIDisplayFood) => (
     <Pressable onPress={() => setSelectedFood(food)} accessibilityRole="button" accessibilityLabel={`${isArabic && (food as any).nameAr ? (food as any).nameAr : food.name}, ${food.calories} ${isArabic ? "سعرة" : "kcal"}`} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, paddingVertical: 12, paddingHorizontal: 16, flexDirection: isArabic ? "row-reverse" : "row", justifyContent: "space-between", alignItems: "center" }}>
       <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start", paddingRight: isArabic ? 0 : 16, paddingLeft: isArabic ? 16 : 0 }}>
-        <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
-          <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink }} numberOfLines={1}>
+        <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8, alignSelf: "stretch" }}>
+          <AppText style={{ flexShrink: 1, fontSize: 15, fontWeight: "600", color: colors.ink }} numberOfLines={1}>
             {isArabic && (food as any).nameAr ? (food as any).nameAr : food.name}
           </AppText>
           {(food as any).region === "egypt" && (

@@ -4,7 +4,6 @@
  */
 import React from "react";
 import { Pressable, View } from "react-native";
-import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Bell, Settings } from "lucide-react-native";
@@ -12,10 +11,8 @@ import { useAppContext } from "../AppContext";
 import { useToast } from "./ToastProvider";
 import { useColors } from "../theme/ThemeProvider";
 import { AppleBackdrop } from "./ui/AppleBackdrop";
+import Avatar from "./Avatar";
 import { AppText } from "./ui/Typography";
-
-const PROFILE_IMG =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuBXlCLNkX3disW4T9j8vvhRRQM4iVL9Vf-3FltInhixWg2FV_xXf2dBD9t_uBwS8588yqgDyFnN1n-n1qwJ-QmANlqUiR_w8enQfBNC8utdc-4RRwBG8dw67KZgoihINi6R37zemqJXisT8RXShbQUQNaXv-yQq7RTbubIsLD3ydhwE82YLaQeVf4HSMVGcHen0ZsN7auijGok-1Zq3jxARCF4v4w2zY1UOlW3mMMMLx1wE5oW7_dUe6dvSedM78PW2jXiPZ9uvLFE";
 
 interface TopBarProps {
   title?: string;
@@ -54,9 +51,12 @@ const TopBar: React.FC<TopBarProps> = ({
               onPress={() => router.push("/me")}
               accessibilityRole="button"
               accessibilityLabel={isArabic ? "الملف الشخصي" : "Profile"}
-              style={{ width: 40, height: 40, borderRadius: 20, overflow: "hidden", backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline }}
             >
-              <Image source={{ uri: PROFILE_IMG }} style={{ width: "100%", height: "100%" }} contentFit="cover" />
+              <Avatar
+                initials={(user?.name || (isArabic ? "م" : "U")).trim().split(/\s+/).map((n) => n[0]).filter(Boolean).join("").toUpperCase().slice(0, 2) || "?"}
+                photoUrl={user?.avatarUrl}
+                size={40}
+              />
             </Pressable>
           )}
           <AppText style={{ fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold", fontSize: 21, letterSpacing: 0.231, color: colors.ink }}>
