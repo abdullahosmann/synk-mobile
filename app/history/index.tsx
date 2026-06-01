@@ -9,7 +9,7 @@
  * Web→RN: navigate(-1) → router.back(); EmptyState description → body.
  */
 import React, { useMemo, useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, SectionList, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ChevronLeft, ChevronRight, ClipboardList } from "lucide-react-native";
@@ -82,6 +82,44 @@ export default function WorkoutHistory() {
   const toggleBg = isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)";
   const primaryTint = colors.primary + "1A";
 
+  // M1 — month-grouped list rendered as a virtualized SectionList.
+  const sections = useMemo(() => listByMonth.map(([title, data]) => ({ title, data })), [listByMonth]);
+  const showList = allWorkouts.length > 0 && viewMode === "list" && listByMonth.length > 0;
+
+  const renderWorkoutCard = (w: WorkoutLog) => {
+    const d = new Date(w.date);
+    const dayStr = isArabic ? d.toLocaleDateString("ar-EG", { weekday: "short" }) : d.toLocaleDateString("en-US", { weekday: "short" });
+    return (
+      <Pressable onPress={() => router.push(`/history/workout/${w.id}`)} style={{ backgroundColor: cardBg, borderRadius: 10, borderWidth: 1, borderColor: colors.hairline, padding: 16, marginHorizontal: 16, marginBottom: 8, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
+        <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16, flex: 1 }}>
+          <View style={{ width: 48, alignItems: "center", justifyContent: "center", borderRightWidth: isArabic ? 0 : 1, borderLeftWidth: isArabic ? 1 : 0, borderColor: colors.hairline, paddingRight: isArabic ? 0 : 12, paddingLeft: isArabic ? 12 : 0 }}>
+            <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.inkMuted48, textTransform: "uppercase", fontFamily: ff(isArabic, 600) }}>{dayStr.charAt(0)}</AppText>
+            <AppText style={{ fontSize: 20, fontWeight: "700", color: colors.ink, fontVariant: ["tabular-nums"], fontFamily: ff(isArabic, 700) }}>{d.getDate()}</AppText>
+          </View>
+          <View style={{ flex: 1, minWidth: 0, gap: 6, alignItems: isArabic ? "flex-end" : "flex-start" }}>
+            <AppText numberOfLines={1} style={{ fontSize: 15, fontWeight: "600", color: colors.ink, fontFamily: ff(isArabic, 600) }}>{w.name}</AppText>
+            <View style={{ flexDirection: isArabic ? "row-reverse" : "row", flexWrap: "wrap", gap: 4 }}>
+              {w.muscleGroups.map((m) => (
+                <View key={m} style={{ paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4, backgroundColor: primaryTint }}>
+                  <AppText style={{ fontSize: 10, fontWeight: "700", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.8, fontFamily: ff(isArabic, 700) }}>{muscleLabel(m, isArabic)}</AppText>
+                </View>
+              ))}
+            </View>
+            <AppText numberOfLines={1} style={{ fontSize: 12, color: colors.inkMuted48, fontFamily: ff(isArabic) }}>{w.durationMin} {isArabic ? "دقيقة" : "min"} · {w.totalVolumeKg.toLocaleString()} {isArabic ? "كجم" : "kg"} · {w.setsCompleted} {isArabic ? "مجموعات" : "sets"}</AppText>
+          </View>
+        </View>
+        <View style={{ alignItems: isArabic ? "flex-start" : "flex-end", gap: 8 }}>
+          {w.isPR && (
+            <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: AMBER + "1A", paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
+              <AppText style={{ fontSize: 9, fontWeight: "700", letterSpacing: 1.5, color: AMBER_DARK }}>PR</AppText>
+            </View>
+          )}
+          <ChevronRight size={18} color={colors.inkMuted48} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
+        </View>
+      </Pressable>
+    );
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.canvasParchment }}>
       {/* Header */}
@@ -120,7 +158,23 @@ export default function WorkoutHistory() {
         )}
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + 120, maxWidth: 512, width: "100%", alignSelf: "center" }}>
+      {showList ? (
+        <SectionList
+          sections={sections}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => renderWorkoutCard(item)}
+          renderSectionHeader={({ section }) => (
+            <AppText style={{ paddingHorizontal: 16, paddingVertical: 8, fontSize: 12, fontWeight: "700", color: colors.inkMuted48, letterSpacing: 1.5, textTransform: "uppercase", fontFamily: ff(isArabic, 700), backgroundColor: colors.canvasParchment }}>{section.title}</AppText>
+          )}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingTop: 16, paddingBottom: insets.bottom + 120, maxWidth: 512, width: "100%", alignSelf: "center" }}
+          stickySectionHeadersEnabled={false}
+          initialNumToRender={10}
+          windowSize={11}
+          removeClippedSubviews
+        />
+      ) : (
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + 120, maxWidth: 512, width: "100%", alignSelf: "center" }}>
         {allWorkouts.length === 0 ? (
           <View style={{ paddingVertical: 48, marginTop: 48, paddingHorizontal: 24 }}>
             <EmptyState icon={<ClipboardList size={32} color={colors.primary} />} title={isArabic ? "لسه مفيش تمارين" : "No workouts yet"} body={isArabic ? "اعمل أول تمرين عشان نبدأ نسجّل ليك." : "Complete your first workout to start building your history."} />
@@ -128,47 +182,6 @@ export default function WorkoutHistory() {
         ) : viewMode === "list" && listByMonth.length === 0 ? (
           <View style={{ paddingVertical: 48, marginTop: 48, paddingHorizontal: 24 }}>
             <EmptyState icon={<ClipboardList size={32} color={colors.primary} />} title={isArabic ? "مفيش تمارين بالفلتر ده" : "No workouts match this filter"} body={isArabic ? "جرّب فلتر تاني عشان تشوف باقي تمارينك." : "Try a different filter to see the rest of your history."} />
-          </View>
-        ) : viewMode === "list" ? (
-          <View style={{ marginTop: 16 }}>
-            {listByMonth.map(([monthKey, workouts]) => (
-              <View key={monthKey} style={{ marginBottom: 24 }}>
-                <AppText style={{ paddingHorizontal: 16, paddingVertical: 8, fontSize: 12, fontWeight: "700", color: colors.inkMuted48, letterSpacing: 1.5, textTransform: "uppercase", fontFamily: ff(isArabic, 700) }}>{monthKey}</AppText>
-                {workouts.map((w) => {
-                  const d = new Date(w.date);
-                  const dayStr = isArabic ? d.toLocaleDateString("ar-EG", { weekday: "short" }) : d.toLocaleDateString("en-US", { weekday: "short" });
-                  return (
-                    <Pressable key={w.id} onPress={() => router.push(`/history/workout/${w.id}`)} style={{ backgroundColor: cardBg, borderRadius: 10, borderWidth: 1, borderColor: colors.hairline, padding: 16, marginHorizontal: 16, marginBottom: 8, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
-                      <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16, flex: 1 }}>
-                        <View style={{ width: 48, alignItems: "center", justifyContent: "center", borderRightWidth: isArabic ? 0 : 1, borderLeftWidth: isArabic ? 1 : 0, borderColor: colors.hairline, paddingRight: isArabic ? 0 : 12, paddingLeft: isArabic ? 12 : 0 }}>
-                          <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.inkMuted48, textTransform: "uppercase", fontFamily: ff(isArabic, 600) }}>{dayStr.charAt(0)}</AppText>
-                          <AppText style={{ fontSize: 20, fontWeight: "700", color: colors.ink, fontVariant: ["tabular-nums"], fontFamily: ff(isArabic, 700) }}>{d.getDate()}</AppText>
-                        </View>
-                        <View style={{ flex: 1, minWidth: 0, gap: 6, alignItems: isArabic ? "flex-end" : "flex-start" }}>
-                          <AppText numberOfLines={1} style={{ fontSize: 15, fontWeight: "600", color: colors.ink, fontFamily: ff(isArabic, 600) }}>{w.name}</AppText>
-                          <View style={{ flexDirection: isArabic ? "row-reverse" : "row", flexWrap: "wrap", gap: 4 }}>
-                            {w.muscleGroups.map((m) => (
-                              <View key={m} style={{ paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4, backgroundColor: primaryTint }}>
-                                <AppText style={{ fontSize: 10, fontWeight: "700", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.8, fontFamily: ff(isArabic, 700) }}>{muscleLabel(m, isArabic)}</AppText>
-                              </View>
-                            ))}
-                          </View>
-                          <AppText numberOfLines={1} style={{ fontSize: 12, color: colors.inkMuted48, fontFamily: ff(isArabic) }}>{w.durationMin} {isArabic ? "دقيقة" : "min"} · {w.totalVolumeKg.toLocaleString()} {isArabic ? "كجم" : "kg"} · {w.setsCompleted} {isArabic ? "مجموعات" : "sets"}</AppText>
-                        </View>
-                      </View>
-                      <View style={{ alignItems: isArabic ? "flex-start" : "flex-end", gap: 8 }}>
-                        {w.isPR && (
-                          <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: AMBER + "1A", paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
-                            <AppText style={{ fontSize: 9, fontWeight: "700", letterSpacing: 1.5, color: AMBER_DARK }}>PR</AppText>
-                          </View>
-                        )}
-                        <ChevronRight size={18} color={colors.inkMuted48} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
-                      </View>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            ))}
           </View>
         ) : (
           <View style={{ padding: 16, marginTop: 8 }}>
@@ -227,7 +240,8 @@ export default function WorkoutHistory() {
             </View>
           </View>
         )}
-      </ScrollView>
+        </ScrollView>
+      )}
     </View>
   );
 }

@@ -8,7 +8,7 @@
  * Full challenge/circle detail screens land in Phase 2.5.
  */
 import React, { useState } from "react";
-import { Pressable, ScrollView, Share, View } from "react-native";
+import { FlatList, Pressable, ScrollView, Share, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Sharing from "expo-sharing";
@@ -179,12 +179,21 @@ export default function Community() {
         {segTab("challenges", isArabic ? "التحديات" : "Challenges")}
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 128 + insets.bottom }}>
-        {segment === "friends" &&
-          feed.map((item, i) => {
+      {segment === "friends" ? (
+        // M1 — virtualized feed (FlatList) instead of map()-in-ScrollView; the
+        // per-index FadeInDown.delay stagger is dropped (it made row N wait N×40ms).
+        <FlatList
+          data={feed}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 128 + insets.bottom }}
+          initialNumToRender={8}
+          windowSize={11}
+          removeClippedSubviews
+          renderItem={({ item }) => {
             const meta = typeMeta(item.type);
             return (
-              <Animated.View key={item.id} entering={FadeInDown.delay(i * 40)} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+              <Animated.View entering={FadeInDown} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16, marginBottom: 12 }}>
                 <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-start", gap: 12 }}>
                   <View style={{ borderRadius: 9999, borderWidth: 2, borderColor: meta.ring }}>
                     <Avatar initials={item.user.initials} size={40} />
@@ -228,8 +237,10 @@ export default function Community() {
                 </View>
               </Animated.View>
             );
-          })}
-
+          }}
+        />
+      ) : (
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 128 + insets.bottom }}>
         {segment === "circles" && (
           <View style={{ paddingTop: 4 }}>
             <Pressable onPress={() => router.push("/circles/create")} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
@@ -263,7 +274,8 @@ export default function Community() {
             </Pressable>
           </View>
         )}
-      </ScrollView>
+        </ScrollView>
+      )}
 
       {/* Off-screen achievement share card (pr / streak) */}
       {sharingPost && (
