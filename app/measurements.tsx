@@ -66,7 +66,7 @@ function Chart({ history, toDisplay, unitLabel, colors, cardBg, isDark, emptyLab
   const points = history.map((d, i) => `${px(i)},${py(d.valueCm)}`).join(" ");
 
   return (
-    <Pressable onPress={() => setTip(null)} style={{ height: H, backgroundColor: cardBg, borderRadius: 12, borderWidth: 1, borderColor: colors.hairline, padding: PAD, marginBottom: 16 }}>
+    <Pressable onPress={() => setTip(null)} style={{ height: H, backgroundColor: cardBg, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, padding: PAD, marginBottom: 16 }}>
       <View onLayout={(e) => setW(e.nativeEvent.layout.width + PAD * 2)} style={{ flex: 1 }}>
         <Svg width="100%" height="100%">
           {[0, 1, 2, 3, 4].map((i) => {
@@ -216,7 +216,7 @@ export default function BodyMeasurements() {
               }
             }
             return (
-              <Pressable key={type} onPress={() => { setSelectedType(type); setChartRange("3M"); setShowChartSheet(true); }} style={{ width: "48%", backgroundColor: cardBg, borderRadius: 10, borderWidth: 1, borderColor: colors.hairline, padding: 12 }}>
+              <Pressable key={type} onPress={() => { setSelectedType(type); setChartRange("3M"); setShowChartSheet(true); }} style={{ width: "48%", backgroundColor: cardBg, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, padding: 12 }}>
                 <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.inkMuted48, marginBottom: 8, textTransform: isArabic ? "none" : "uppercase", letterSpacing: isArabic ? 0 : 1, textAlign: align, fontFamily: ff(isArabic, 600) }}>{isArabic ? info.ar : info.en}</AppText>
                 <AppText style={{ fontSize: 20, fontWeight: "700", color: colors.ink, fontVariant: ["tabular-nums"], textAlign: align, fontFamily: ff(isArabic, 700) }}>
                   {current ? toDisplay(current.valueCm).toFixed(1) : "—"}
@@ -247,7 +247,7 @@ export default function BodyMeasurements() {
               </View>
             ))}
           </View>
-          <Pressable onPress={handleSaveAdd} style={{ marginTop: 32, width: "100%", height: 48, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
+          <Pressable onPress={handleSaveAdd} style={{ marginTop: 32, width: "100%", height: 44, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
             <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.onPrimary, fontFamily: ff(isArabic, 600) }}>{isArabic ? "حفظ" : "Save"}</AppText>
           </Pressable>
         </View>
@@ -271,7 +271,7 @@ export default function BodyMeasurements() {
 
           <View style={{ marginTop: 8 }}>
             <AppText style={{ fontSize: 11, fontWeight: "700", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, marginBottom: 12, textAlign: align, fontFamily: ff(isArabic, 700) }}>{isArabic ? "السجل" : "HISTORY"}</AppText>
-            <View style={{ backgroundColor: cardBg, borderRadius: 12, borderWidth: 1, borderColor: colors.hairline, overflow: "hidden" }}>
+            <View style={{ backgroundColor: cardBg, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, overflow: "hidden" }}>
               {selectedTypeHistory.length === 0 ? (
                 <View style={{ padding: 16, alignItems: "center" }}>
                   <AppText style={{ fontSize: 13, color: colors.inkMuted48, fontFamily: ff(isArabic) }}>{isArabic ? "مفيش قياسات" : "No entries"}</AppText>

@@ -193,10 +193,10 @@ export default function NutritionPlanDetails() {
 
   const inputPill = {
     flex: 1,
-    height: 48,
+    height: 44,
     borderWidth: 1,
     borderColor: colors.hairline,
-    borderRadius: 12,
+    borderRadius: 14,
     backgroundColor: colors.canvasParchment,
     paddingHorizontal: 14,
     fontSize: 16,
@@ -237,7 +237,7 @@ export default function NutritionPlanDetails() {
                 <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
                   <Icon size={24} color={colors.primary} />
                 </View>
-                <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, fontFamily: fontFamily(isArabic, 600) }}>
+                <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: fontFamily(isArabic, 600) }}>
                   {item.label}
                 </AppText>
                 <AppText numberOfLines={1} style={{ fontSize: 20, fontWeight: "600", color: colors.ink, marginTop: 2, fontFamily: fontFamily(isArabic, 600) }}>
@@ -252,7 +252,7 @@ export default function NutritionPlanDetails() {
         <View style={{ paddingHorizontal: 24, marginBottom: 24 }}>
           <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 12 }}>
             {macros.map((m, i) => (
-              <View key={i} style={{ flex: 1, backgroundColor: colors.canvas, padding: 14, borderRadius: 12, borderWidth: 1, borderColor: colors.hairline, alignItems: "center" }}>
+              <View key={i} style={{ flex: 1, backgroundColor: colors.canvas, padding: 14, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, alignItems: "center" }}>
                 <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: fontFamily(isArabic, 600) }}>{m.l}</AppText>
                 <AppText style={{ fontSize: 18, fontWeight: "600", color: colors.ink, marginTop: 4 }}>{m.v}g</AppText>
               </View>
@@ -264,7 +264,7 @@ export default function NutritionPlanDetails() {
         <View style={{ paddingHorizontal: 24, marginBottom: 40, gap: 12 }}>
           <Pressable
             onPress={openEditor}
-            style={{ height: 48, backgroundColor: colors.primary, borderRadius: 9999, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}
+            style={{ height: 44, backgroundColor: colors.primary, borderRadius: 9999, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}
           >
             <SlidersHorizontal size={18} color={colors.onPrimary} />
             <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.onPrimary, fontFamily: fontFamily(isArabic, 600) }}>
@@ -324,7 +324,7 @@ export default function NutritionPlanDetails() {
                   key={entry.id}
                   style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16 }}
                 >
-                  <View style={{ minWidth: 50, paddingVertical: 4, backgroundColor: colors.canvasParchment, borderRadius: 12, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+                  <View style={{ minWidth: 50, paddingVertical: 4, backgroundColor: colors.canvasParchment, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
                     <AppText style={{ fontSize: 10, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: fontFamily(isArabic, 600) }}>
                       {entry.date.split(" ")[0]}
                     </AppText>
@@ -335,7 +335,7 @@ export default function NutritionPlanDetails() {
                   <View style={{ flex: 1, gap: 4, alignItems: isArabic ? "flex-end" : "flex-start" }}>
                     <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
                       <CoachAvatar coachId={user.coach || "khaled"} size={24} grayscale={0} />
-                      <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: fontFamily(isArabic, 600) }}>
+                      <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: fontFamily(isArabic, 600) }}>
                         {isArabic ? "تعديل الخطة" : "PLAN REBUILD"}
                       </AppText>
                     </View>
@@ -372,7 +372,7 @@ export default function NutritionPlanDetails() {
                 { l: isArabic ? "كارب" : "Carbs", v: editorMacros.carbs },
                 { l: isArabic ? "دهون" : "Fats", v: editorMacros.fats },
               ].map((m, i) => (
-                <View key={i} style={{ flex: 1, height: 48, borderWidth: 1, borderColor: colors.hairline, borderRadius: 12, backgroundColor: colors.canvas, alignItems: "center", justifyContent: "center" }}>
+                <View key={i} style={{ flex: 1, height: 44, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, backgroundColor: colors.canvas, alignItems: "center", justifyContent: "center" }}>
                   <AppText style={{ fontSize: 16, fontWeight: "600", color: colors.ink }}>{m.v}g</AppText>
                   <AppText style={{ fontSize: 10, color: colors.inkMuted48, fontFamily: fontFamily(isArabic) }}>{m.l}</AppText>
                 </View>
@@ -403,7 +403,7 @@ export default function NutritionPlanDetails() {
               {[3, 4, 5, 6].map((n) => {
                 const sel = mealsInput === n;
                 return (
-                  <Pressable key={n} onPress={() => setMealsInput(n)} style={{ flex: 1, height: 44, borderRadius: 12, borderWidth: 1, borderColor: sel ? colors.primary : colors.hairline, backgroundColor: sel ? colors.primary : colors.canvas, alignItems: "center", justifyContent: "center" }}>
+                  <Pressable key={n} onPress={() => setMealsInput(n)} style={{ flex: 1, height: 44, borderRadius: 14, borderWidth: 1, borderColor: sel ? colors.primary : colors.hairline, backgroundColor: sel ? colors.primary : colors.canvas, alignItems: "center", justifyContent: "center" }}>
                     <AppText style={{ fontSize: 15, fontWeight: "600", color: sel ? colors.onPrimary : colors.ink }}>{n}</AppText>
                   </Pressable>
                 );
@@ -411,7 +411,7 @@ export default function NutritionPlanDetails() {
             </View>
           </View>
 
-          <Pressable onPress={saveTargets} style={{ height: 48, marginTop: 4, backgroundColor: colors.primary, borderRadius: 9999, alignItems: "center", justifyContent: "center" }}>
+          <Pressable onPress={saveTargets} style={{ height: 44, marginTop: 4, backgroundColor: colors.primary, borderRadius: 9999, alignItems: "center", justifyContent: "center" }}>
             <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.onPrimary, fontFamily: fontFamily(isArabic, 600) }}>
               {isArabic ? "حفظ الأهداف" : "Save targets"}
             </AppText>

@@ -142,7 +142,7 @@ export default function Search() {
                 <Pressable
                   key={p.name}
                   onPress={() => router.push(`/profile/${p.name.toLowerCase().replace(/\s+/g, "-")}`)}
-                  style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, padding: 12, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10 }}
+                  style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, padding: 12, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14 }}
                 >
                   <Avatar initials={p.initials} size={40} />
                   <View style={{ flex: 1, minWidth: 0, alignItems: isArabic ? "flex-end" : "flex-start" }}>
@@ -164,7 +164,7 @@ export default function Search() {
                 <Pressable
                   key={c.name}
                   onPress={() => router.push("/challenges/ch3")}
-                  style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, padding: 12, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10 }}
+                  style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, padding: 12, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14 }}
                 >
                   <View style={{ width: 40, height: 40, borderRadius: 10, backgroundColor: primaryTint, alignItems: "center", justifyContent: "center" }}>
                     <AppText style={{ fontSize: 18 }}>{c.tier}</AppText>
@@ -197,7 +197,7 @@ export default function Search() {
               <Pressable
                 key={g.id}
                 onPress={() => router.push(`/circles/${g.id}`)}
-                style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, padding: 12, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10 }}
+                style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, padding: 12, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14 }}
               >
                 <View style={{ width: 40, height: 40, borderRadius: 10, backgroundColor: primaryTint, alignItems: "center", justifyContent: "center" }}>
                   <Users size={18} color={colors.primary} />

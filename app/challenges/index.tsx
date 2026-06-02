@@ -146,7 +146,7 @@ export default function Challenges() {
             </View>
           ) : (
             list.map((c) => (
-              <Pressable key={c.id} onPress={() => router.push(`/challenges/${c.id}`)} style={{ backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, padding: 16 }}>
+              <Pressable key={c.id} onPress={() => router.push(`/challenges/${c.id}`)} style={{ backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16 }}>
                 <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-start", gap: 12 }}>
                   <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start" }}>
                     <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8, marginBottom: 4 }}>
@@ -198,7 +198,7 @@ export default function Challenges() {
             </View>
           </View>
           {CREATE_TEMPLATES.map((t) => (
-            <Pressable key={t.id} onPress={() => { setCreateOpen(false); router.push(`/challenges/create?template=${t.id}`); }} style={{ padding: 16, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
+            <Pressable key={t.id} onPress={() => { setCreateOpen(false); router.push(`/challenges/create?template=${t.id}`); }} style={{ padding: 16, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
               <AppText style={{ fontSize: 14, fontWeight: "600", color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic, 600) }}>{isArabic ? t.arabicLabel : t.label}</AppText>
             </Pressable>
           ))}

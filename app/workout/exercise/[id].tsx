@@ -159,7 +159,7 @@ export default function PreSessionExerciseDetail() {
         style={{
           width: 24,
           height: 24,
-          borderRadius: 12,
+          borderRadius: 14,
           backgroundColor: withAlpha(colors.primary, 0.1),
           alignItems: "center",
           justifyContent: "center",
@@ -248,8 +248,8 @@ export default function PreSessionExerciseDetail() {
           <View
             style={{
               width: 56,
-              height: 56,
-              borderRadius: 12,
+              height: 52,
+              borderRadius: 14,
               backgroundColor: colors.canvasParchment,
               alignItems: "center",
               justifyContent: "center",
@@ -368,7 +368,7 @@ export default function PreSessionExerciseDetail() {
             style={{
               maxWidth: 200,
               width: "100%",
-              height: 48,
+              height: 44,
               borderRadius: 14,
               backgroundColor: colors.canvasParchment,
               borderWidth: 1,
@@ -561,7 +561,7 @@ export default function PreSessionExerciseDetail() {
                 style={{
                   width: 24,
                   height: 24,
-                  borderRadius: 12,
+                  borderRadius: 14,
                   backgroundColor: withAlpha(colors.primary, 0.1),
                   alignItems: "center",
                   justifyContent: "center",

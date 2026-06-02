@@ -311,7 +311,7 @@ export default function Settings() {
     );
   };
 
-  const cardStyle = { backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, overflow: "hidden" as const };
+  const cardStyle = { backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, overflow: "hidden" as const };
 
   const filteredCountries = ALL_COUNTRIES.filter((c) => c.divider || c.name.toLowerCase().includes(countrySearch.toLowerCase()) || c.arabicName.toLowerCase().includes(countrySearch.toLowerCase()));
   const disconnectName = disconnectSheetFor ? getIntegrationDetails(disconnectSheetFor).name : "";
@@ -331,7 +331,7 @@ export default function Settings() {
         {/* Community banner */}
         <View style={{ ...cardStyle, padding: 20, marginBottom: 32, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
           <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16 }}>
-            <View style={{ backgroundColor: colors.primary, width: 44, height: 44, borderRadius: 12, alignItems: "center", justifyContent: "center" }}>
+            <View style={{ backgroundColor: colors.primary, width: 44, height: 44, borderRadius: 14, alignItems: "center", justifyContent: "center" }}>
               <Users size={20} fill="#fff" color="#fff" />
             </View>
             <View style={{ alignItems: isArabic ? "flex-end" : "flex-start" }}>
@@ -418,7 +418,7 @@ export default function Settings() {
                 {Array.from({ length: 24 }).map((_, h) => {
                   const active = timePicker.hour === h;
                   return (
-                    <Pressable key={h} onPress={() => setTimePicker({ ...timePicker, hour: h })} style={{ height: 48, alignItems: "center", justifyContent: "center" }}>
+                    <Pressable key={h} onPress={() => setTimePicker({ ...timePicker, hour: h })} style={{ height: 44, alignItems: "center", justifyContent: "center" }}>
                       <AppText style={{ fontSize: 24, fontWeight: "600", color: active ? colors.primary : colors.inkMuted48, opacity: active ? 1 : 0.3, transform: [{ scale: active ? 1.25 : 1 }] }}>{h.toString().padStart(2, "0")}</AppText>
                     </Pressable>
                   );
@@ -432,7 +432,7 @@ export default function Settings() {
                 {[0, 15, 30, 45].map((m) => {
                   const active = timePicker.minute === m;
                   return (
-                    <Pressable key={m} onPress={() => setTimePicker({ ...timePicker, minute: m })} style={{ height: 48, alignItems: "center", justifyContent: "center" }}>
+                    <Pressable key={m} onPress={() => setTimePicker({ ...timePicker, minute: m })} style={{ height: 44, alignItems: "center", justifyContent: "center" }}>
                       <AppText style={{ fontSize: 24, fontWeight: "600", color: active ? colors.primary : colors.inkMuted48, opacity: active ? 1 : 0.3, transform: [{ scale: active ? 1.25 : 1 }] }}>{m.toString().padStart(2, "0")}</AppText>
                     </Pressable>
                   );
@@ -440,7 +440,7 @@ export default function Settings() {
               </View>
             </View>
           </View>
-          <Pressable onPress={saveTime} style={{ height: 56, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", marginTop: 8 }}>
+          <Pressable onPress={saveTime} style={{ height: 52, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", marginTop: 8 }}>
             <AppText style={{ color: "#fff", fontSize: 15, fontWeight: "600" }}>{isArabic ? "تم" : "Done"}</AppText>
           </Pressable>
         </View>
@@ -449,7 +449,7 @@ export default function Settings() {
       {/* Country Sheet */}
       <BottomSheet isOpen={countrySheet} onClose={() => setCountrySheet(false)} title={isArabic ? "اختر دولتك" : "Select country"}>
         <View style={{ paddingVertical: 8, height: 420 }}>
-          <TextInput value={countrySearch} onChangeText={setCountrySearch} placeholder={isArabic ? "بحث..." : "Search..."} placeholderTextColor={colors.inkMuted48} style={{ height: 48, borderRadius: 10, borderWidth: 1, borderColor: colors.hairline, backgroundColor: colors.canvasParchment, paddingHorizontal: 16, marginBottom: 16, fontSize: 15, color: colors.ink, textAlign: isArabic ? "right" : "left" }} />
+          <TextInput value={countrySearch} onChangeText={setCountrySearch} placeholder={isArabic ? "بحث..." : "Search..."} placeholderTextColor={colors.inkMuted48} style={{ height: 44, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, backgroundColor: colors.canvasParchment, paddingHorizontal: 16, marginBottom: 16, fontSize: 15, color: colors.ink, textAlign: isArabic ? "right" : "left" }} />
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 24 }}>
             {filteredCountries.map((c, i) => {
               if (c.divider) return <View key={`d${i}`} style={{ height: 1, backgroundColor: colors.hairline, marginVertical: 12, marginHorizontal: 12 }} />;
@@ -471,10 +471,10 @@ export default function Settings() {
         <View style={{ gap: 24, paddingVertical: 8 }}>
           <AppText style={{ fontSize: 15, color: colors.inkMuted48, lineHeight: 22, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}>{isArabic ? "سنك هيوقف يجيب بيانات من التطبيق ده. تقدر توصله تاني في أي وقت." : "Synk will stop pulling data from this app. You can reconnect anytime."}</AppText>
           <View style={{ gap: 12 }}>
-            <Pressable onPress={() => { if (disconnectSheetFor) disconnectIntegrationStub(disconnectSheetFor, user, setUser).then(() => { const name = getIntegrationDetails(disconnectSheetFor).name; setDisconnectSheetFor(null); showToast(isArabic ? `اتقطع اتصال ${name}` : `${name} disconnected`, "success"); }); }} style={{ height: 56, borderRadius: 9999, borderWidth: 1, borderColor: colors.semanticRed, alignItems: "center", justifyContent: "center" }}>
+            <Pressable onPress={() => { if (disconnectSheetFor) disconnectIntegrationStub(disconnectSheetFor, user, setUser).then(() => { const name = getIntegrationDetails(disconnectSheetFor).name; setDisconnectSheetFor(null); showToast(isArabic ? `اتقطع اتصال ${name}` : `${name} disconnected`, "success"); }); }} style={{ height: 52, borderRadius: 9999, borderWidth: 1, borderColor: colors.semanticRed, alignItems: "center", justifyContent: "center" }}>
               <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.semanticRed, fontFamily: ff(isArabic, 600) }}>{isArabic ? "إلغاء الاتصال" : "Disconnect"}</AppText>
             </Pressable>
-            <Pressable onPress={() => setDisconnectSheetFor(null)} style={{ height: 48, alignItems: "center", justifyContent: "center" }}>
+            <Pressable onPress={() => setDisconnectSheetFor(null)} style={{ height: 44, alignItems: "center", justifyContent: "center" }}>
               <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.inkMuted48, fontFamily: ff(isArabic, 600) }}>{isArabic ? "إلغاء" : "Cancel"}</AppText>
             </Pressable>
           </View>
@@ -486,10 +486,10 @@ export default function Settings() {
         <View style={{ gap: 24, paddingVertical: 8 }}>
           <AppText style={{ fontSize: 15, color: colors.inkMuted48, lineHeight: 22, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}>{isArabic ? "هتحتاج تسجل دخول تاني للوصول لحسابك." : "You'll need to log in again to access your account."}</AppText>
           <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 12 }}>
-            <Pressable onPress={() => setConfirmSignOut(false)} style={{ flex: 1, height: 56, borderRadius: 9999, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+            <Pressable onPress={() => setConfirmSignOut(false)} style={{ flex: 1, height: 52, borderRadius: 9999, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
               <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, fontFamily: ff(isArabic, 600) }}>{isArabic ? "إلغاء" : "Cancel"}</AppText>
             </Pressable>
-            <Pressable onPress={handleSignOut} style={{ flex: 1, height: 56, borderRadius: 9999, backgroundColor: colors.semanticRed, alignItems: "center", justifyContent: "center" }}>
+            <Pressable onPress={handleSignOut} style={{ flex: 1, height: 52, borderRadius: 9999, backgroundColor: colors.semanticRed, alignItems: "center", justifyContent: "center" }}>
               <AppText style={{ fontSize: 15, fontWeight: "600", color: "#fff", fontFamily: ff(isArabic, 600) }}>{isArabic ? "تسجيل الخروج" : "Sign out"}</AppText>
             </Pressable>
           </View>
@@ -502,7 +502,7 @@ export default function Settings() {
           {[1500, 2000, 2500, 3000, 3500].map((amount) => {
             const active = user.dailyWaterTarget === amount;
             return (
-              <Pressable key={amount} onPress={() => { setUser({ ...user, dailyWaterTarget: amount }); setWaterTargetSheet(false); }} style={{ height: 56, borderRadius: 10, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", paddingHorizontal: 20, borderWidth: 1, backgroundColor: active ? withAlpha(colors.primary, 0.2) : colors.canvasParchment, borderColor: active ? colors.primary : colors.hairline }}>
+              <Pressable key={amount} onPress={() => { setUser({ ...user, dailyWaterTarget: amount }); setWaterTargetSheet(false); }} style={{ height: 52, borderRadius: 10, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", paddingHorizontal: 20, borderWidth: 1, backgroundColor: active ? withAlpha(colors.primary, 0.2) : colors.canvasParchment, borderColor: active ? colors.primary : colors.hairline }}>
                 <AppText style={{ fontSize: 15, fontWeight: "600", color: active ? colors.primary : colors.ink, fontFamily: ff(isArabic, 600) }}>{isArabic ? `${amount} مل` : `${amount} ml`}</AppText>
               </Pressable>
             );

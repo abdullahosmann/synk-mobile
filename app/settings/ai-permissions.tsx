@@ -114,7 +114,7 @@ export default function AIPermissions() {
                   onChangeText={(t) => updatePermission("aiQuietHoursStart", t)}
                   placeholder="22:00"
                   placeholderTextColor={colors.inkMuted48}
-                  style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8, fontSize: 15, fontWeight: "500", color: colors.ink, textAlign: "center", minWidth: 80 }}
+                  style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, paddingHorizontal: 12, paddingVertical: 8, fontSize: 15, fontWeight: "500", color: colors.ink, textAlign: "center", minWidth: 80 }}
                 />
                 <AppText style={{ color: colors.inkMuted48 }}>-</AppText>
                 <TextInput
@@ -122,7 +122,7 @@ export default function AIPermissions() {
                   onChangeText={(t) => updatePermission("aiQuietHoursEnd", t)}
                   placeholder="07:00"
                   placeholderTextColor={colors.inkMuted48}
-                  style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8, fontSize: 15, fontWeight: "500", color: colors.ink, textAlign: "center", minWidth: 80 }}
+                  style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, paddingHorizontal: 12, paddingVertical: 8, fontSize: 15, fontWeight: "500", color: colors.ink, textAlign: "center", minWidth: 80 }}
                 />
               </View>
             )}

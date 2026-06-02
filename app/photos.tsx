@@ -186,7 +186,7 @@ export default function ProgressPhotos() {
     <View style={{ flex: 1, backgroundColor: colors.canvasParchment }}>
       {/* Header */}
       <View style={{ backgroundColor: cardBg, borderBottomWidth: 1, borderBottomColor: colors.hairline, paddingTop: insets.top + 8 }}>
-        <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", height: 48, paddingHorizontal: 16 }}>
+        <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", height: 44, paddingHorizontal: 16 }}>
           <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={{ width: 44, height: 44, borderRadius: 9999, alignItems: "center", justifyContent: "center" }}>
             <ChevronLeft size={24} color={colors.ink} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
           </Pressable>
@@ -232,7 +232,7 @@ export default function ProgressPhotos() {
                 const d = new Date(group.date);
                 const dateStr = isArabic ? d.toLocaleDateString("ar-EG", { month: "long", day: "numeric" }) : d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
                 return (
-                  <Pressable key={group.date} onLongPress={() => handleDeleteSet(group.date)} style={{ backgroundColor: cardBg, borderRadius: 10, borderWidth: 1, borderColor: colors.hairline, padding: 16, marginHorizontal: 16, marginBottom: 4 }}>
+                  <Pressable key={group.date} onLongPress={() => handleDeleteSet(group.date)} style={{ backgroundColor: cardBg, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, padding: 16, marginHorizontal: 16, marginBottom: 4 }}>
                     <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
                       <AppText style={{ fontSize: 15, fontWeight: "700", color: colors.ink, fontFamily: ff(isArabic, 700) }}>{dateStr}{group.weight ? ` · ${convW(group.weight).toFixed(1)}${wUnit}` : ""}</AppText>
                       <AppText style={{ fontSize: 12, color: colors.inkMuted48, fontFamily: ff(isArabic) }}>{getAgeStr(group.date)}</AppText>
@@ -286,7 +286,7 @@ export default function ProgressPhotos() {
                   <AppText style={{ fontSize: 12, fontWeight: "700", color: colors.inkMuted48, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 4, textAlign: "center", fontFamily: ff(isArabic, 700) }}>{ang}</AppText>
                   <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 8 }}>
                     {[pA, pB].map((p, i) => (
-                      <View key={i} style={{ flex: 1, aspectRatio: 3 / 4, backgroundColor: slot, borderRadius: 12, overflow: "hidden", alignItems: "center", justifyContent: "center" }}>
+                      <View key={i} style={{ flex: 1, aspectRatio: 3 / 4, backgroundColor: slot, borderRadius: 14, overflow: "hidden", alignItems: "center", justifyContent: "center" }}>
                         {p && urls[p.photoId] ? <Image source={{ uri: urls[p.photoId] }} style={{ width: "100%", height: "100%" }} contentFit="cover" /> : <AppText style={{ fontSize: 12, color: colors.inkMuted48 }}>No photo</AppText>}
                       </View>
                     ))}
@@ -297,7 +297,7 @@ export default function ProgressPhotos() {
           </View>
 
           {setA.weight && setB.weight && setA.weight !== setB.weight && (
-            <View style={{ marginHorizontal: 16, marginTop: 24, backgroundColor: cardBg, borderRadius: 10, borderWidth: 1, borderColor: colors.hairline, padding: 16, alignItems: "center" }}>
+            <View style={{ marginHorizontal: 16, marginTop: 24, backgroundColor: cardBg, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, padding: 16, alignItems: "center" }}>
               <AppText style={{ fontSize: 12, fontWeight: "700", color: colors.inkMuted48, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 4, fontFamily: ff(isArabic, 700) }}>{isArabic ? "تغير الوزن" : "WEIGHT DELTA"}</AppText>
               <AppText style={{ fontSize: 20, fontWeight: "700", fontVariant: ["tabular-nums"], color: setB.weight < setA.weight ? GREEN : RED }}>
                 {convW(setB.weight) - convW(setA.weight) > 0 ? "+" : ""}{(convW(setB.weight) - convW(setA.weight)).toFixed(1)} {wUnit}
@@ -310,15 +310,15 @@ export default function ProgressPhotos() {
       {/* Add sheet */}
       <BottomSheet isOpen={showAddSheet} onClose={() => setShowAddSheet(false)} title={isArabic ? "إضافة صورة" : "Add Photo"}>
         <View style={{ paddingTop: 4, paddingBottom: 24, gap: 12 }}>
-          <Pressable onPress={() => pick("camera")} style={{ width: "100%", height: 56, borderRadius: 9999, backgroundColor: colors.primary, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
+          <Pressable onPress={() => pick("camera")} style={{ width: "100%", height: 52, borderRadius: 9999, backgroundColor: colors.primary, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
             <Camera size={20} color={colors.onPrimary} />
             <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.onPrimary, fontFamily: ff(isArabic, 600) }}>{isArabic ? "الكاميرا" : "Take Photo"}</AppText>
           </Pressable>
-          <Pressable onPress={() => pick("library")} style={{ width: "100%", height: 56, borderRadius: 14, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
+          <Pressable onPress={() => pick("library")} style={{ width: "100%", height: 52, borderRadius: 14, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
             <Upload size={20} color={colors.inkMuted48} />
             <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, fontFamily: ff(isArabic, 600) }}>{isArabic ? "من المعرض" : "Choose from Gallery"}</AppText>
           </Pressable>
-          <View style={{ marginTop: 16, width: "100%", height: 48, borderRadius: 14, borderWidth: 1, borderStyle: "dashed", borderColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)", flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
+          <View style={{ marginTop: 16, width: "100%", height: 44, borderRadius: 14, borderWidth: 1, borderStyle: "dashed", borderColor: isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)", flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
             <Heart size={16} color={colors.inkMuted48} />
             <AppText style={{ fontSize: 14, fontWeight: "500", color: colors.inkMuted48, fontFamily: ff(isArabic, 600) }}>{isArabic ? "ربط Apple Health — قريبًا" : "Connect Apple Health — Soon"}</AppText>
           </View>
@@ -328,10 +328,10 @@ export default function ProgressPhotos() {
       {/* Preview sheet */}
       <BottomSheet isOpen={showPreviewSheet} onClose={() => setShowPreviewSheet(false)} title={isArabic ? "حفظ الصورة" : "Save Photo"}>
         <View style={{ paddingTop: 4, paddingBottom: 24 }}>
-          <View style={{ width: "100%", height: 300, backgroundColor: slot, borderRadius: 12, overflow: "hidden", marginBottom: 16 }}>
+          <View style={{ width: "100%", height: 300, backgroundColor: slot, borderRadius: 14, overflow: "hidden", marginBottom: 16 }}>
             {!!imgUri && <Image source={{ uri: imgUri }} style={{ width: "100%", height: "100%" }} contentFit="contain" />}
           </View>
-          <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", marginBottom: 16, backgroundColor: cardBg, padding: 12, borderRadius: 10, borderWidth: 1, borderColor: colors.hairline }}>
+          <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", marginBottom: 16, backgroundColor: cardBg, padding: 12, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline }}>
             <AppText style={{ fontSize: 14, fontWeight: "500", color: colors.inkMuted48, fontFamily: ff(isArabic, 600) }}>{isArabic ? "التاريخ" : "Date"}</AppText>
             <TextInput value={uploadDate} onChangeText={setUploadDate} placeholder="YYYY-MM-DD" placeholderTextColor={colors.inkMuted48} style={{ fontSize: 15, fontWeight: "700", color: colors.ink, fontVariant: ["tabular-nums"], minWidth: 130, textAlign: "center" }} />
           </View>
@@ -345,7 +345,7 @@ export default function ProgressPhotos() {
               );
             })}
           </View>
-          <Pressable onPress={handleSavePhoto} style={{ width: "100%", height: 56, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
+          <Pressable onPress={handleSavePhoto} style={{ width: "100%", height: 52, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
             <AppText style={{ fontSize: 16, fontWeight: "600", color: colors.onPrimary, fontFamily: ff(isArabic, 600) }}>{isArabic ? "حفظ الصورة" : "Save"}</AppText>
           </Pressable>
         </View>
@@ -370,7 +370,7 @@ export default function ProgressPhotos() {
       <BottomSheet isOpen={showShareSheet} onClose={() => setShowShareSheet(false)} title={isArabic ? "مشاركة المقارنة" : "Share Comparison"}>
         <View style={{ paddingTop: 4, paddingBottom: 24, alignItems: "center", gap: 24 }}>
           {setA && setB && (
-            <View style={{ width: "100%", borderRadius: 16, borderWidth: 2, borderColor: colors.primary, padding: 12, gap: 8 }}>
+            <View style={{ width: "100%", borderRadius: 14, borderWidth: 2, borderColor: colors.primary, padding: 12, gap: 8 }}>
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 8 }}>
                 {[setA, setB].map((s, i) => {
                   const p = s.photos.find((x) => x.angle === "front") || s.photos[0];
@@ -383,7 +383,7 @@ export default function ProgressPhotos() {
               </View>
             </View>
           )}
-          <Pressable onPress={handleShareCapture} style={{ width: "100%", height: 56, borderRadius: 9999, backgroundColor: colors.primary, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
+          <Pressable onPress={handleShareCapture} style={{ width: "100%", height: 52, borderRadius: 9999, backgroundColor: colors.primary, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8 }}>
             <Share2 size={20} color={colors.onPrimary} />
             <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.onPrimary, fontFamily: ff(isArabic, 600) }}>{isArabic ? "حفظ ومشاركة" : "Save & Share"}</AppText>
           </Pressable>

@@ -210,7 +210,7 @@ export default function Profile() {
           <PressableScale onPress={() => router.push("/plan-details")} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16 }}>
             <CoachAvatar coachId={user?.coach || "khaled"} size={40} />
             <View style={{ flex: 1 }}>
-              <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, marginBottom: 2, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+              <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, marginBottom: 2, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
                 {isArabic ? "تفاصيل خطتك" : "PLAN DETAILS"}
               </AppText>
               <AppText variant="caption-strong" numberOfLines={1} style={{ color: colors.ink, textAlign: isArabic ? "right" : "left" }}>{planName}</AppText>
@@ -225,7 +225,7 @@ export default function Profile() {
                 <Flame size={20} color={colors.primary} />
               </View>
               <View style={{ flex: 1 }}>
-                <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, marginBottom: 2, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+                <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, marginBottom: 2, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
                   {isArabic ? "خطة التغذية" : "NUTRITION PLAN"}
                 </AppText>
                 <AppText variant="caption-strong" numberOfLines={1} style={{ color: colors.ink, textAlign: isArabic ? "right" : "left" }}>
@@ -238,11 +238,11 @@ export default function Profile() {
 
           {/* Analytics preview */}
           <PressableScale onPress={() => router.push("/analytics")} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16 }}>
-            <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, marginBottom: 2, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
+            <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, marginBottom: 2, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>
               {isArabic ? "تقدمك" : "YOUR PROGRESS"}
             </AppText>
             <AppText variant="caption-strong" style={{ color: colors.ink, marginBottom: 12, textAlign: isArabic ? "right" : "left" }}>{isArabic ? "التحليلات" : "Analytics"}</AppText>
-            <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-end", gap: 6, height: 48, marginBottom: 16, justifyContent: isArabic ? "flex-end" : "flex-start" }}>
+            <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-end", gap: 6, height: 44, marginBottom: 16, justifyContent: isArabic ? "flex-end" : "flex-start" }}>
               {chartBars.map((hp, i) => (
                 <View key={i} style={{ width: 8, backgroundColor: colors.primary, borderRadius: 2, height: `${hp}%` }} />
               ))}
@@ -292,7 +292,7 @@ export default function Profile() {
             { icon: Camera, label: isArabic ? "كاميرا" : "Take photo", mode: "camera" as const },
             { icon: ImageIcon, label: isArabic ? "من الاستوديو" : "Choose from library", mode: "library" as const },
           ].map(({ icon: Icon, label, mode }) => (
-            <Btn key={mode} variant="secondary" fullWidth onPress={() => pickPhoto(mode)} style={{ height: 56, borderRadius: 14, justifyContent: "flex-start" }}>
+            <Btn key={mode} variant="secondary" fullWidth onPress={() => pickPhoto(mode)} style={{ height: 52, borderRadius: 14, justifyContent: "flex-start" }}>
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, width: "100%" }}>
                 <Icon size={20} color={colors.inkMuted48} />
                 <AppText variant="body-strong" style={{ color: colors.ink }}>{label}</AppText>

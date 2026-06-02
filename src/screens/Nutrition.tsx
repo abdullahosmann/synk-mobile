@@ -1186,7 +1186,7 @@ export default function Nutrition() {
             <View style={{ gap: 12 }}>
               {items.map((meal) => (
                 <View key={meal.id} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
-                  <Pressable onPress={() => handleEditMeal(meal as LoggedFood)} style={{ flex: 1, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, padding: 12, flexDirection: isArabic ? "row-reverse" : "row", justifyContent: "space-between", alignItems: "center" }}>
+                  <Pressable onPress={() => handleEditMeal(meal as LoggedFood)} style={{ flex: 1, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 12, flexDirection: isArabic ? "row-reverse" : "row", justifyContent: "space-between", alignItems: "center" }}>
                     <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start" }}>
                       <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.ink, textTransform: "uppercase" }} numberOfLines={1}>{meal.name}</AppText>
                       <AppText style={{ fontSize: 11, color: colors.inkMuted48, marginTop: 2 }}>{meal.portion}</AppText>
@@ -1212,7 +1212,7 @@ export default function Nutrition() {
                 </View>
               ))}
               {items.length === 0 && (
-                <Pressable onPress={() => { setActiveSlot(slot.id); setIsSearchOpen(true); }} style={{ backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderStyle: "dashed", borderRadius: 10, padding: 16, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 8 }}>
+                <Pressable onPress={() => { setActiveSlot(slot.id); setIsSearchOpen(true); }} style={{ backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderStyle: "dashed", borderRadius: 14, padding: 16, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 8 }}>
                   <Plus size={14} color={colors.inkMuted48} />
                   <AppText style={{ fontSize: 13, fontWeight: "500", color: colors.inkMuted48, textTransform: "uppercase", fontFamily: ff(isArabic) }}>{isArabic ? "إضافة طعام" : "ADD FOOD"}</AppText>
                 </Pressable>
@@ -1233,8 +1233,8 @@ export default function Nutrition() {
         </AppText>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 4, flexDirection: isArabic ? "row-reverse" : "row" }}>
           {aiSuggestions.map((s) => (
-            <View key={s.id} style={{ width: 260, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, padding: 12, flexDirection: isArabic ? "row-reverse" : "row", gap: 12 }}>
-              <Pressable onPress={() => setDismissedSuggestions((prev) => new Set(prev).add(s.id))} accessibilityRole="button" accessibilityLabel={isArabic ? "تجاهل" : "Dismiss"} style={{ position: "absolute", top: 8, right: 8, width: 20, height: 20, borderRadius: 10, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center", zIndex: 1 }}>
+            <View key={s.id} style={{ width: 260, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 12, flexDirection: isArabic ? "row-reverse" : "row", gap: 12 }}>
+              <Pressable onPress={() => setDismissedSuggestions((prev) => new Set(prev).add(s.id))} accessibilityRole="button" accessibilityLabel={isArabic ? "تجاهل" : "Dismiss"} style={{ position: "absolute", top: 8, right: 8, width: 20, height: 20, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center", zIndex: 1 }}>
                 <X size={10} color={colors.inkMuted48} />
               </Pressable>
               <CoachAvatar coachId={user.coach || "khaled"} size={32} />
@@ -1267,7 +1267,7 @@ export default function Nutrition() {
             const isLiked = fb === "liked";
             const isDisliked = fb === "disliked";
             return (
-              <View key={i} style={{ width: 140, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, padding: 16, opacity: isDisliked ? 0.6 : 1 }}>
+              <View key={i} style={{ width: 140, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16, opacity: isDisliked ? 0.6 : 1 }}>
                 <Pressable onPress={() => addMeal(food, 1, food.portion)} style={{ position: "absolute", top: 8, right: 8, width: 28, height: 28, borderRadius: 14, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", zIndex: 10 }}>
                   <Plus size={16} strokeWidth={2.5} color="#fff" />
                 </Pressable>
@@ -1303,7 +1303,7 @@ export default function Nutrition() {
   };
 
   const waterPearlBtn = (label: string, onPress: () => void, disabled = false, flex = false) => (
-    <Pressable key={label} onPress={onPress} disabled={disabled} style={{ flex: flex ? 1 : undefined, height: 40, paddingHorizontal: 14, borderRadius: 10, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center", opacity: disabled ? 0.3 : 1 }}>
+    <Pressable key={label} onPress={onPress} disabled={disabled} style={{ flex: flex ? 1 : undefined, height: 40, paddingHorizontal: 14, borderRadius: 14, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center", opacity: disabled ? 0.3 : 1 }}>
       <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.inkMuted80 }}>{label}</AppText>
     </Pressable>
   );
@@ -1340,7 +1340,7 @@ export default function Nutrition() {
             keyboardType="number-pad"
             placeholder={isArabic ? "كمية مخصصة (مل)" : "Custom ml..."}
             placeholderTextColor={colors.inkMuted48}
-            style={{ flex: 1, height: 40, paddingHorizontal: 12, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, fontSize: 14, fontWeight: "600", color: colors.ink, textAlign: "center" }}
+            style={{ flex: 1, height: 40, paddingHorizontal: 12, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, fontSize: 14, fontWeight: "600", color: colors.ink, textAlign: "center" }}
           />
           {waterPearlBtn("+", () => {
             const now = Date.now();
@@ -1391,7 +1391,7 @@ export default function Nutrition() {
 
   // M1 — one search-result row (used by the virtualized FlatList below).
   const renderFoodRow = (food: UIDisplayFood) => (
-    <Pressable onPress={() => setSelectedFood(food)} accessibilityRole="button" accessibilityLabel={`${isArabic && (food as any).nameAr ? (food as any).nameAr : food.name}, ${food.calories} ${isArabic ? "سعرة" : "kcal"}`} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, paddingVertical: 12, paddingHorizontal: 16, flexDirection: isArabic ? "row-reverse" : "row", justifyContent: "space-between", alignItems: "center" }}>
+    <Pressable onPress={() => setSelectedFood(food)} accessibilityRole="button" accessibilityLabel={`${isArabic && (food as any).nameAr ? (food as any).nameAr : food.name}, ${food.calories} ${isArabic ? "سعرة" : "kcal"}`} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, paddingVertical: 12, paddingHorizontal: 16, flexDirection: isArabic ? "row-reverse" : "row", justifyContent: "space-between", alignItems: "center" }}>
       <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start", paddingRight: isArabic ? 0 : 16, paddingLeft: isArabic ? 16 : 0 }}>
         <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8, alignSelf: "stretch" }}>
           <AppText style={{ flexShrink: 1, fontSize: 15, fontWeight: "600", color: colors.ink }} numberOfLines={1}>
@@ -1520,7 +1520,7 @@ export default function Nutrition() {
                   { lbl: isArabic ? "إنشاء وجبة" : "MEAL", onPress: () => { setShowMoreActions(false); setIsCustomMealOpen(true); } },
                   { lbl: isArabic ? "وصفة" : "RECIPE", onPress: () => { setShowMoreActions(false); setIsRecipeBuilderOpen(true); } },
                 ].map(({ lbl, onPress }) => (
-                  <Pressable key={lbl} onPress={onPress} style={{ flex: 1, height: 36, borderRadius: 10, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 }}>
+                  <Pressable key={lbl} onPress={onPress} style={{ flex: 1, height: 36, borderRadius: 14, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4 }}>
                     <Plus size={12} color={colors.inkMuted80} />
                     <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted80 }} numberOfLines={1}>{lbl}</AppText>
                   </Pressable>
@@ -1600,7 +1600,7 @@ export default function Nutrition() {
       <Modal visible={selectedFood !== null} transparent animationType="fade" onRequestClose={() => { setSelectedFood(null); setMealToReplace(null); }}>
         <Pressable style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.4)", alignItems: "center", justifyContent: "center", paddingHorizontal: 24 }} onPress={() => { setSelectedFood(null); setMealToReplace(null); }}>
           {selectedFood && (
-            <Pressable onPress={(e) => e.stopPropagation()} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, padding: 24, width: "100%", maxWidth: 340, maxHeight: "85%" }}>
+            <Pressable onPress={(e) => e.stopPropagation()} style={{ backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 24, width: "100%", maxWidth: 340, maxHeight: "85%" }}>
               <Pressable onPress={() => { setSelectedFood(null); setMealToReplace(null); }} accessibilityRole="button" accessibilityLabel={isArabic ? "إغلاق" : "Close"} style={{ position: "absolute", top: 16, right: 16, width: 40, height: 40, borderRadius: 20, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center", zIndex: 10 }}>
                 <X size={18} color={colors.inkMuted48} />
               </Pressable>
@@ -1625,7 +1625,7 @@ export default function Nutrition() {
                   <Pressable onPress={handleDecreasePortion} style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
                     <AppText style={{ fontSize: 20, fontWeight: "600", color: colors.ink }}>−</AppText>
                   </Pressable>
-                  <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, paddingHorizontal: 12, width: 112, height: 48 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, paddingHorizontal: 12, width: 112, height: 44 }}>
                     <TextInput value={String(portionValue)} onChangeText={setPortionValue} keyboardType="numeric" style={{ flex: 1, fontSize: 22, fontWeight: "600", color: colors.ink, textAlign: "center" }} />
                     <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.inkMuted48 }}>{isGramBased ? "g" : "x"}</AppText>
                   </View>
@@ -1675,10 +1675,10 @@ export default function Nutrition() {
 
                 {mealToReplace &&
                   (isConfirmingDelete ? (
-                    <View style={{ borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, padding: 12 }}>
+                    <View style={{ borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 12 }}>
                       <AppText style={{ fontSize: 11, color: colors.inkMuted48, textAlign: "center", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 12, fontWeight: "600" }}>{isArabic ? "هل تريد حقاً حذف هذه الوجبة؟" : "Delete this item?"}</AppText>
                       <View style={{ flexDirection: "row", gap: 8 }}>
-                        <Pressable onPress={() => setIsConfirmingDelete(false)} style={{ flex: 1, height: 40, borderRadius: 10, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+                        <Pressable onPress={() => setIsConfirmingDelete(false)} style={{ flex: 1, height: 40, borderRadius: 14, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
                           <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.inkMuted80 }}>{isArabic ? "إلغاء" : "CANCEL"}</AppText>
                         </Pressable>
                         <Pressable onPress={() => { setTodaysLogs((prev) => ({ ...prev, foods: prev.foods.filter((f) => f.id !== mealToReplace.id) })); setSelectedFood(null); setMealToReplace(null); setIsConfirmingDelete(false); flashToast("delete"); }} style={{ flex: 1, height: 40, borderRadius: 10, backgroundColor: withAlpha(colors.semanticRed, 0.12), alignItems: "center", justifyContent: "center" }}>
@@ -1701,7 +1701,7 @@ export default function Nutrition() {
       {/* ===== Quick Add Modal ===== */}
       <Modal visible={isQuickAddOpen} transparent animationType="fade" onRequestClose={() => setIsQuickAddOpen(false)}>
         <Pressable style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.4)", alignItems: "center", justifyContent: "center", paddingHorizontal: 16 }} onPress={() => setIsQuickAddOpen(false)}>
-          <Pressable onPress={(e) => e.stopPropagation()} style={{ width: "100%", maxWidth: 384, backgroundColor: colors.canvas, borderRadius: 16, borderWidth: 1, borderColor: colors.hairline, maxHeight: "85%", overflow: "hidden" }}>
+          <Pressable onPress={(e) => e.stopPropagation()} style={{ width: "100%", maxWidth: 384, backgroundColor: colors.canvas, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, maxHeight: "85%", overflow: "hidden" }}>
             <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between", padding: 16, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
               <AppText style={{ fontSize: 14, fontWeight: "700", color: colors.ink, textTransform: "uppercase", letterSpacing: 1 }}>{isArabic ? "إضافة سريعة" : "QUICK ADD"}</AppText>
               <Pressable onPress={() => setIsQuickAddOpen(false)} accessibilityRole="button" accessibilityLabel={isArabic ? "إغلاق" : "Close"} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: subtle, alignItems: "center", justifyContent: "center" }}>
@@ -1864,7 +1864,7 @@ export default function Nutrition() {
           <Pressable
             onPress={handleAddCustomFood}
             disabled={!customFood.name || !customFood.calories}
-            style={{ height: 48, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", marginTop: 4, opacity: !customFood.name || !customFood.calories ? 0.3 : 1 }}
+            style={{ height: 44, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", marginTop: 4, opacity: !customFood.name || !customFood.calories ? 0.3 : 1 }}
           >
             <AppText style={{ color: "#fff", fontWeight: "600", fontSize: 15, fontFamily: ff(isArabic, 600) }}>{isArabic ? "أضف الطعام" : "Add Food"}</AppText>
           </Pressable>
@@ -1918,7 +1918,7 @@ export default function Nutrition() {
                   ))}
                   <View style={{ flexDirection: "row", gap: 8, paddingTop: 4 }}>
                     {([["Kcal", mealTotals.kcal], ["Prot", `${mealTotals.prot}g`], ["Carb", `${mealTotals.carb}g`], ["Fat", `${mealTotals.fat}g`]] as const).map(([lbl, val], i) => (
-                      <View key={lbl} style={{ flex: 1, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, paddingVertical: 8, alignItems: "center" }}>
+                      <View key={lbl} style={{ flex: 1, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, paddingVertical: 8, alignItems: "center" }}>
                         <AppText style={{ fontSize: 9, color: colors.inkMuted48, textTransform: "uppercase" }}>{lbl}</AppText>
                         <AppText style={{ fontSize: 13, fontWeight: "600", color: i === 0 ? colors.primary : colors.ink }}>{val}</AppText>
                       </View>
@@ -1930,7 +1930,7 @@ export default function Nutrition() {
               <Pressable
                 onPress={handleSaveCustomMeal}
                 disabled={!customMealBuilder.name || customMealBuilder.items.length === 0}
-                style={{ height: 48, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", marginTop: 4, opacity: !customMealBuilder.name || customMealBuilder.items.length === 0 ? 0.3 : 1 }}
+                style={{ height: 44, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", marginTop: 4, opacity: !customMealBuilder.name || customMealBuilder.items.length === 0 ? 0.3 : 1 }}
               >
                 <AppText style={{ color: "#fff", fontWeight: "600", fontSize: 15, fontFamily: ff(isArabic, 600) }}>{isArabic ? "حفظ وإضافة الوجبة" : "Save & Add Meal"}</AppText>
               </Pressable>
@@ -2059,7 +2059,7 @@ export default function Nutrition() {
                 textAlignVertical="top"
                 placeholder={isArabic ? "..." : "..."}
                 placeholderTextColor={colors.inkMuted48}
-                style={{ flex: 1, minHeight: 44, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, padding: 10, fontSize: 14, color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}
+                style={{ flex: 1, minHeight: 44, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 10, fontSize: 14, color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}
               />
               {recipeBuilder.steps.length > 1 && (
                 <Pressable onPress={() => setRecipeBuilder((p) => ({ ...p, steps: p.steps.filter((_, i) => i !== idx) }))} style={{ width: 32, height: 32, marginTop: 6, alignItems: "center", justifyContent: "center" }}>
@@ -2086,10 +2086,10 @@ export default function Nutrition() {
 
           {/* Save / Save & Share */}
           <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 12, marginTop: 4 }}>
-            <Pressable onPress={() => saveRecipe(false)} disabled={!recipeValid} style={{ flex: 1, height: 48, borderRadius: 9999, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center", opacity: recipeValid ? 1 : 0.3 }}>
+            <Pressable onPress={() => saveRecipe(false)} disabled={!recipeValid} style={{ flex: 1, height: 44, borderRadius: 9999, backgroundColor: colors.surfacePearl, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center", opacity: recipeValid ? 1 : 0.3 }}>
               <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, textTransform: isArabic ? "none" : "uppercase", fontFamily: ff(isArabic, 600) }}>{isArabic ? "حفظ" : "Save"}</AppText>
             </Pressable>
-            <Pressable onPress={() => saveRecipe(true)} disabled={!recipeValid} style={{ flex: 1, height: 48, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", opacity: recipeValid ? 1 : 0.3 }}>
+            <Pressable onPress={() => saveRecipe(true)} disabled={!recipeValid} style={{ flex: 1, height: 44, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center", opacity: recipeValid ? 1 : 0.3 }}>
               <AppText style={{ fontSize: 15, fontWeight: "600", color: "#fff", textTransform: isArabic ? "none" : "uppercase", fontFamily: ff(isArabic, 600) }}>{isArabic ? "حفظ ومشاركة" : "Save & Share"}</AppText>
             </Pressable>
           </View>

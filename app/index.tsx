@@ -102,7 +102,7 @@ export default function Welcome() {
       }}
     >
       {/* Header */}
-      <View style={{ height: 56, justifyContent: "center" }}>
+      <View style={{ height: 52, justifyContent: "center" }}>
         <AppText
           style={{
             fontFamily: "Inter_600SemiBold",

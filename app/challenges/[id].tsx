@@ -146,7 +146,7 @@ export default function ChallengeDetail() {
         {/* Join / Leave */}
         <Pressable
           onPress={() => { setJoined(!joined); showToast(joined ? (isArabic ? "غادرت التحدي" : "Left challenge") : isArabic ? "انضممت للتحدي" : "Joined challenge", "success"); }}
-          style={{ width: "100%", height: 48, borderRadius: 9999, alignItems: "center", justifyContent: "center", backgroundColor: joined ? tile1 : colors.primary, borderWidth: joined ? 1 : 0, borderColor: colors.hairline }}
+          style={{ width: "100%", height: 44, borderRadius: 9999, alignItems: "center", justifyContent: "center", backgroundColor: joined ? tile1 : colors.primary, borderWidth: joined ? 1 : 0, borderColor: colors.hairline }}
         >
           <AppText style={{ fontSize: 14, fontWeight: "600", color: joined ? colors.ink : colors.onPrimary, fontFamily: ff(isArabic, 600) }}>{joined ? (isArabic ? "مغادرة التحدي" : "Leave Challenge") : isArabic ? "انضم الآن" : "Join Challenge"}</AppText>
         </Pressable>

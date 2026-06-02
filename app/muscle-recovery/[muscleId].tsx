@@ -129,7 +129,7 @@ export default function MuscleDetail() {
               </View>
             </View>
             <View style={{ paddingHorizontal: 16, paddingVertical: 6, borderRadius: 9999, backgroundColor: recoveryBadge.bg }}>
-              <AppText style={{ fontSize: 11, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, color: recoveryBadge.fg, fontFamily: ff(isArabic, 600) }}>{recoveryBadge.label}</AppText>
+              <AppText style={{ fontSize: 11, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, color: recoveryBadge.fg, fontFamily: ff(isArabic, 600) }}>{recoveryBadge.label}</AppText>
             </View>
           </View>
           <View style={{ height: 6, width: "100%", backgroundColor: colors.hairline, borderRadius: 9999, overflow: "hidden" }}>
@@ -154,7 +154,7 @@ export default function MuscleDetail() {
           </View>
           <View style={{ gap: 12 }}>
             {filteredExercises.map((exercise, index) => (
-              <Pressable key={index} onPress={() => setOpenExercise(exercise)} style={{ backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, padding: 20, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
+              <Pressable key={index} onPress={() => setOpenExercise(exercise)} style={{ backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 20, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
                 <AppText style={{ fontSize: 17, fontWeight: "600", color: colors.ink, letterSpacing: -0.3, fontFamily: ff(isArabic, 600) }}>{exercise}</AppText>
                 <View style={{ width: 36, height: 36, borderRadius: 9999, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
                   <ChevronLeft size={20} strokeWidth={2.5} color={colors.inkMuted48} style={{ transform: [{ scaleX: isArabic ? 1 : -1 }] }} />
@@ -168,7 +168,7 @@ export default function MuscleDetail() {
       {/* Exercise sheet */}
       <BottomSheet isOpen={!!openExercise} onClose={() => setOpenExercise(null)} title={openExercise || ""}>
         <View style={{ gap: 24, paddingTop: 8, paddingBottom: 24 }}>
-          <View style={{ width: "100%", aspectRatio: 16 / 9, borderRadius: 10, overflow: "hidden", backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: colors.hairline }}>
+          <View style={{ width: "100%", aspectRatio: 16 / 9, borderRadius: 14, overflow: "hidden", backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: colors.hairline }}>
             {selectedExerciseData?.image ? (
               <Image source={{ uri: selectedExerciseData.image }} style={{ width: "100%", height: "100%" }} contentFit="cover" />
             ) : (
@@ -180,7 +180,7 @@ export default function MuscleDetail() {
             <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, marginBottom: 8, fontFamily: ff(isArabic, 600) }}>{isArabic ? name.ar : name.en}</AppText>
             <AppText style={{ fontSize: 15, color: colors.inkMuted48, lineHeight: 22, marginBottom: 24, textAlign: align, fontFamily: ff(isArabic) }}>{isArabic ? `يستهدف عضلة ${name.ar}. ركز على الحركة المحكومة لضمان أقصى تفعيل للعضلة.` : `Targets the ${name.en}. Focus on controlled movement and full range of motion for maximum muscle engagement.`}</AppText>
 
-            <View style={{ width: "100%", backgroundColor: colors.canvasParchment, padding: 16, borderRadius: 12, borderWidth: 1, borderColor: colors.primary + "1A" }}>
+            <View style={{ width: "100%", backgroundColor: colors.canvasParchment, padding: 16, borderRadius: 14, borderWidth: 1, borderColor: colors.primary + "1A" }}>
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8, marginBottom: 8 }}>
                 <Activity size={16} color={colors.primary} />
                 <AppText style={{ fontSize: 12, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, color: colors.primary, fontFamily: ff(isArabic, 600) }}>{isArabic ? "نصيحة المدرب" : "Coach Pro Tip"}</AppText>

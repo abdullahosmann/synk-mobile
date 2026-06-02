@@ -224,7 +224,7 @@ export default function WeekEditor() {
               onPress={() => handleUpdateWeek(message)}
               disabled={!message.trim() || isLoading}
               style={{
-                height: 48,
+                height: 44,
                 backgroundColor: colors.primary,
                 borderRadius: 9999,
                 flexDirection: isArabic ? "row-reverse" : "row",
@@ -259,7 +259,7 @@ export default function WeekEditor() {
                   borderWidth: 1,
                   borderColor: colors.hairline,
                   padding: 12,
-                  borderRadius: 16,
+                  borderRadius: 14,
                   borderTopLeftRadius: isArabic ? 16 : 4,
                   borderTopRightRadius: isArabic ? 4 : 16,
                 }}

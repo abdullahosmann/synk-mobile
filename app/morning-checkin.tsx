@@ -137,7 +137,7 @@ export default function MorningCheckIn() {
       <View style={{ flex: 1, paddingHorizontal: 20, justifyContent: "center", maxWidth: 448, width: "100%", alignSelf: "center", paddingBottom: 48 }}>
         <View style={{ gap: 48 }}>
           <View style={{ alignItems: "center", gap: 24 }}>
-            <View style={{ width: 80, height: 80, backgroundColor: colors.canvas, borderRadius: 10, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: colors.hairline }}>
+            <View style={{ width: 80, height: 80, backgroundColor: colors.canvas, borderRadius: 14, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: colors.hairline }}>
               <StepIcon size={36} color={colors.primary} />
             </View>
             <AppText style={{ fontSize: 28, fontWeight: "600", letterSpacing: -0.5, color: colors.ink, lineHeight: 34, textAlign: "center", fontFamily: ff(isArabic, 600) }}>{currentStep.title}</AppText>
@@ -146,14 +146,14 @@ export default function MorningCheckIn() {
           {currentStep.type === "value" ? (
             <View style={{ gap: 48 }}>
               <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 40 }}>
-                <Pressable onPress={() => setHoursSlept((p) => Math.max(4, p - 0.5))} style={{ width: 56, height: 56, borderRadius: 9999, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+                <Pressable onPress={() => setHoursSlept((p) => Math.max(4, p - 0.5))} style={{ width: 56, height: 52, borderRadius: 9999, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
                   <Minus size={24} color={colors.ink} />
                 </Pressable>
                 <View style={{ alignItems: "center" }}>
                   <AppText style={{ fontSize: 60, fontWeight: "600", color: colors.ink, fontVariant: ["tabular-nums"], lineHeight: 64, fontFamily: ff(isArabic, 600) }}>{hoursSlept}</AppText>
-                  <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, textTransform: "uppercase", letterSpacing: 1.5, marginTop: 8, fontFamily: ff(isArabic, 600) }}>{isArabic ? "ساعة" : "HOURS"}</AppText>
+                  <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, textTransform: "uppercase", letterSpacing: 1, marginTop: 8, fontFamily: ff(isArabic, 600) }}>{isArabic ? "ساعة" : "HOURS"}</AppText>
                 </View>
-                <Pressable onPress={() => setHoursSlept((p) => Math.min(12, p + 0.5))} style={{ width: 56, height: 56, borderRadius: 9999, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+                <Pressable onPress={() => setHoursSlept((p) => Math.min(12, p + 0.5))} style={{ width: 56, height: 52, borderRadius: 9999, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
                   <Plus size={24} color={colors.ink} />
                 </Pressable>
               </View>
@@ -168,7 +168,7 @@ export default function MorningCheckIn() {
           ) : (
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
               {currentStep.options?.map((opt) => (
-                <Pressable key={String(opt.value)} onPress={() => handleSelection(currentStep.key!, opt.value)} style={{ width: "48%", paddingVertical: 40, backgroundColor: colors.canvas, borderRadius: 10, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+                <Pressable key={String(opt.value)} onPress={() => handleSelection(currentStep.key!, opt.value)} style={{ width: "48%", paddingVertical: 40, backgroundColor: colors.canvas, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
                   <AppText style={{ fontSize: 15, fontWeight: "600", letterSpacing: -0.3, color: colors.ink, fontFamily: ff(isArabic, 600) }}>{opt.label}</AppText>
                 </Pressable>
               ))}

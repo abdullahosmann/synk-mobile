@@ -388,7 +388,7 @@ export default function PreSession() {
         <View style={{ paddingBottom: 8 }}>
           {items.map((it, i) => (
             <View key={i} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, paddingVertical: 12 }}>
-              <View style={{ width: 56, height: 56, borderRadius: 12, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
+              <View style={{ width: 56, height: 56, borderRadius: 14, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
                 <Dumbbell size={24} color={colors.inkMuted48} />
               </View>
               <View style={{ flex: 1 }}>
@@ -533,11 +533,11 @@ export default function PreSession() {
             {sectionLabel(isArabic ? "العضلات" : "MUSCLES")}
             <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 16 }}>
               {([["front", frontMuscles, isArabic ? "أمام" : "FRONT"], ["back", backMuscles, isArabic ? "خلف" : "BACK"]] as const).map(([view, ms, label]) => (
-                <View key={view} style={{ flex: 1, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 16, padding: 16, alignItems: "center" }}>
+                <View key={view} style={{ flex: 1, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16, alignItems: "center" }}>
                   <View style={{ width: "100%", aspectRatio: 0.5, maxHeight: 220 }}>
                     <BodySVG view={view} highlightedMuscles={(ms as string[]).length ? (ms as string[]) : view === "front" ? ["chest", "shoulders"] : ["back", "lower_back"]} animateHighlight />
                   </View>
-                  <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, marginTop: 16, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{label}</AppText>
+                  <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, marginTop: 16, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{label}</AppText>
                 </View>
               ))}
             </View>
@@ -575,10 +575,10 @@ export default function PreSession() {
               placeholder={isArabic ? "مثال: تمارين الصدر" : "e.g. Chest Day"}
               placeholderTextColor={colors.inkMuted48}
               maxLength={40}
-              style={{ height: 48, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, paddingHorizontal: 16, fontSize: 15, color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}
+              style={{ height: 44, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, paddingHorizontal: 16, fontSize: 15, color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}
             />
           </View>
-          <Pressable onPress={handleSaveRoutine} style={{ height: 48, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
+          <Pressable onPress={handleSaveRoutine} style={{ height: 44, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
             <AppText style={{ fontSize: 15, fontWeight: "600", color: "#fff", textTransform: isArabic ? "none" : "uppercase", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "احفظ الروتين" : "Save routine"}</AppText>
           </Pressable>
         </View>
@@ -624,7 +624,7 @@ export default function PreSession() {
           const sel = exercises.find((e: any) => e.id === exerciseMenuOpen);
           if (!sel) return <View />;
           const row = (Icon: any, label: string, onPress: () => void, danger?: boolean) => (
-            <Pressable onPress={onPress} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, height: 56, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
+            <Pressable onPress={onPress} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12, height: 52, borderBottomWidth: 1, borderBottomColor: colors.hairline }}>
               <Icon size={20} color={danger ? colors.semanticRed : colors.inkMuted48} />
               <AppText style={{ flex: 1, fontSize: 15, fontWeight: "500", color: danger ? colors.semanticRed : colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_400Regular" : "Inter_400Regular" }}>{label}</AppText>
             </Pressable>
@@ -632,7 +632,7 @@ export default function PreSession() {
           return (
             <View>
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16, paddingBottom: 12 }}>
-                <View style={{ width: 56, height: 56, borderRadius: 12, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
+                <View style={{ width: 56, height: 56, borderRadius: 14, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
                   <Dumbbell size={24} color={colors.inkMuted48} />
                 </View>
                 <AppText style={{ flex: 1, fontSize: 17, fontWeight: "600", color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? sel.arabicName || sel.name : sel.name}</AppText>
@@ -641,7 +641,7 @@ export default function PreSession() {
               {row(RefreshCw, isArabic ? "بدّل التمرين" : "Replace Exercise", () => { setExerciseMenuOpen(null); showToast(isArabic ? "بدور على بدائل..." : "Finding alternatives...", "success"); })}
               {row(X, isArabic ? "متقترحش تاني" : "Don't Recommend Again", () => { setExerciseMenuOpen(null); setConfirmDontRecommend(sel); })}
               {row(Trash2, isArabic ? "احذف من التمرين" : "Remove from Workout", () => { setExerciseMenuOpen(null); setConfirmRemoveExercise(sel); }, true)}
-              <Pressable onPress={() => setExerciseMenuOpen(null)} style={{ marginTop: 16, height: 48, borderRadius: 14, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
+              <Pressable onPress={() => setExerciseMenuOpen(null)} style={{ marginTop: 16, height: 44, borderRadius: 14, backgroundColor: colors.canvasParchment, alignItems: "center", justifyContent: "center" }}>
                 <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "إغلاق" : "Close"}</AppText>
               </Pressable>
             </View>
@@ -722,7 +722,7 @@ export default function PreSession() {
             </View>
 
             {adaptHint && (
-              <View style={{ padding: 16, backgroundColor: withAlpha(colors.primary, 0.1), borderWidth: 1, borderColor: withAlpha(colors.primary, 0.2), borderRadius: 12 }}>
+              <View style={{ padding: 16, backgroundColor: withAlpha(colors.primary, 0.1), borderWidth: 1, borderColor: withAlpha(colors.primary, 0.2), borderRadius: 14 }}>
                 <AppText style={{ fontSize: 14, color: colors.primary, lineHeight: 20, textAlign: isArabic ? "right" : "left", fontFamily: fontFamily(isArabic, 600) }}>{adaptHint}</AppText>
               </View>
             )}
@@ -737,7 +737,7 @@ export default function PreSession() {
               ] as const).map((reason) => {
                 const active = tweakReason === reason.id;
                 return (
-                  <Pressable key={reason.id} onPress={() => setTweakReason(reason.id)} style={{ height: 48, borderRadius: 14, borderWidth: 1, justifyContent: "center", backgroundColor: active ? colors.ink : colors.canvas, borderColor: active ? colors.ink : colors.hairline, paddingHorizontal: 16 }}>
+                  <Pressable key={reason.id} onPress={() => setTweakReason(reason.id)} style={{ height: 44, borderRadius: 14, borderWidth: 1, justifyContent: "center", backgroundColor: active ? colors.ink : colors.canvas, borderColor: active ? colors.ink : colors.hairline, paddingHorizontal: 16 }}>
                     <AppText style={{ fontSize: 15, fontWeight: "600", color: active ? colors.canvas : colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: fontFamily(isArabic, 600) }}>{isArabic ? reason.ar : reason.en}</AppText>
                   </Pressable>
                 );
@@ -745,7 +745,7 @@ export default function PreSession() {
             </View>
 
             <View style={{ alignItems: "center", gap: 12 }}>
-              <Pressable onPress={() => { showToast(isArabic ? "اتخطّى — نشوفك بكره" : "Skipped — see you tomorrow"); setAdaptStep(null); }} style={{ width: "100%", height: 48, borderRadius: 14, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+              <Pressable onPress={() => { showToast(isArabic ? "اتخطّى — نشوفك بكره" : "Skipped — see you tomorrow"); setAdaptStep(null); }} style={{ width: "100%", height: 44, borderRadius: 14, backgroundColor: colors.canvasParchment, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
                 <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.semanticRed, fontFamily: fontFamily(isArabic, 600) }}>{isArabic ? "تخطّى النهاردة" : "SKIP TODAY"}</AppText>
               </Pressable>
               <Pressable onPress={() => showToast(isArabic ? "افتح النقل هنا" : "Reschedule opens here")} hitSlop={8}>
@@ -753,7 +753,7 @@ export default function PreSession() {
               </Pressable>
             </View>
 
-            <Pressable onPress={applyTweak} style={{ height: 48, borderRadius: 14, backgroundColor: colors.ink, alignItems: "center", justifyContent: "center" }}>
+            <Pressable onPress={applyTweak} style={{ height: 44, borderRadius: 14, backgroundColor: colors.ink, alignItems: "center", justifyContent: "center" }}>
               <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.canvas, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: fontFamily(isArabic, 600) }}>{isArabic ? "طبّق" : "APPLY"}</AppText>
             </Pressable>
           </View>
@@ -779,7 +779,7 @@ export default function PreSession() {
             ) : (
               user.customWorkouts.map((routine) => (
                 <Pressable key={routine.id} onPress={() => { setAdaptStep(null); setTimeout(() => setReplacementSheetRoutine(routine), 280); }} style={{ backgroundColor: colors.canvas, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16 }}>
-                  <View style={{ width: 48, height: 48, borderRadius: 12, backgroundColor: withAlpha(colors.primary, 0.05), alignItems: "center", justifyContent: "center" }}>
+                  <View style={{ width: 48, height: 48, borderRadius: 14, backgroundColor: withAlpha(colors.primary, 0.05), alignItems: "center", justifyContent: "center" }}>
                     <Dumbbell size={22} color={colors.primary} />
                   </View>
                   <View style={{ flex: 1 }}>

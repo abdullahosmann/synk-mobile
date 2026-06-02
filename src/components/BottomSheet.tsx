@@ -9,9 +9,11 @@
  *  - rounded-t-[32px], drag handle, safe-area-aware bottom padding
  *  - max height 85% of screen, scrollable content
  */
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
+  Keyboard,
   Modal,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -71,6 +73,18 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   // translateY: 0 = fully open, sheetHeight = fully off-screen.
   const translateY = useSharedValue(screenH);
   const [mounted, setMounted] = React.useState(isOpen);
+
+  // Keyboard avoidance: lift the (bottom-anchored) sheet above the keyboard so
+  // its inputs + Save button aren't covered. Shared across every sheet-based
+  // input flow (Edit targets, custom food, weight log, settings sheets, …).
+  const [kb, setKb] = useState(0);
+  useEffect(() => {
+    const showEvt = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvt = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+    const s = Keyboard.addListener(showEvt, (e) => setKb(e.endCoordinates?.height ?? 0));
+    const h = Keyboard.addListener(hideEvt, () => setKb(0));
+    return () => { s.remove(); h.remove(); };
+  }, []);
 
   const close = useCallback(() => {
     onClose();
@@ -154,21 +168,21 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
             position: "absolute",
             left: 0,
             right: 0,
-            bottom: 0,
-            maxHeight: screenH * 0.85,
+            bottom: kb,
+            maxHeight: screenH * 0.85 - kb,
             backgroundColor: colors.canvas,
             borderTopLeftRadius: 32,
             borderTopRightRadius: 32,
             paddingHorizontal: 32,
             paddingTop: 40,
-            paddingBottom: insets.bottom + 48,
+            paddingBottom: kb > 0 ? 24 : insets.bottom + 48,
           },
           sheetStyle,
         ]}
       >
         {/* Drag handle (gesture target) */}
         <GestureDetector gesture={pan}>
-          <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: 56 }}>
+          <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: 52 }}>
             <View
               style={{
                 position: "absolute",
