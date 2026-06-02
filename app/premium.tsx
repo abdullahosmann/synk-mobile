@@ -111,7 +111,7 @@ export default function Paywall() {
 
   const footerLink = (label: string, onPress: () => void) => (
     <Pressable onPress={onPress}>
-      <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: fontFamily(isArabic, 600) }}>
+      <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: fontFamily(isArabic, 600) }}>
         {label}
       </AppText>
     </Pressable>

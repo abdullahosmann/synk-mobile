@@ -53,14 +53,14 @@ export default function GeneratingPlan() {
     ? [
         { title: "تحليل أهدافك", sub: "بقرأ اللي قلتهولي" },
         { title: "ضبط حجم التدريب", sub: "الأيام والمدة" },
-        { title: "التعديل للإصابات", sub: "بأشيل الحركات الخطرة" },
+        { title: "مراعاة إصاباتك", sub: "بنحطها في الحسبان" },
         { title: "تجهيز أهداف التغذية", sub: "سعرات وماكروز" },
         { title: "تجهيز اقتراحات المدرب", sub: "قربنا نخلص" },
       ]
     : [
         { title: "Analyzing your goals", sub: "Reading what you told me" },
         { title: "Setting training volume", sub: "Days per week, session length" },
-        { title: "Adjusting for injuries", sub: "Filtering risky movements" },
+        { title: "Accounting for injuries", sub: "Keeping them in mind" },
         { title: "Creating nutrition targets", sub: "Calories and macro balance" },
         { title: "Preparing coach suggestions", sub: "Almost done" },
       ];
@@ -102,7 +102,7 @@ export default function GeneratingPlan() {
         <View style={{ width: `${(10 / 15) * 100}%`, height: "100%", backgroundColor: colors.primary }} />
       </View>
 
-      <View style={{ height: 56, justifyContent: "center", marginBottom: 24 }}>
+      <View style={{ height: 52, justifyContent: "center", marginBottom: 24 }}>
         <AppText style={{ color: colors.primary, fontFamily: "Inter_600SemiBold", letterSpacing: 3.25, fontSize: 13 }}>
           SYNK
         </AppText>

@@ -61,7 +61,7 @@ export default function WorkoutTab() {
           <View style={{ flexDirection: isArabic ? "row-reverse" : "row", gap: 12, width: "100%", marginTop: 8 }}>
             {[isArabic ? "تسجيل نشاط" : "Log Activity", isArabic ? "إطالة" : "Stretch Routine"].map((label, i) => (
               <Pressable key={i} onPress={() => router.push("/voice-log")} style={{ flex: 1, backgroundColor: softFill, borderRadius: 8, paddingVertical: 12, alignItems: "center" }}>
-                <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.ink, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{label}</AppText>
+                <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.ink, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{label}</AppText>
               </Pressable>
             ))}
           </View>
@@ -96,11 +96,11 @@ export default function WorkoutTab() {
           <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
             <Pressable onPress={() => router.push("/workout/import")} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 4 }}>
               <Download size={14} strokeWidth={2.5} color={colors.primary} />
-              <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "استيراد" : "IMPORT"}</AppText>
+              <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "استيراد" : "IMPORT"}</AppText>
             </Pressable>
             <Pressable onPress={() => router.push("/workout/builder")} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 4 }}>
               <Plus size={14} strokeWidth={2.5} color={colors.primary} />
-              <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1.5, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "إنشاء جديد" : "CREATE NEW"}</AppText>
+              <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, fontFamily: isArabic ? "Cairo_600SemiBold" : "Inter_600SemiBold" }}>{isArabic ? "إنشاء جديد" : "CREATE NEW"}</AppText>
             </Pressable>
           </View>
         </View>

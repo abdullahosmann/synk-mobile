@@ -56,7 +56,7 @@ const ReportSheet: React.FC<ReportSheetProps> = ({ isOpen, onClose, targetType }
           {isArabic ? "بنراجع البلاغات بسرية تامة. هتفضل تشوف المحتوى ده لحد ما نشيله." : "Reports are reviewed confidentially. You'll continue to see this content until it's removed."}
         </AppText>
         {REASONS.map((r) => (
-          <Pressable key={r.id} onPress={handleReport} style={{ padding: 12, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10 }}>
+          <Pressable key={r.id} onPress={handleReport} style={{ padding: 12, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14 }}>
             <AppText style={{ fontSize: 14, color: colors.ink, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}>{isArabic ? r.ar : r.en}</AppText>
           </Pressable>
         ))}

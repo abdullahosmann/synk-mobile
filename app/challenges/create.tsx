@@ -137,7 +137,7 @@ export default function ChallengeCreate() {
               </View>
             </View>
             {TEMPLATES.map((t) => (
-              <Pressable key={t.id} onPress={() => { setTemplateId(t.id); setStep("opponents"); }} style={{ padding: 16, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, alignItems: isArabic ? "flex-end" : "flex-start" }}>
+              <Pressable key={t.id} onPress={() => { setTemplateId(t.id); setStep("opponents"); }} style={{ padding: 16, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, alignItems: isArabic ? "flex-end" : "flex-start" }}>
                 <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, fontFamily: ff(isArabic, 600) }}>{isArabic ? t.arabicLabel : t.label}</AppText>
                 <AppText style={{ fontSize: 12, color: colors.inkMuted48, marginTop: 4, textAlign: isArabic ? "right" : "left", fontFamily: ff(isArabic) }}>{isArabic ? t.arabicDescription : t.description}</AppText>
               </Pressable>
@@ -229,7 +229,7 @@ export default function ChallengeCreate() {
       {/* Sticky footer CTA */}
       {step === "opponents" && totalOpponents > 0 && (
         <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: insets.bottom + 12, borderTopWidth: 1, borderTopColor: colors.hairline, backgroundColor: colors.canvas }}>
-          <Pressable onPress={() => setStep("duration")} style={{ width: "100%", height: 48, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
+          <Pressable onPress={() => setStep("duration")} style={{ width: "100%", height: 44, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
             <AppText style={{ fontSize: 14, fontWeight: "600", color: colors.onPrimary, fontFamily: ff(isArabic, 600) }}>{isArabic ? `التالي · ${totalOpponents} منافس` : `Next · ${totalOpponents} ${totalOpponents === 1 ? "opponent" : "opponents"}`}</AppText>
           </Pressable>
         </View>
@@ -237,7 +237,7 @@ export default function ChallengeCreate() {
 
       {step === "duration" && (
         <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: insets.bottom + 12, borderTopWidth: 1, borderTopColor: colors.hairline, backgroundColor: colors.canvas }}>
-          <Pressable onPress={handleCreate} style={{ width: "100%", height: 48, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
+          <Pressable onPress={handleCreate} style={{ width: "100%", height: 44, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
             <AppText style={{ fontSize: 14, fontWeight: "600", color: colors.onPrimary, fontFamily: ff(isArabic, 600) }}>{isArabic ? "ابدأ التحدي" : "Start Challenge"}</AppText>
           </Pressable>
         </View>

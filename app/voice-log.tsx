@@ -188,7 +188,7 @@ export default function VoiceLog() {
         <AppText style={{ fontSize: 15, color: colors.inkMuted48, marginBottom: 40, lineHeight: 22, textAlign: "center", fontFamily: ff(isArabic) }}>
           {isArabic ? "نحتاج الوصول للميكروفون لتحويل صوتك إلى بيانات. يرجى تفعيل الإذن من إعدادات جهازك." : "We need microphone access to turn your voice into data. Please enable permissions in your device settings."}
         </AppText>
-        <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={{ width: "100%", maxWidth: 320, height: 56, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
+        <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={{ width: "100%", maxWidth: 320, height: 52, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
           <AppText style={{ color: "#fff", fontSize: 17, fontWeight: "600" }}>{isArabic ? "العودة" : "Go Back"}</AppText>
         </Pressable>
       </View>
@@ -245,7 +245,7 @@ export default function VoiceLog() {
         </View>
 
         {/* Status line */}
-        <View style={{ height: 48, alignItems: "center", justifyContent: "center" }}>
+        <View style={{ height: 44, alignItems: "center", justifyContent: "center" }}>
           {phase === "idle" && (
             <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.ink, fontFamily: ff(isArabic, 600) }}>
               {isArabic ? "اضغط وتكلم" : "Tap and hold to speak"}
@@ -290,7 +290,7 @@ export default function VoiceLog() {
           <View style={{ backgroundColor: colors.canvasParchment, borderRadius: 24, padding: 20, marginBottom: 32, borderWidth: 1, borderColor: colors.hairline }}>
             <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
-                <View style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}>
+                <View style={{ width: 40, height: 40, borderRadius: 14, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center" }}>
                   <Utensils size={20} color={colors.primary} />
                 </View>
                 <View style={{ alignItems: isArabic ? "flex-end" : "flex-start" }}>
@@ -311,7 +311,7 @@ export default function VoiceLog() {
                 {isArabic ? "تأكيد الحفظ" : "Confirm & Save"}
               </AppText>
             </Pressable>
-            <Pressable onPress={() => setPhase("idle")} style={{ height: 56, alignItems: "center", justifyContent: "center" }}>
+            <Pressable onPress={() => setPhase("idle")} style={{ height: 52, alignItems: "center", justifyContent: "center" }}>
               <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.inkMuted48, textTransform: isArabic ? "none" : "uppercase", letterSpacing: isArabic ? 0 : 1.5, fontFamily: ff(isArabic, 600) }}>
                 {isArabic ? "إلغاء" : "Discard"}
               </AppText>
@@ -336,10 +336,10 @@ export default function VoiceLog() {
             {isArabic ? "حاول مرة أخرى أو قم بتسجيل الوجبة أو التمرين يدوياً." : "Try again or log your meal or workout manually."}
           </AppText>
           <View style={{ width: "100%", gap: 12 }}>
-            <Pressable onPress={() => setPhase("idle")} style={{ height: 56, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
+            <Pressable onPress={() => setPhase("idle")} style={{ height: 52, borderRadius: 9999, backgroundColor: colors.primary, alignItems: "center", justifyContent: "center" }}>
               <AppText style={{ color: "#fff", fontSize: 15, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", fontFamily: ff(isArabic, 600) }}>{isArabic ? "حاول مرة أخرى" : "Try Again"}</AppText>
             </Pressable>
-            <Pressable onPress={() => router.push("/fitness?tab=nutrition&openSearch=1")} style={{ height: 56, borderRadius: 9999, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
+            <Pressable onPress={() => router.push("/fitness?tab=nutrition&openSearch=1")} style={{ height: 52, borderRadius: 9999, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, alignItems: "center", justifyContent: "center" }}>
               <AppText style={{ color: colors.ink, fontSize: 15, fontWeight: "600", textTransform: isArabic ? "none" : "uppercase", fontFamily: ff(isArabic, 600) }}>{isArabic ? "سجل يدوياً" : "Log Manually"}</AppText>
             </Pressable>
           </View>

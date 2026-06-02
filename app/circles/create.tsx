@@ -101,7 +101,7 @@ export default function CircleCreate() {
                 onChangeText={(t) => t.length <= 30 && setCircleName(t)}
                 placeholder={isArabic ? "مثلاً: شلة الجيم" : "e.g. Gym Squad"}
                 placeholderTextColor={colors.inkMuted48}
-                style={{ height: 48, borderRadius: 10, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, paddingHorizontal: 16, fontSize: 15, color: colors.ink, textAlign: label, fontFamily: ff(isArabic) }}
+                style={{ height: 44, borderRadius: 14, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, paddingHorizontal: 16, fontSize: 15, color: colors.ink, textAlign: label, fontFamily: ff(isArabic) }}
               />
               <AppText style={{ fontSize: 11, color: colors.inkMuted48, marginTop: 4, textAlign: isArabic ? "left" : "right", fontVariant: ["tabular-nums"] }}>{circleName.length} / 30</AppText>
             </View>
@@ -145,7 +145,7 @@ export default function CircleCreate() {
                 const sel = metric === mc.id;
                 return (
                   <Pressable key={mc.id} onPress={() => setMetric(mc.id)} style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16, minHeight: 80, padding: 16, borderRadius: 10, borderWidth: 2, backgroundColor: sel ? primaryFaint : cardBg, borderColor: sel ? colors.primary : colors.hairline }}>
-                    <View style={{ width: 48, height: 48, borderRadius: 9999, backgroundColor: primaryTint, alignItems: "center", justifyContent: "center" }}>{mc.icon}</View>
+                    <View style={{ width: 48, height: 44, borderRadius: 9999, backgroundColor: primaryTint, alignItems: "center", justifyContent: "center" }}>{mc.icon}</View>
                     <View style={{ flex: 1, alignItems: isArabic ? "flex-end" : "flex-start" }}>
                       <AppText style={{ fontSize: 17, fontWeight: "600", color: colors.ink, textAlign: label, fontFamily: ff(isArabic, 600) }}>{mc.title}</AppText>
                       <AppText style={{ fontSize: 13, color: colors.inkMuted48, marginTop: 4, textAlign: label, fontFamily: ff(isArabic) }}>{mc.subtitle}</AppText>
@@ -164,7 +164,7 @@ export default function CircleCreate() {
         <Pressable
           onPress={() => (step === 1 ? setStep(2) : handleCreate())}
           disabled={!ctaEnabled}
-          style={{ width: "100%", height: 48, borderRadius: 9999, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8, backgroundColor: ctaEnabled ? colors.primary : disabledBg }}
+          style={{ width: "100%", height: 44, borderRadius: 9999, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "center", gap: 8, backgroundColor: ctaEnabled ? colors.primary : disabledBg }}
         >
           <AppText style={{ fontSize: 14, fontWeight: "600", color: ctaEnabled ? colors.onPrimary : colors.inkMuted48, fontFamily: ff(isArabic, 600) }}>{step === 1 ? (isArabic ? "كمل" : "Continue") : isArabic ? "إنشاء الحلقة" : "Create Circle"}</AppText>
           {step === 1 && <ChevronRight size={18} color={ctaEnabled ? colors.onPrimary : colors.inkMuted48} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />}

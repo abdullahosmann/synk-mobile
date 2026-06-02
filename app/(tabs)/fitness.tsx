@@ -29,7 +29,7 @@ export default function Fitness() {
   const tab = (key: "workout" | "nutrition", label: string) => {
     const active = activeTab === key;
     return (
-      <Pressable key={key} onPress={() => setActiveTab(key)} style={{ flex: 1, height: 48, alignItems: "center", justifyContent: "center" }}>
+      <Pressable key={key} onPress={() => setActiveTab(key)} style={{ flex: 1, height: 44, alignItems: "center", justifyContent: "center" }}>
         <AppText
           style={{
             fontSize: 15,

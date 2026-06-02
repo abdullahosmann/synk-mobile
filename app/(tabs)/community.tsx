@@ -125,7 +125,7 @@ export default function Community() {
               ? "الترقية للبريميوم مطلوبة عشان تشوف وتشارك مع المجتمع وتفتح التحديات."
               : "Upgrade to Premium to see social feeds, join challenges, and climb the PR leaderboards."}
           </AppText>
-          <Btn variant="primary" onPress={() => router.push("/premium")} style={{ height: 48, paddingHorizontal: 32 }}>
+          <Btn variant="primary" onPress={() => router.push("/premium")} style={{ height: 44, paddingHorizontal: 32 }}>
             <Star size={18} color="#fff" fill="#fff" />
             <AppText variant="body-strong" style={{ color: "#fff" }}>{isArabic ? "افتح المجتمع" : "Unlock Community"}</AppText>
           </Btn>

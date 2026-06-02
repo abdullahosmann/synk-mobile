@@ -371,7 +371,7 @@ export default function AdaptiveInsights() {
               <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "flex-start", gap: 16 }}>
                 <CoachAvatar coachId={adaptation.coachId} size={48} grayscale={0} />
                 <View style={{ flex: 1, paddingTop: 4, alignItems: isArabic ? "flex-end" : "flex-start" }}>
-                  <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 0.5, marginBottom: 8, fontFamily: fontFamily(isArabic, 600) }}>
+                  <AppText style={{ fontSize: 11, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: 1, marginBottom: 8, fontFamily: fontFamily(isArabic, 600) }}>
                     {isArabic ? `المدرب ${coachName} يقول:` : `Coach ${coachName} says:`}
                   </AppText>
                   <View
@@ -395,7 +395,7 @@ export default function AdaptiveInsights() {
             </View>
           </>
         ) : (
-          <View style={{ marginBottom: 40, alignItems: "center", justifyContent: "center", padding: 32, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 16 }}>
+          <View style={{ marginBottom: 40, alignItems: "center", justifyContent: "center", padding: 32, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14 }}>
             <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: withAlpha(colors.primary, 0.1), alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
               <Sparkles size={24} color={colors.primary} />
             </View>
@@ -435,7 +435,7 @@ export default function AdaptiveInsights() {
         <View style={{ maxWidth: 448, width: "100%", alignSelf: "center", gap: 16 }}>
           <Pressable
             onPress={handleUnderstood}
-            style={{ width: "100%", height: 56, backgroundColor: colors.primary, borderRadius: 9999, alignItems: "center", justifyContent: "center" }}
+            style={{ width: "100%", height: 52, backgroundColor: colors.primary, borderRadius: 9999, alignItems: "center", justifyContent: "center" }}
           >
             <AppText style={{ fontSize: 17, fontWeight: "600", color: "#ffffff", letterSpacing: -0.2, textTransform: isArabic ? "none" : "uppercase", fontFamily: fontFamily(isArabic, 600) }}>
               {isArabic ? "فهمت" : "Understood"}
@@ -464,7 +464,7 @@ export default function AdaptiveInsights() {
           <View style={{ gap: 12 }}>
             <Pressable
               onPress={handleRevert}
-              style={{ width: "100%", height: 56, backgroundColor: colors.ink, borderRadius: 9999, alignItems: "center", justifyContent: "center" }}
+              style={{ width: "100%", height: 52, backgroundColor: colors.ink, borderRadius: 9999, alignItems: "center", justifyContent: "center" }}
             >
               <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.canvas, fontFamily: fontFamily(isArabic, 600) }}>
                 {isArabic ? "نعم، العودة للأصل" : "Yes, Revert to Original"}
@@ -472,7 +472,7 @@ export default function AdaptiveInsights() {
             </Pressable>
             <Pressable
               onPress={() => setIsRevertModalOpen(false)}
-              style={{ width: "100%", height: 56, alignItems: "center", justifyContent: "center" }}
+              style={{ width: "100%", height: 52, alignItems: "center", justifyContent: "center" }}
             >
               <AppText style={{ fontSize: 15, fontWeight: "600", color: colors.inkMuted48, fontFamily: fontFamily(isArabic, 600) }}>
                 {isArabic ? "إلغاء" : "Cancel"}

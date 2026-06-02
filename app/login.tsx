@@ -102,7 +102,7 @@ export default function Login() {
   const socialButton = (label: string) => (
     <Pressable
       onPress={() => showToast(isArabic ? "قريباً" : "Coming soon", "info")}
-      style={{ height: 56, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 8, alignItems: "center", justifyContent: "center" }}
+      style={{ height: 52, backgroundColor: colors.canvas, borderWidth: 1, borderColor: colors.hairline, borderRadius: 8, alignItems: "center", justifyContent: "center" }}
     >
       <AppText variant="body-strong" style={{ color: colors.ink }}>{label}</AppText>
     </Pressable>

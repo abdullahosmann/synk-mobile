@@ -216,7 +216,7 @@ export default function UserProfile() {
         {activeTab === "workouts" && (
           <View style={{ gap: 12 }}>
             {workouts.map((w, i) => (
-              <View key={i} style={{ backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, padding: 16 }}>
+              <View key={i} style={{ backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16 }}>
                 <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
                   <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 8 }}>
                     <Dumbbell size={16} color={colors.primary} />
@@ -237,7 +237,7 @@ export default function UserProfile() {
         {activeTab === "prs" && (
           <View style={{ gap: 12 }}>
             {prs.map((pr, i) => (
-              <View key={i} style={{ backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
+              <View key={i} style={{ backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, padding: 16, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
                 <AppText style={{ fontSize: 14, fontWeight: "600", color: colors.ink, fontFamily: ff(isArabic, 600) }}>{isArabic ? pr.arabicName : pr.name}</AppText>
                 <View style={{ alignItems: isArabic ? "flex-start" : "flex-end" }}>
                   <AppText style={{ fontSize: 16, fontWeight: "700", color: colors.primary, fontVariant: ["tabular-nums"], fontFamily: ff(isArabic, 700) }}>{pr.pr}</AppText>
@@ -266,11 +266,11 @@ export default function UserProfile() {
       {/* More sheet */}
       <BottomSheet isOpen={moreOpen} onClose={() => setMoreOpen(false)} title={isArabic ? profile.arabicName : profile.name}>
         <View style={{ paddingTop: 8, paddingBottom: 24, gap: 8 }}>
-          <Pressable onPress={() => { setMoreOpen(false); setReportOpen(true); }} style={{ padding: 16, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
+          <Pressable onPress={() => { setMoreOpen(false); setReportOpen(true); }} style={{ padding: 16, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
             <Flag size={20} color={colors.inkMuted48} />
             <AppText style={{ flex: 1, fontSize: 14, fontWeight: "600", color: colors.ink, textAlign: align, fontFamily: ff(isArabic, 600) }}>{isArabic ? "إبلاغ" : "Report"}</AppText>
           </Pressable>
-          <Pressable onPress={() => { setMoreOpen(false); setBlockOpen(true); }} style={{ padding: 16, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 10, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
+          <Pressable onPress={() => { setMoreOpen(false); setBlockOpen(true); }} style={{ padding: 16, backgroundColor: cardBg, borderWidth: 1, borderColor: colors.hairline, borderRadius: 14, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 12 }}>
             <Ban size={20} color={RED} />
             <AppText style={{ flex: 1, fontSize: 14, fontWeight: "600", color: RED, textAlign: align, fontFamily: ff(isArabic, 600) }}>{isArabic ? "حظر" : "Block"}</AppText>
           </Pressable>

@@ -90,7 +90,7 @@ export default function WorkoutHistory() {
     const d = new Date(w.date);
     const dayStr = isArabic ? d.toLocaleDateString("ar-EG", { weekday: "short" }) : d.toLocaleDateString("en-US", { weekday: "short" });
     return (
-      <Pressable onPress={() => router.push(`/history/workout/${w.id}`)} style={{ backgroundColor: cardBg, borderRadius: 10, borderWidth: 1, borderColor: colors.hairline, padding: 16, marginHorizontal: 16, marginBottom: 8, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
+      <Pressable onPress={() => router.push(`/history/workout/${w.id}`)} style={{ backgroundColor: cardBg, borderRadius: 14, borderWidth: 1, borderColor: colors.hairline, padding: 16, marginHorizontal: 16, marginBottom: 8, flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", justifyContent: "space-between" }}>
         <View style={{ flexDirection: isArabic ? "row-reverse" : "row", alignItems: "center", gap: 16, flex: 1 }}>
           <View style={{ width: 48, alignItems: "center", justifyContent: "center", borderRightWidth: isArabic ? 0 : 1, borderLeftWidth: isArabic ? 1 : 0, borderColor: colors.hairline, paddingRight: isArabic ? 0 : 12, paddingLeft: isArabic ? 12 : 0 }}>
             <AppText style={{ fontSize: 12, fontWeight: "600", color: colors.inkMuted48, textTransform: "uppercase", fontFamily: ff(isArabic, 600) }}>{dayStr.charAt(0)}</AppText>
@@ -124,7 +124,7 @@ export default function WorkoutHistory() {
     <View style={{ flex: 1, backgroundColor: colors.canvasParchment }}>
       {/* Header */}
       <View style={{ backgroundColor: cardBg, borderBottomWidth: 1, borderBottomColor: colors.hairline, paddingTop: insets.top + 8 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: 48, paddingHorizontal: 16 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: 44, paddingHorizontal: 16 }}>
           <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={isArabic ? "رجوع" : "Back"} style={{ width: 44, height: 44, borderRadius: 9999, alignItems: "center", justifyContent: "center" }}>
             <ChevronLeft size={24} color={colors.ink} style={{ transform: [{ scaleX: isArabic ? -1 : 1 }] }} />
           </Pressable>
@@ -236,7 +236,7 @@ export default function WorkoutHistory() {
               })}
             </View>
 
-            <View style={{ marginTop: 32, backgroundColor: primaryTint, borderRadius: 12, padding: 16, alignItems: "center" }}>
+            <View style={{ marginTop: 32, backgroundColor: primaryTint, borderRadius: 14, padding: 16, alignItems: "center" }}>
               <AppText style={{ fontSize: 13, fontWeight: "600", color: colors.primary, textTransform: isArabic ? "none" : "uppercase", letterSpacing: isArabic ? 0 : 1.5, marginBottom: 8, fontFamily: ff(isArabic, 600) }}>{isArabic ? "ملخص الشهر" : "Monthly Summary"}</AppText>
               <AppText style={{ fontSize: 15, fontWeight: "500", color: colors.ink, textAlign: "center", fontFamily: ff(isArabic, 600) }}>{calMonthWorkouts.length} {isArabic ? "تمارين" : "workouts"} · {calMonthWorkouts.reduce((a, b) => a + b.durationMin, 0)} {isArabic ? "دقيقة" : "min"} · {calMonthWorkouts.reduce((a, b) => a + b.totalVolumeKg, 0).toLocaleString()} {isArabic ? "كجم إجمالي" : "kg total volume"}</AppText>
             </View>
